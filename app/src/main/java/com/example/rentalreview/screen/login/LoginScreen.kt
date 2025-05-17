@@ -1,5 +1,6 @@
 package com.example.rentalreview.screen.login
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,15 +30,15 @@ fun LoginScrenn(){
 
 @Composable
 fun LoginForm(){
-    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Text(text = "Login", fontSize = 40.sp, fontWeight = FontWeight.Bold)
+    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+        Text(text = "Login", fontSize = 40.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         OutlinedTextField(
             value = "",
             onValueChange = {
 
             },
             label = {
-                Text(text = "Email")
+                Text(text = "Email", color = MaterialTheme.colorScheme.primary)
             },
         )
         OutlinedTextField(
@@ -46,7 +47,7 @@ fun LoginForm(){
 
             },
             label = {
-                Text(text = "Password")
+                Text(text = "Password", color = MaterialTheme.colorScheme.primary)
             },
             maxLines = 1,
             singleLine = true,
@@ -76,6 +77,16 @@ fun LoginForm(){
 fun LoginScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
+            LoginScrenn()
+        }
+    }
+}
+
+@Composable
+@Preview
+fun LoginDarkScreenPreview(){
+    Surface {
+        RentalReviewTheme(darkTheme = true, dynamicColor = false) {
             LoginScrenn()
         }
     }
