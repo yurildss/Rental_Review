@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.rentalreview" />
+                  <option name="mobileSdkAppId" value="1:326336449137:android:491a6964ce87f7419929d0" />
+                  <option name="projectId" value="rental-review-df8f0" />
+                  <option name="projectNumber" value="326336449137" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

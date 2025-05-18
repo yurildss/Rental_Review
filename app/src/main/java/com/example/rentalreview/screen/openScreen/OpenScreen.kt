@@ -25,7 +25,9 @@ import com.example.rentalreview.R
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 
 @Composable
-fun OpenScree(){
+fun OpenScree(
+    onGetStarted: () -> Unit = {}
+){
     Column(
         Modifier
             .background(color = MaterialTheme.colorScheme.background)
@@ -58,7 +60,7 @@ fun OpenScree(){
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.primary
         )
-        Button(onClick = {},
+        Button(onClick = onGetStarted,
             Modifier.fillMaxWidth(0.75f)
         ) {
             Text(text = stringResource(R.string.get_started))

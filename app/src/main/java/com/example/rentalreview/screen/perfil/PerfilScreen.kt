@@ -80,7 +80,7 @@ fun PerfilScreen(){
                 .align(Alignment.CenterHorizontally),
             border = _root_ide_package_.androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.secondary)
         ) {
-            Text("My Reviews", color = MaterialTheme.colorScheme.secondary)
+            Text("Log out", color = MaterialTheme.colorScheme.secondary)
         }
     }
 
