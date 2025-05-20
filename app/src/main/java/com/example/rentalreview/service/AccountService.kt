@@ -9,4 +9,6 @@ interface AccountService {
     val hasUser: Boolean
     val currentUser: Flow<User>
 
+    suspend fun register(email: String, password: String, name: String)
+    suspend fun authenticate(email: String, password: String)
 }
