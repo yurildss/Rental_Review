@@ -5,4 +5,9 @@
     <string name="description">Read an share house and apartments rental experiences</string>
     <string name="get_started">Get Started</string>
     <string name="generic_error">Something wrong happened. Please try again.</string>
+    <string name="name_error">Name is required</string>
+    <string name="email_error">Please insert a valid email.</string>
+    <string name="password_error">Please insert a valid password.</string>
+    <string name="password_match_error">Passwords do not match</string>
+    <string name="sign_up_success">Success sign up!</string>
 </resources>

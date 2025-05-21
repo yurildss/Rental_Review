@@ -21,10 +21,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.rentalreview.screen.signUp.SignUpScreenViewModel
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 
 @Composable
-fun LoginScrenn(){
+fun LoginScrenn(
+    viewModel: SignUpScreenViewModel = hiltViewModel()
+){
     LoginForm()
 }
 
