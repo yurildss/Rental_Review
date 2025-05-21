@@ -1,6 +1,6 @@
 package com.example.rentalreview.service.impl
 
-import com.example.rentalreview.User
+import com.example.rentalreview.model.User
 import com.example.rentalreview.service.AccountService
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth

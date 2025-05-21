@@ -4,4 +4,5 @@
     <string name="welcome">Welcome to Rental Reviews</string>
     <string name="description">Read an share house and apartments rental experiences</string>
     <string name="get_started">Get Started</string>
+    <string name="generic_error">Something wrong happened. Please try again.</string>
 </resources>

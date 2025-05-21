@@ -1,6 +1,6 @@
 package com.example.rentalreview.service
 
-import com.example.rentalreview.User
+import com.example.rentalreview.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface AccountService {

@@ -1,4 +1,4 @@
-package com.example.rentalreview
+package com.example.rentalreview.model
 
 data class User (
     val id: String = "",
