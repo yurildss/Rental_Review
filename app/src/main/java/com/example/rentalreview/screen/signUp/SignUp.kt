@@ -29,7 +29,8 @@ import androidx.compose.runtime.getValue
 
 
 @Composable
-fun SignUpScrenn(onLoginClick:() -> Unit = {},
+fun SignUpScreen(
+    onLoginClick:() -> Unit = {},
     onSignUpSuccess: () -> Unit = {},
     viewModel: SignUpScreenViewModel = hiltViewModel()
 ){
@@ -39,7 +40,8 @@ fun SignUpScrenn(onLoginClick:() -> Unit = {},
         viewModel::onNameChange,
         viewModel::onEmailChange,
         viewModel::onPasswordChange,
-        viewModel::onRepeatPasswordChange
+        viewModel::onRepeatPasswordChange,
+        onLoginClick
     ) { viewModel.onSignUpClick(onSignUpSuccess) }
 }
 
@@ -49,7 +51,9 @@ fun SignUpForm(signUpUiState: SignUpUiState,
                onEmailChange: (String) -> Unit = {},
                onPasswordChange: (String) -> Unit = {},
                onRepeatPasswordChange: (String) -> Unit = {},
-               onSignUpClick: (onSignUpSuccess: () -> Unit ) -> Unit = {})
+               onLoginClick: () -> Unit = {},
+               onSignUpClick: (onSignUpSuccess: () -> Unit ) -> Unit = {},
+               )
 {
     Column(Modifier
         .fillMaxSize()
@@ -109,7 +113,7 @@ fun SignUpForm(signUpUiState: SignUpUiState,
             Text(text = "Sign Up")
         }
         OutlinedButton(
-            onClick = { },
+            onClick = onLoginClick,
             border = _root_ide_package_.androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
             modifier = Modifier.fillMaxWidth(0.75f)
         ) {
@@ -123,7 +127,7 @@ fun SignUpForm(signUpUiState: SignUpUiState,
 fun LoginScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
-            SignUpScrenn()
+            SignUpScreen()
         }
     }
 }
@@ -133,7 +137,7 @@ fun LoginScreenPreview(){
 fun LoginDarkScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
-            SignUpScrenn()
+            SignUpScreen()
         }
     }
 }

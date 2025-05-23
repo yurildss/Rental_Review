@@ -21,52 +21,73 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.screen.signUp.SignUpScreenViewModel
 import com.example.rentalreview.ui.theme.RentalReviewTheme
+import androidx.compose.runtime.getValue
+
 
 @Composable
-fun LoginScrenn(
-    viewModel: SignUpScreenViewModel = hiltViewModel()
+fun LoginScreen(
+    onLoginSuccess: () -> Unit = {},
+    onSignUpClick: () -> Unit = {},
+    viewModel: LoginScreenViewModel = hiltViewModel()
 ){
-    LoginForm()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    LoginForm(uiState,
+        viewModel::onEmailChange,
+        viewModel::onPasswordChange,
+        { viewModel.onLoginClick(onLoginSuccess) },
+        onSignUpClick)
 }
 
 @Composable
-fun LoginForm(){
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+fun LoginForm(
+    uiState: LoginUiState,
+    onEmailChange: (String) -> Unit = {},
+    onPasswordChange: (String) -> Unit = {},
+    onLoginClick: (onLoginSuccess: () -> Unit) -> Unit = {},
+    onSignUpClick: () -> Unit = {}
+){
+    Column(Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center) {
         Text(text = "Login", fontSize = 40.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         OutlinedTextField(
-            value = "",
-            onValueChange = {
-
-            },
+            value = uiState.email,
+            onValueChange = onEmailChange,
             label = {
                 Text(text = "Email", color = MaterialTheme.colorScheme.primary)
             },
+            maxLines = 1,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
         )
         OutlinedTextField(
-            value = "",
-            onValueChange = {
-
-            },
+            value = uiState.password,
+            onValueChange = onPasswordChange,
             label = {
                 Text(text = "Password", color = MaterialTheme.colorScheme.primary)
             },
             maxLines = 1,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            visualTransformation = _root_ide_package_.androidx.compose.ui.text.input.PasswordVisualTransformation()
         )
         Text(text = "Forgot Password?", textAlign = TextAlign.Center)
         Button(
             onClick = {
-
+                onLoginClick
             },
             modifier = Modifier.fillMaxWidth(0.75f)
         ){
             Text(text = "Login")
         }
         OutlinedButton(
-            onClick = { },
+            onClick = onSignUpClick,
             border = _root_ide_package_.androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
             modifier = Modifier.fillMaxWidth(0.75f)
         ) {
@@ -80,7 +101,7 @@ fun LoginForm(){
 fun LoginScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
-            LoginScrenn()
+            LoginScreen()
         }
     }
 }
@@ -90,7 +111,7 @@ fun LoginScreenPreview(){
 fun LoginDarkScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
-            LoginScrenn()
+            LoginScreen()
         }
     }
 }
