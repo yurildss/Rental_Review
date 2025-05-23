@@ -23,37 +23,37 @@ class SignUpScreenViewModel
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
 
     fun onSignUpClick(
-        name: String,
-        email: String,
-        password: String,
-        repeatPassword: String,
         onSignUpSuccess: () -> Unit
     ) {
-        if (name.isBlank()){
+        if (uiState.value.name.isBlank()){
             SnackbarManager.showMessage(R.string.name_error)
             return
         }
 
-        if (!email.isValidEmail()){
+        if (!uiState.value.email.isValidEmail()){
             SnackbarManager.showMessage(R.string.email_error)
             return
         }
 
-        if (!password.isValidPassword()){
+        if (!uiState.value.password.isValidPassword()){
             SnackbarManager.showMessage(R.string.password_error)
             return
         }
 
-        if(password != repeatPassword){
+        if(uiState.value.password != uiState.value.repeatPassword){
             SnackbarManager.showMessage(R.string.password_match_error)
             return
         }
 
         launchCatching {
-            accountService.register(email, password, name)
+            accountService.register(uiState.value.name, uiState.value.email, uiState.value.password)
             SnackbarManager.showMessage(R.string.sign_up_success)
             onSignUpSuccess()
         }
+    }
+
+    fun onNameChange(name: String) {
+        _uiState.value = _uiState.value.copy(name = name)
     }
 
     fun onEmailChange(email: String) {

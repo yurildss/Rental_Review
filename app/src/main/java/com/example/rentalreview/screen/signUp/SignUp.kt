@@ -22,60 +22,76 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.ui.theme.RentalReviewTheme
+import androidx.compose.runtime.getValue
 
 
 @Composable
-fun SignUpScrenn(){
-    SignUpForm()
+fun SignUpScrenn(onLoginClick:() -> Unit = {},
+    onSignUpSuccess: () -> Unit = {},
+    viewModel: SignUpScreenViewModel = hiltViewModel()
+){
+    val uiSate by viewModel.uiState.collectAsStateWithLifecycle()
+    SignUpForm(
+        uiSate,
+        viewModel::onNameChange,
+        viewModel::onEmailChange,
+        viewModel::onPasswordChange,
+        viewModel::onRepeatPasswordChange
+    ) { viewModel.onSignUpClick(onSignUpSuccess) }
 }
 
 @Composable
-fun SignUpForm(){
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+fun SignUpForm(signUpUiState: SignUpUiState,
+               onNameChange: (String) -> Unit = {},
+               onEmailChange: (String) -> Unit = {},
+               onPasswordChange: (String) -> Unit = {},
+               onRepeatPasswordChange: (String) -> Unit = {},
+               onSignUpClick: (onSignUpSuccess: () -> Unit ) -> Unit = {})
+{
+    Column(Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Text(text = "Sign Up", fontSize = 40.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         OutlinedTextField(
-            value = "",
-            onValueChange = {
-
-            },
+            value = signUpUiState.name,
+            onValueChange = onNameChange,
             label = {
                 Text(text = "Name", color = MaterialTheme.colorScheme.primary)
             },
             modifier = Modifier.padding(top = 10.dp)
         )
         OutlinedTextField(
-            value = "",
-            onValueChange = {
-
-            },
+            value = signUpUiState.email,
+            onValueChange = onEmailChange,
             label = {
                 Text(text = "Email", color = MaterialTheme.colorScheme.primary)
             },
         )
         OutlinedTextField(
-            value = "",
-            onValueChange = {
-
-            },
+            value = signUpUiState.password,
+            onValueChange = onPasswordChange,
             label = {
                 Text(text = "Password", color = MaterialTheme.colorScheme.primary)
             },
             maxLines = 1,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            visualTransformation = _root_ide_package_.androidx.compose.ui.text.input.PasswordVisualTransformation()
+
         )
         OutlinedTextField(
-            value = "",
-            onValueChange = {
-
-            },
+            value = signUpUiState.repeatPassword,
+            onValueChange = onRepeatPasswordChange,
             label = {
                 Text(text = "Repeat Password", color = MaterialTheme.colorScheme.primary)
             },
             maxLines = 1,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            visualTransformation = _root_ide_package_.androidx.compose.ui.text.input.PasswordVisualTransformation()
         )
         Text(
             text = "Forgot Password?",
@@ -85,10 +101,10 @@ fun SignUpForm(){
             modifier = Modifier.padding(top = 5.dp)
         )
         Button(
-            onClick = {
-
-            },
-            modifier = Modifier.fillMaxWidth(0.75f).padding(top = 10.dp)
+            onClick = { onSignUpClick },
+            modifier = Modifier
+                .fillMaxWidth(0.75f)
+                .padding(top = 10.dp)
         ){
             Text(text = "Sign Up")
         }
