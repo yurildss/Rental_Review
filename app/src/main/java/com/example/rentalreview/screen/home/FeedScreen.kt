@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -51,7 +52,7 @@ fun ReviewScreen(){
     }) {
         innerPadding ->
         LazyColumn(
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding).testTag("homeScreen"),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             item {
@@ -68,10 +69,20 @@ fun ReviewScreen(){
 }
 
 @Composable
-fun BottomBar(){
+fun BottomBar(navItems: List<NavItem> = listOf(), selectedItem: NavItem? = null, onItemClick: (NavItem) -> Unit = {}){
     BottomAppBar(
         modifier = Modifier.background(MaterialTheme.colorScheme.primary),
         actions = {
+            navItems.forEach {
+                item ->
+                NavigationBarItem(
+                    selected = selectedItem == item,
+                    onClick = {
+                        onItemClick(item)
+                    },
+                    icon = { Icon(imageVector = item.icon, contentDescription = item.description) }
+                )
+            }
             NavigationBarItem(
                 true,
                 onClick = {},
@@ -80,17 +91,17 @@ fun BottomBar(){
             NavigationBarItem(
                 false,
                 onClick = {},
-                icon = { Icon(imageVector = Icons.Default.Search, contentDescription = "Home") }
+                icon = { Icon(imageVector = Icons.Default.Search, contentDescription = "Search") }
             )
             NavigationBarItem(
                 false,
                 onClick = {},
-                icon = { Icon(imageVector = Icons.Default.AddCircle, contentDescription = "Home") }
+                icon = { Icon(imageVector = Icons.Default.AddCircle, contentDescription = "AddCircle") }
             )
             NavigationBarItem(
                 false,
                 onClick = {},
-                icon = { Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Home") }
+                icon = { Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "AccountCircle") }
             )
     })
 }

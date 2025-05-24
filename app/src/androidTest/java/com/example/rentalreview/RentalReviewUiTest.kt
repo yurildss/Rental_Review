@@ -46,5 +46,18 @@ class RentalReviewUiTest {
 
     }
 
+    @Test
+    fun login() {
+        composeTestRule.onNodeWithTag("getStartedButton").performClick()
+        composeTestRule.onNodeWithTag("loginScreen").assertExists()
 
+        composeTestRule.onNodeWithTag("emailTextField").performTextInput("william.henry.harrison@hotmail.com")
+        composeTestRule.onNodeWithTag("passwordTextField").performTextInput("password123yY")
+
+        composeTestRule.onNodeWithTag("loginButton").performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 5000){
+            composeTestRule.onAllNodesWithTag("homeScreen").fetchSemanticsNodes().isNotEmpty()
+        }
+    }
 }

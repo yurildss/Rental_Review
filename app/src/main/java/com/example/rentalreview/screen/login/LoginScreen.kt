@@ -48,7 +48,7 @@ fun LoginForm(
     uiState: LoginUiState,
     onEmailChange: (String) -> Unit = {},
     onPasswordChange: (String) -> Unit = {},
-    onLoginClick: (onLoginSuccess: () -> Unit) -> Unit = {},
+    onLoginClick: () -> Unit = {},
     onSignUpClick: () -> Unit = {}
 ){
     Column(Modifier
@@ -63,6 +63,7 @@ fun LoginForm(
             label = {
                 Text(text = "Email", color = MaterialTheme.colorScheme.primary)
             },
+            modifier = Modifier.fillMaxWidth(0.75f).testTag("emailTextField"),
             maxLines = 1,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
@@ -73,6 +74,7 @@ fun LoginForm(
             label = {
                 Text(text = "Password", color = MaterialTheme.colorScheme.primary)
             },
+            modifier = Modifier.fillMaxWidth(0.75f).testTag("passwordTextField"),
             maxLines = 1,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -80,10 +82,8 @@ fun LoginForm(
         )
         Text(text = "Forgot Password?", textAlign = TextAlign.Center)
         Button(
-            onClick = {
-                onLoginClick
-            },
-            modifier = Modifier.fillMaxWidth(0.75f)
+            onClick = onLoginClick,
+            modifier = Modifier.fillMaxWidth(0.75f).testTag("loginButton")
         ){
             Text(text = "Login")
         }
@@ -102,7 +102,7 @@ fun LoginForm(
 fun LoginScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
-            LoginScreen()
+            LoginForm(LoginUiState())
         }
     }
 }
@@ -112,7 +112,8 @@ fun LoginScreenPreview(){
 fun LoginDarkScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
-            LoginScreen()
+            LoginForm(LoginUiState())
         }
     }
 }
+

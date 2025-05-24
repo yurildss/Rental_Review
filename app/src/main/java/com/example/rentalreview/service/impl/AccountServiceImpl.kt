@@ -62,6 +62,10 @@ class AccountServiceImpl
     }
 
     override suspend fun authenticate(email: String, password: String) {
-        TODO("Not yet implemented")
+       try{
+           val result = Firebase.auth.signInWithEmailAndPassword(email, password).await()
+       }catch(e: Exception){
+           e.printStackTrace()
+       }
     }
 }
