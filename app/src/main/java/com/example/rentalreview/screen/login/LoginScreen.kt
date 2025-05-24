@@ -26,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.screen.signUp.SignUpScreenViewModel
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.testTag
 
 
 @Composable
@@ -52,7 +53,7 @@ fun LoginForm(
 ){
     Column(Modifier
         .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background),
+        .background(MaterialTheme.colorScheme.background).testTag("loginScreen"),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
         Text(text = "Login", fontSize = 40.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
@@ -89,7 +90,7 @@ fun LoginForm(
         OutlinedButton(
             onClick = onSignUpClick,
             border = _root_ide_package_.androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
-            modifier = Modifier.fillMaxWidth(0.75f)
+            modifier = Modifier.fillMaxWidth(0.75f).testTag("signUpButton")
         ) {
             Text(text = "Sign Up", color = MaterialTheme.colorScheme.secondary)
         }

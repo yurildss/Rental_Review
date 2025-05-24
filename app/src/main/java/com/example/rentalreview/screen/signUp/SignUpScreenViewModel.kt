@@ -1,5 +1,6 @@
 package com.example.rentalreview.screen.signUp
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.rentalreview.R
 import com.example.rentalreview.common.SnackbarManager
@@ -26,27 +27,32 @@ class SignUpScreenViewModel
         onSignUpSuccess: () -> Unit
     ) {
         if (uiState.value.name.isBlank()){
+            Log.d("SignUpScreenViewModel", "onSignUpClick:1")
             SnackbarManager.showMessage(R.string.name_error)
             return
         }
 
         if (!uiState.value.email.isValidEmail()){
+            Log.d("SignUpScreenViewModel", "onSignUpClick:2")
             SnackbarManager.showMessage(R.string.email_error)
             return
         }
 
         if (!uiState.value.password.isValidPassword()){
+            Log.d("SignUpScreenViewModel", "onSignUpClick:3")
             SnackbarManager.showMessage(R.string.password_error)
             return
         }
 
         if(uiState.value.password != uiState.value.repeatPassword){
+            Log.d("SignUpScreenViewModel", "onSignUpClick:4")
             SnackbarManager.showMessage(R.string.password_match_error)
             return
         }
 
         launchCatching {
             accountService.register(uiState.value.name, uiState.value.email, uiState.value.password)
+            Log.d("SignUpScreenViewModel", "onSignUpClick:5")
             SnackbarManager.showMessage(R.string.sign_up_success)
             onSignUpSuccess()
         }

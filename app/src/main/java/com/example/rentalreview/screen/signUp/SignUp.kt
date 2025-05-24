@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.testTag
 
 
 @Composable
@@ -36,13 +37,14 @@ fun SignUpScreen(
 ){
     val uiSate by viewModel.uiState.collectAsStateWithLifecycle()
     SignUpForm(
-        uiSate,
-        viewModel::onNameChange,
-        viewModel::onEmailChange,
-        viewModel::onPasswordChange,
-        viewModel::onRepeatPasswordChange,
-        onLoginClick
-    ) { viewModel.onSignUpClick(onSignUpSuccess) }
+        signUpUiState = uiSate,
+        onNameChange = viewModel::onNameChange,
+        onEmailChange = viewModel::onEmailChange,
+        onPasswordChange = viewModel::onPasswordChange,
+        onRepeatPasswordChange = viewModel::onRepeatPasswordChange,
+        onLoginClick = onLoginClick,
+        onSignUpClick = { viewModel.onSignUpClick(onSignUpSuccess) }
+    )
 }
 
 @Composable
@@ -52,12 +54,14 @@ fun SignUpForm(signUpUiState: SignUpUiState,
                onPasswordChange: (String) -> Unit = {},
                onRepeatPasswordChange: (String) -> Unit = {},
                onLoginClick: () -> Unit = {},
-               onSignUpClick: (onSignUpSuccess: () -> Unit ) -> Unit = {},
+               onSignUpClick: () -> Unit = {},
                )
 {
     Column(Modifier
         .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+        .background(MaterialTheme.colorScheme.background).testTag("signUpScreen"),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center) {
         Text(text = "Sign Up", fontSize = 40.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         OutlinedTextField(
             value = signUpUiState.name,
@@ -65,7 +69,7 @@ fun SignUpForm(signUpUiState: SignUpUiState,
             label = {
                 Text(text = "Name", color = MaterialTheme.colorScheme.primary)
             },
-            modifier = Modifier.padding(top = 10.dp)
+            modifier = Modifier.padding(top = 10.dp).testTag("nameTextField")
         )
         OutlinedTextField(
             value = signUpUiState.email,
@@ -73,6 +77,7 @@ fun SignUpForm(signUpUiState: SignUpUiState,
             label = {
                 Text(text = "Email", color = MaterialTheme.colorScheme.primary)
             },
+            modifier = Modifier.testTag("emailTextField")
         )
         OutlinedTextField(
             value = signUpUiState.password,
@@ -80,6 +85,7 @@ fun SignUpForm(signUpUiState: SignUpUiState,
             label = {
                 Text(text = "Password", color = MaterialTheme.colorScheme.primary)
             },
+            modifier = Modifier.testTag("passwordTextField"),
             maxLines = 1,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -92,6 +98,7 @@ fun SignUpForm(signUpUiState: SignUpUiState,
             label = {
                 Text(text = "Repeat Password", color = MaterialTheme.colorScheme.primary)
             },
+            modifier = Modifier.testTag("repeatPasswordTextField"),
             maxLines = 1,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -105,10 +112,10 @@ fun SignUpForm(signUpUiState: SignUpUiState,
             modifier = Modifier.padding(top = 5.dp)
         )
         Button(
-            onClick = { onSignUpClick },
+            onClick = onSignUpClick ,
             modifier = Modifier
                 .fillMaxWidth(0.75f)
-                .padding(top = 10.dp)
+                .padding(top = 10.dp).testTag("signUpButton")
         ){
             Text(text = "Sign Up")
         }

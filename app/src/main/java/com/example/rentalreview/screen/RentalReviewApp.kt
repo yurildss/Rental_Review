@@ -40,7 +40,10 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
         composable(route = Screens.SIGN_UP_SCREEN.name){
             SignUpScreen(
                 onSignUpSuccess = {
-                    navController.navigate(Screens.HOME_SCREEN.name)
+                    navController.navigate(Screens.LOGIN_SCREEN.name)
+                },
+                onLoginClick = {
+                    navController.navigate(Screens.LOGIN_SCREEN.name)
                 }
             )
         }
