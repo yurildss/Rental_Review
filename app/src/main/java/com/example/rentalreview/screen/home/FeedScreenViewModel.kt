@@ -9,10 +9,11 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.rentalreview.screen.RentalReviewAppViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-
+@HiltViewModel
 class FeedScreenViewModel : RentalReviewAppViewModel() {
 
     val _uiState = MutableStateFlow(FeedScreenUiState())

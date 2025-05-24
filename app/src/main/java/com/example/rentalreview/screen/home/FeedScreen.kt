@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.getValue
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
@@ -39,10 +42,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.rentalreview.R
+import com.example.rentalreview.screen.perfil.PerfilScreen
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 
 @Composable
-fun ReviewScreen(){
+fun ReviewScreen(
+    viewModel: FeedScreenViewModel = hiltViewModel()
+){
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val pagerState = rememberPagerState{
+        4
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -51,25 +66,47 @@ fun ReviewScreen(){
         BottomBar()
     }) {
         innerPadding ->
-        LazyColumn(
-            modifier = Modifier.padding(innerPadding).testTag("homeScreen"),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        HorizontalPager(
+            pagerState,
+            modifier = Modifier.padding(innerPadding)
         ) {
-            item {
-                ReviewCard()
-            }
-            item {
-                ReviewCard()
-            }
-            item {
-                ReviewCard()
+            val item = uiState.navItems[it]
+            when(item){
+                uiState.navItems[0] -> ReviewsList()
+                uiState.navItems[1] -> SearchScreen()
+                uiState.navItems[2] -> AddScreen()
+                uiState.navItems[3] -> PerfilScreen()
             }
         }
     }
 }
 
 @Composable
-fun BottomBar(navItems: List<NavItem> = listOf(), selectedItem: NavItem? = null, onItemClick: (NavItem) -> Unit = {}){
+fun ReviewsList() {
+    LazyColumn(
+        modifier = Modifier
+            .padding(10.dp)
+            .testTag("homeScreen"),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        item {
+            ReviewCard()
+        }
+        item {
+            ReviewCard()
+        }
+        item {
+            ReviewCard()
+        }
+    }
+}
+
+@Composable
+fun BottomBar(
+    navItems: List<NavItem> = listOf(),
+    selectedItem: NavItem? = null,
+    onItemClick: (NavItem) -> Unit = {}
+){
     BottomAppBar(
         modifier = Modifier.background(MaterialTheme.colorScheme.primary),
         actions = {
@@ -121,7 +158,7 @@ fun ReviewCard(){
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
-            painter = painterResource(id = com.example.rentalreview.R.drawable.chatgpt_image_12_de_mai__de_2025__21_11_19),
+            painter = painterResource(id = R.drawable.chatgpt_image_12_de_mai__de_2025__21_11_19),
             contentDescription = "House",
             modifier = Modifier.size(300.dp),
         )
