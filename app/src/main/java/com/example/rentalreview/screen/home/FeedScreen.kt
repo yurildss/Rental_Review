@@ -1,5 +1,6 @@
 package com.example.rentalreview.screen.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +34,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -55,7 +57,14 @@ fun ReviewScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState{
-        4
+        uiState.navItems.size
+    }
+
+    LaunchedEffect(uiState.selectedItem.value) {
+        val index = uiState.navItems.indexOf(uiState.selectedItem.value)
+        if (index != -1 && pagerState.currentPage != index) {
+            pagerState.animateScrollToPage(index)
+        }
     }
 
     Scaffold(
@@ -63,19 +72,25 @@ fun ReviewScreen(
         topBar = {
 
     }, bottomBar = {
-        BottomBar()
+        BottomBar(
+            navItems = uiState.navItems,
+            selectedItem = uiState.selectedItem.value,
+            onItemClick = viewModel::onNavItemClicked
+        )
     }) {
         innerPadding ->
         HorizontalPager(
             pagerState,
             modifier = Modifier.padding(innerPadding)
-        ) {
-            val item = uiState.navItems[it]
+        ) { page->
+            Log.d("ReviewScreen", "ReviewScreen: $page")
+            val item = uiState.navItems[page]
+
+            Log.d("ReviewScreen", "ReviewScreen: $item")
             when(item){
                 uiState.navItems[0] -> ReviewsList()
-                uiState.navItems[1] -> SearchScreen()
-                uiState.navItems[2] -> AddScreen()
                 uiState.navItems[3] -> PerfilScreen()
+
             }
         }
     }
@@ -120,26 +135,6 @@ fun BottomBar(
                     icon = { Icon(imageVector = item.icon, contentDescription = item.description) }
                 )
             }
-            NavigationBarItem(
-                true,
-                onClick = {},
-                icon = { Icon(imageVector = Icons.Default.Home, contentDescription = "Home") }
-            )
-            NavigationBarItem(
-                false,
-                onClick = {},
-                icon = { Icon(imageVector = Icons.Default.Search, contentDescription = "Search") }
-            )
-            NavigationBarItem(
-                false,
-                onClick = {},
-                icon = { Icon(imageVector = Icons.Default.AddCircle, contentDescription = "AddCircle") }
-            )
-            NavigationBarItem(
-                false,
-                onClick = {},
-                icon = { Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "AccountCircle") }
-            )
     })
 }
 

@@ -1,5 +1,6 @@
 package com.example.rentalreview.screen.home
 
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
@@ -12,14 +13,16 @@ import com.example.rentalreview.screen.RentalReviewAppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
 @HiltViewModel
-class FeedScreenViewModel : RentalReviewAppViewModel() {
+class FeedScreenViewModel @Inject constructor() : RentalReviewAppViewModel() {
 
     val _uiState = MutableStateFlow(FeedScreenUiState())
     val uiState = _uiState.asStateFlow()
 
     fun onNavItemClicked(navItem: NavItem) {
+        Log.d("FeedScreenViewModel", "onNavItemClicked: $navItem")
         _uiState.value = _uiState.value.copy(selectedItem = mutableStateOf(navItem))
     }
 }
