@@ -1,6 +1,8 @@
 package com.example.rentalreview.screen.home
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -48,8 +50,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.R
 import com.example.rentalreview.screen.perfil.PerfilScreen
+import com.example.rentalreview.screen.review.ReviewEntryScreen
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReviewScreen(
     viewModel: FeedScreenViewModel = hiltViewModel()
@@ -89,6 +93,7 @@ fun ReviewScreen(
             Log.d("ReviewScreen", "ReviewScreen: $item")
             when(item){
                 uiState.navItems[0] -> ReviewsList()
+                uiState.navItems[2] -> ReviewEntryScreen()
                 uiState.navItems[3] -> PerfilScreen()
 
             }
@@ -216,6 +221,7 @@ fun ReviewCard(){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview
 fun ReviewScreenPreview(){
@@ -246,6 +252,7 @@ fun ReviewBlackCardPreview(){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview
 fun ReviewCardDarkPreview(){

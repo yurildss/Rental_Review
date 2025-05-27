@@ -1,6 +1,7 @@
-package com.example.rentalreview.screen
+package com.example.rentalreview.screen.review
 
 import android.os.Build
+import androidx.compose.runtime.getValue
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -43,6 +44,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 import java.time.Instant
 import java.time.LocalDate
@@ -51,10 +54,21 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ReviewEntryScreen(){
-    val star = remember { mutableIntStateOf(0) }
+fun ReviewEntryScreen(
+    viewModel: ReviewScreenViewModel = hiltViewModel()
+){
 
-    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(top = 70.dp, start = 20.dp, end = 20.dp)) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var star = uiState.rating
+
+    val startDate by viewModel.startDate.collectAsStateWithLifecycle()
+    val endDate by viewModel.endDate.collectAsStateWithLifecycle()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(top = 70.dp, start = 20.dp, end = 20.dp)
+    ) {
         Text("Rate Your Stay",
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
@@ -71,7 +85,16 @@ fun ReviewEntryScreen(){
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(top = 15.dp)
         )
-        DateRangeSelector()
+        DateRangeSelector(
+            openDialog = uiState.openDialog,
+            onOpenDialog = viewModel::openDialog,
+            onDismiss = viewModel::closeDialog,
+            startDate = startDate,
+            endDate = endDate,
+            onDateRangeSelected = { (startMillis, endMillis) ->
+                viewModel.onDateRangeSelected(startMillis, endMillis)
+            }
+        )
         Text("Rating",
             fontSize = 20.sp,
             color = MaterialTheme.colorScheme.primary,
@@ -79,17 +102,28 @@ fun ReviewEntryScreen(){
         )
         Row{
             for (i in 1..5){
-                if(i <= star.intValue){
-                    Icon(imageVector = Icons.Default.Star, contentDescription = "Star", modifier = Modifier.padding(end = 5.dp).size(40.dp).clickable{
-                        star.intValue = i
-                    },tint = MaterialTheme.colorScheme.primary)
+                if(i <= star){
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Star",
+                        modifier = Modifier
+                            .padding(end = 5.dp)
+                            .size(40.dp)
+                            .clickable {
+                                star = i
+                            },
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }else {
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = "Star",
-                        modifier = Modifier.padding(end = 5.dp).size(40.dp).clickable{
-                            star.intValue = i
-                        }
+                        modifier = Modifier
+                            .padding(end = 5.dp)
+                            .size(40.dp)
+                            .clickable {
+                                star = i
+                            }
                     )
                 }
             }
@@ -99,12 +133,17 @@ fun ReviewEntryScreen(){
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(top = 15.dp)
         )
-        OutlinedTextField("", onValueChange = {}, modifier = Modifier.fillMaxWidth(0.85F).padding(top = 5.dp),)
+        OutlinedTextField("", onValueChange = {}, modifier = Modifier
+            .fillMaxWidth(0.85F)
+            .padding(top = 5.dp),)
         Button(
             onClick = {
 
             },
-            modifier = Modifier.fillMaxWidth().align(CenterHorizontally).padding(top = 30.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(CenterHorizontally)
+                .padding(top = 30.dp)
         ){
             Text(text = "Save")
         }
@@ -113,33 +152,41 @@ fun ReviewEntryScreen(){
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DateRangeSelector() {
-    val openDialog = remember { mutableStateOf(false) }
-    val startDate = remember { mutableStateOf<LocalDate?>(null) }
-    val endDate = remember { mutableStateOf<LocalDate?>(null) }
-
+fun DateRangeSelector(
+    openDialog: Boolean = false,
+    onOpenDialog: () -> Unit = {},
+    onDismiss: () -> Unit = {},
+    startDate: LocalDate? = null,
+    endDate: LocalDate? = null,
+    onDateRangeSelected: (Pair<Long?, Long?>) -> Unit = { _ -> }
+) {
     val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
 
-    Column(modifier = Modifier.padding(top = 5.dp).fillMaxWidth(0.85F)) {
+    Column(modifier = Modifier
+        .padding(top = 5.dp)
+        .fillMaxWidth(0.85F)) {
+
         Spacer(modifier = Modifier.height(4.dp))
 
         OutlinedButton(
-            onClick = { openDialog.value = true },
+            onClick = onOpenDialog,
             shape = RoundedCornerShape(5.dp),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             modifier = Modifier.fillMaxWidth()
         ) {
+
             Icon(
                 imageVector = Icons.Default.DateRange,
                 contentDescription = "Select date",
                 tint = MaterialTheme.colorScheme.primary
             )
+
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
                 text = when {
-                    startDate.value != null && endDate.value != null -> {
-                        "${startDate.value!!.format(formatter)} ➝ ${endDate.value!!.format(formatter)}"
+                    startDate != null && endDate != null -> {
+                        "${startDate.format(formatter)} ➝ ${endDate.format(formatter)}"
                     }
 
                     else -> "Select dates"
@@ -149,17 +196,10 @@ fun DateRangeSelector() {
         }
 
         // Modal do Picker
-        if (openDialog.value) {
+        if (openDialog) {
             DateRangePickerModal(
-                onDateRangeSelected = { (startMillis, endMillis) ->
-                    startDate.value = startMillis?.let { millis ->
-                        Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()
-                    }
-                    endDate.value = endMillis?.let { millis ->
-                        Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()
-                    }
-                },
-                onDismiss = { openDialog.value = false }
+                onDateRangeSelected =  onDateRangeSelected ,
+                onDismiss = onDismiss
             )
         }
     }
@@ -171,6 +211,7 @@ fun DateRangePickerModal(
     onDateRangeSelected: (Pair<Long?, Long?>) -> Unit,
     onDismiss: () -> Unit
 ) {
+
     val dateRangePickerState = rememberDateRangePickerState()
 
     DatePickerDialog(
@@ -216,12 +257,16 @@ fun DateRangePickerModal(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PropertyTypeDropMenu(){
+
     val options = listOf("", "House", "Apartment", "Studio", "Room", "Commercial Space", "Other")
+
     ExposedDropdownMenuBox(
         onExpandedChange = {
 
         },
-        modifier = Modifier.fillMaxWidth(0.85F).padding(top = 5.dp),
+        modifier = Modifier
+            .fillMaxWidth(0.85F)
+            .padding(top = 5.dp),
         expanded = false,
     ) {
         OutlinedTextField(
@@ -229,7 +274,9 @@ fun PropertyTypeDropMenu(){
             onValueChange = {
         },
             readOnly = true,
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
             label = {
                 Text("Select the property type", color = MaterialTheme.colorScheme.primary)
             },
