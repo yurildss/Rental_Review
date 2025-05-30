@@ -47,6 +47,14 @@ class ReviewScreenViewModel @Inject constructor() : RentalReviewAppViewModel() {
         _uiState.value = _uiState.value.copy(review = review)
     }
 
+    fun updateExpandedOptions(expanded: Boolean) {
+        _uiState.value = _uiState.value.copy(expandedOptions = expanded)
+    }
+
+    fun typeRental(type: String){
+        _uiState.value = _uiState.value.copy(type = type)
+    }
+
 }
 
 data class ReviewScreenState(
@@ -58,11 +66,12 @@ data class ReviewScreenState(
         "Room",
         "Commercial Space",
         "Other"),
+    val expandedOptions: Boolean = false,
 
     val rating: Int = 0,
 
     val review: String = "",
-
+    val type: String = "",
     val openDialog: Boolean = false,
 
 )

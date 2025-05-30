@@ -79,7 +79,13 @@ fun ReviewEntryScreen(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(top = 15.dp)
         )
-        PropertyTypeDropMenu()
+        PropertyTypeDropMenu(
+            updateExpandedOptions = viewModel::updateExpandedOptions,
+            expanded = uiState.expandedOptions,
+            updateType = viewModel::typeRental,
+            type = uiState.type,
+            options = uiState.options
+        )
         Text("Rental period",
             fontSize = 20.sp,
             color = MaterialTheme.colorScheme.primary,
@@ -253,26 +259,27 @@ fun DateRangePickerModal(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PropertyTypeDropMenu(){
-
-    val options = listOf("", "House", "Apartment", "Studio", "Room", "Commercial Space", "Other")
+fun PropertyTypeDropMenu(
+    updateExpandedOptions: (Boolean) -> Unit = {},
+    expanded: Boolean = false,
+    updateType: (String) -> Unit = {},
+    type: String = "",
+    options: List<String>
+){
 
     ExposedDropdownMenuBox(
-        onExpandedChange = {
-
-        },
+        onExpandedChange =
+            updateExpandedOptions,
         modifier = Modifier
             .fillMaxWidth(0.85F)
             .padding(top = 5.dp),
-        expanded = false,
+        expanded = expanded,
     ) {
         OutlinedTextField(
-            value = "",
-            onValueChange = {
-        },
+            value = type,
+            onValueChange = {},
             readOnly = true,
             modifier = Modifier
                 .menuAnchor()
@@ -285,13 +292,15 @@ fun PropertyTypeDropMenu(){
             }
         )
         ExposedDropdownMenu(
-            expanded = false,
+            expanded = expanded,
             onDismissRequest = {}
         ) {
             options.forEach { selectionOption ->
                 DropdownMenuItem(
                     text = { Text(selectionOption,color = MaterialTheme.colorScheme.primary) },
                     onClick = {
+                        updateType(selectionOption)
+                        updateExpandedOptions(false)
                     }
                 )
             }
