@@ -31,19 +31,23 @@ data class FeedScreenUiState(
     val navItems: List<NavItem> = listOf(
         NavItem(
             icon = Icons.Default.Home,
-            description = "Home"
+            description = "Home",
+            testTag = "homeScreen"
         ),
         NavItem(
             icon = Icons.Default.Search,
-            description = "Search"
+            description = "Search",
+            testTag = "searchScreen"
         ),
         NavItem(
             icon = Icons.Default.AddCircle,
-            description = "AddCircle"
+            description = "AddCircle",
+            testTag = "addScreen"
         ),
         NavItem(
             icon = Icons.Default.AccountCircle,
-            description = "AccountCircle"
+            description = "AccountCircle",
+            testTag = "accountScreen"
         )
     ),
     val selectedItem: MutableState<NavItem> = mutableStateOf(navItems.first())
@@ -51,5 +55,6 @@ data class FeedScreenUiState(
 
 data class NavItem(
     val icon: ImageVector,
-    val description: String
+    val description: String,
+    val testTag: String = ""
 )
