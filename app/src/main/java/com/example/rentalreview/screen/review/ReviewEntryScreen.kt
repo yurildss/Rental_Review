@@ -40,6 +40,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,7 +56,8 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReviewEntryScreen(
-    viewModel: ReviewScreenViewModel = hiltViewModel()
+    onSaved: () -> Unit = {},
+    viewModel: ReviewScreenViewModel = hiltViewModel(),
 ){
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -68,6 +70,7 @@ fun ReviewEntryScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(top = 70.dp, start = 20.dp, end = 20.dp)
+            .testTag("reviewEntryScreen")
     ) {
         Text("Rate Your Stay",
             fontSize = 30.sp,
@@ -116,8 +119,8 @@ fun ReviewEntryScreen(
                             .padding(end = 5.dp)
                             .size(40.dp)
                             .clickable {
-                                star = i
-                            },
+                                viewModel.onRatingChanged(i)
+                            }.testTag(i.toString()),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }else {
@@ -128,8 +131,8 @@ fun ReviewEntryScreen(
                             .padding(end = 5.dp)
                             .size(40.dp)
                             .clickable {
-                                star = i
-                            }
+                                viewModel.onRatingChanged(i)
+                            }.testTag(i.toString())
                     )
                 }
             }
@@ -139,17 +142,19 @@ fun ReviewEntryScreen(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(top = 15.dp)
         )
-        OutlinedTextField("", onValueChange = {}, modifier = Modifier
-            .fillMaxWidth(0.85F)
-            .padding(top = 5.dp),)
+        OutlinedTextField(
+            value = uiState.review,
+            onValueChange = viewModel::updateReview,
+            modifier = Modifier
+                .fillMaxWidth(0.85F)
+                .padding(top = 5.dp).testTag("reviewEntry"),
+        )
         Button(
-            onClick = {
-
-            },
+            onClick = viewModel::onSave,
             modifier = Modifier
                 .fillMaxWidth()
                 .align(CenterHorizontally)
-                .padding(top = 30.dp)
+                .padding(top = 30.dp).testTag("saveReview")
         ){
             Text(text = "Save")
         }
@@ -178,7 +183,7 @@ fun DateRangeSelector(
             onClick = onOpenDialog,
             shape = RoundedCornerShape(5.dp),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().testTag("dateRangeSelector")
         ) {
 
             Icon(
@@ -283,9 +288,12 @@ fun PropertyTypeDropMenu(
             readOnly = true,
             modifier = Modifier
                 .menuAnchor()
-                .fillMaxWidth(),
+                .fillMaxWidth().testTag("propertyType"),
             label = {
-                Text("Select the property type", color = MaterialTheme.colorScheme.primary)
+                Text(
+                    "Select the property type",
+                    color = MaterialTheme.colorScheme.primary
+                )
             },
             trailingIcon = {
                 Icon(Icons.Default.KeyboardArrowRight, contentDescription = "")

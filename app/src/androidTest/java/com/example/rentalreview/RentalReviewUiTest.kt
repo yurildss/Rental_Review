@@ -3,6 +3,7 @@ package com.example.rentalreview
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -59,5 +60,22 @@ class RentalReviewUiTest {
         composeTestRule.waitUntil(timeoutMillis = 5000){
             composeTestRule.onAllNodesWithTag("homeScreen").fetchSemanticsNodes().isNotEmpty()
         }
+    }
+
+    @Test
+    fun review() {
+        login()
+
+        composeTestRule.onNodeWithTag("addScreen").performClick()
+        composeTestRule.onNodeWithTag("reviewEntryScreen").assertExists()
+
+        composeTestRule.onNodeWithTag("propertyType").performClick()
+        composeTestRule.onNodeWithText("Apartment").performClick()
+
+        composeTestRule.onNodeWithTag("dateRangeSelector").performClick()
+        composeTestRule.onNodeWithText("OK").performClick()
+        composeTestRule.onNodeWithTag("reviewEntry").performTextInput("Test Review")
+
+        composeTestRule.onNodeWithTag("saveReview").performClick()
     }
 }

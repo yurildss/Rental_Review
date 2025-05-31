@@ -1,8 +1,12 @@
 package com.example.rentalreview.screen.review
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import com.example.rentalreview.model.Review
 import com.example.rentalreview.screen.RentalReviewAppViewModel
+import com.example.rentalreview.screen.home.ReviewScreen
+import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,15 +17,21 @@ import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
-class ReviewScreenViewModel @Inject constructor() : RentalReviewAppViewModel() {
+class ReviewScreenViewModel @Inject constructor(
+    private val reviewRepository: StorageService
+) : RentalReviewAppViewModel() {
 
     private val _uiState = MutableStateFlow(ReviewScreenState())
     val uiState: StateFlow<ReviewScreenState> = _uiState.asStateFlow()
 
-    private val _startDate = MutableStateFlow<LocalDate?>(null)
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val _startDate = MutableStateFlow<LocalDate?>(LocalDate.now())
+    @RequiresApi(Build.VERSION_CODES.O)
     val startDate: StateFlow<LocalDate?> = _startDate.asStateFlow()
 
-    private val _endDate = MutableStateFlow<LocalDate?>(null)
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val _endDate = MutableStateFlow<LocalDate?>(LocalDate.of(2025, 12, 31))
+    @RequiresApi(Build.VERSION_CODES.O)
     val endDate: StateFlow<LocalDate?> = _endDate.asStateFlow()
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -55,6 +65,22 @@ class ReviewScreenViewModel @Inject constructor() : RentalReviewAppViewModel() {
         _uiState.value = _uiState.value.copy(type = type)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun onSave(){
+        launchCatching {
+            reviewRepository.saveReview(Review(
+                type = _uiState.value.type,
+                startDate = _startDate.value!!,
+                endDate = _endDate.value!!,
+                rating = _uiState.value.rating,
+                review = _uiState.value.review
+            ))
+        }
+    }
+
+    fun onRatingChanged(rating: Int){
+        _uiState.value = _uiState.value.copy(rating = rating)
+    }
 }
 
 data class ReviewScreenState(
