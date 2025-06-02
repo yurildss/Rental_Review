@@ -120,7 +120,8 @@ fun ReviewEntryScreen(
                             .size(40.dp)
                             .clickable {
                                 viewModel.onRatingChanged(i)
-                            }.testTag(i.toString()),
+                            }
+                            .testTag(i.toString()),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }else {
@@ -132,7 +133,8 @@ fun ReviewEntryScreen(
                             .size(40.dp)
                             .clickable {
                                 viewModel.onRatingChanged(i)
-                            }.testTag(i.toString())
+                            }
+                            .testTag(i.toString())
                     )
                 }
             }
@@ -147,14 +149,16 @@ fun ReviewEntryScreen(
             onValueChange = viewModel::updateReview,
             modifier = Modifier
                 .fillMaxWidth(0.85F)
-                .padding(top = 5.dp).testTag("reviewEntry"),
+                .padding(top = 5.dp)
+                .testTag("reviewEntry"),
         )
         Button(
-            onClick = viewModel::onSave,
+            onClick = { viewModel.onSave(onSaved) },
             modifier = Modifier
                 .fillMaxWidth()
                 .align(CenterHorizontally)
-                .padding(top = 30.dp).testTag("saveReview")
+                .padding(top = 30.dp)
+                .testTag("saveReview")
         ){
             Text(text = "Save")
         }
@@ -183,7 +187,9 @@ fun DateRangeSelector(
             onClick = onOpenDialog,
             shape = RoundedCornerShape(5.dp),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-            modifier = Modifier.fillMaxWidth().testTag("dateRangeSelector")
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("dateRangeSelector")
         ) {
 
             Icon(
@@ -288,7 +294,8 @@ fun PropertyTypeDropMenu(
             readOnly = true,
             modifier = Modifier
                 .menuAnchor()
-                .fillMaxWidth().testTag("propertyType"),
+                .fillMaxWidth()
+                .testTag("propertyType"),
             label = {
                 Text(
                     "Select the property type",

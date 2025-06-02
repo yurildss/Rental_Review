@@ -40,7 +40,8 @@ fun LoginScreen(
         viewModel::onEmailChange,
         viewModel::onPasswordChange,
         { viewModel.onLoginClick(onLoginSuccess) },
-        onSignUpClick)
+        onSignUpClick
+    )
 }
 
 @Composable

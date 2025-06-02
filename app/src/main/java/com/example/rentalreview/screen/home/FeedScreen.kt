@@ -1,7 +1,6 @@
 package com.example.rentalreview.screen.home
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -49,7 +48,8 @@ import com.example.rentalreview.ui.theme.RentalReviewTheme
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ReviewScreen(
+fun FeedScreen(
+    onSave: () -> Unit = {},
     viewModel: FeedScreenViewModel = hiltViewModel()
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -81,15 +81,12 @@ fun ReviewScreen(
             pagerState,
             modifier = Modifier.padding(innerPadding)
         ) { page->
-            Log.d("ReviewScreen", "ReviewScreen: $page")
             val item = uiState.navItems[page]
 
-            Log.d("ReviewScreen", "ReviewScreen: $item")
             when(item){
                 uiState.navItems[0] -> ReviewsList()
-                uiState.navItems[2] -> ReviewEntryScreen()
+                uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
                 uiState.navItems[3] -> PerfilScreen()
-
             }
         }
     }
@@ -222,7 +219,7 @@ fun ReviewCard(){
 fun ReviewScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
-            ReviewScreen()
+            FeedScreen()
         }
     }
 }
@@ -253,7 +250,7 @@ fun ReviewBlackCardPreview(){
 fun ReviewCardDarkPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
-            ReviewScreen()
+            FeedScreen()
         }
     }
 }

@@ -30,12 +30,13 @@ class LoginScreenViewModel
     fun onLoginClick(onLoginSuccess: () -> Unit){
         if (uiState.value.email.isBlank()){
             SnackbarManager.showMessage(R.string.email_error)
+            return
         }
 
         if (uiState.value.password.isBlank()){
             SnackbarManager.showMessage(R.string.password_error)
+            return
         }
-
 
         launchCatching {
             accountService.authenticate(uiState.value.email, uiState.value.password)

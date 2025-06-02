@@ -49,23 +49,16 @@ class AccountServiceImpl
         }
 
     override suspend fun register(email: String, password: String, name: String) {
-        try {
-            val result = Firebase.auth.createUserWithEmailAndPassword(email, password).await()
+
+            val result = auth.createUserWithEmailAndPassword(email, password).await()
             val user = result.user
             val profileUpdate = UserProfileChangeRequest.Builder()
                 .setDisplayName(name)
                 .build()
             user?.updateProfile(profileUpdate)?.await()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     override suspend fun authenticate(email: String, password: String) {
-       try{
-           val result = Firebase.auth.signInWithEmailAndPassword(email, password).await()
-       }catch(e: Exception){
-           e.printStackTrace()
-       }
+        val result = auth.signInWithEmailAndPassword(email, password).await()
     }
 }

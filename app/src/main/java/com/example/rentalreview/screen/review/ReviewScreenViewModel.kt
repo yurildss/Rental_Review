@@ -1,11 +1,9 @@
 package com.example.rentalreview.screen.review
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.rentalreview.model.Review
 import com.example.rentalreview.screen.RentalReviewAppViewModel
-import com.example.rentalreview.screen.home.ReviewScreen
 import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,7 +64,7 @@ class ReviewScreenViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun onSave(){
+    fun onSave(onSaved: () -> Unit = {}){
         launchCatching {
             reviewRepository.saveReview(Review(
                 type = _uiState.value.type,
@@ -75,12 +73,14 @@ class ReviewScreenViewModel @Inject constructor(
                 rating = _uiState.value.rating,
                 review = _uiState.value.review
             ))
+            onSaved()
         }
     }
 
     fun onRatingChanged(rating: Int){
         _uiState.value = _uiState.value.copy(rating = rating)
     }
+
 }
 
 data class ReviewScreenState(
