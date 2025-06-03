@@ -8,9 +8,11 @@ import java.util.Date
 data class Review(
     @DocumentId val id: String = "",
     @ServerTimestamp val timestamp: Date? = null,
+    val title: String = "",
     val rating: Int = 0,
     val review: String = "",
     val type: String = "",
     val startDate: LocalDate,
-    val endDate: LocalDate 
+    val endDate: LocalDate ,
+    val address: String = "",
 )

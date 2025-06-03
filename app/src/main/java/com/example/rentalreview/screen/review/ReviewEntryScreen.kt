@@ -1,7 +1,6 @@
 package com.example.rentalreview.screen.review
 
 import android.os.Build
-import androidx.compose.runtime.getValue
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -17,8 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePickerDialog
@@ -35,9 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -48,9 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.ui.theme.RentalReviewTheme
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -78,7 +73,8 @@ fun ReviewEntryScreen(
         closeDialog = viewModel::closeDialog,
         onRatingChanged = viewModel::onRatingChanged,
         updateReview = viewModel::updateReview,
-        onDateRangeSelected = viewModel::onDateRangeSelected
+        onDateRangeSelected = viewModel::onDateRangeSelected,
+        onTitleChanged = viewModel::onTitleChanged
     )
 }
 
@@ -94,6 +90,7 @@ fun ReviewEntryForm(
     updateReview: (String) -> Unit = {},
     onDateRangeSelected: (Long?, Long?) -> Unit = { _, _ -> },
     onSaved: () -> Unit = {},
+    onTitleChanged: (String) -> Unit = {},
     startDate: LocalDate?,
     endDate: LocalDate?,
     star: Int = 0
@@ -109,6 +106,28 @@ fun ReviewEntryForm(
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
+        )
+        Text("Title of your review",
+            fontSize = 20.sp,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(top = 15.dp)
+        )
+        OutlinedTextField(
+            value = uiState.title,
+            onValueChange = onTitleChanged,
+            modifier = Modifier
+                .fillMaxWidth(0.85F)
+        )
+        Text("Address",
+            fontSize = 20.sp,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(top = 15.dp)
+        )
+        OutlinedTextField(
+            value = uiState.title,
+            onValueChange = onTitleChanged,
+            modifier = Modifier
+                .fillMaxWidth(0.85F)
         )
         Text("Property type",
             fontSize = 20.sp,
@@ -336,7 +355,7 @@ fun PropertyTypeDropMenu(
                 )
             },
             trailingIcon = {
-                Icon(Icons.Default.KeyboardArrowRight, contentDescription = "")
+                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "")
             }
         )
         ExposedDropdownMenu(

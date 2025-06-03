@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.R
+import com.example.rentalreview.model.Review
 import com.example.rentalreview.screen.perfil.PerfilScreen
 import com.example.rentalreview.screen.review.ReviewEntryScreen
 import com.example.rentalreview.ui.theme.RentalReviewTheme
@@ -84,7 +86,7 @@ fun FeedScreen(
             val item = uiState.navItems[page]
 
             when(item){
-                uiState.navItems[0] -> ReviewsList()
+                uiState.navItems[0] -> ReviewsList(uiState.reviews, viewModel::getMoreReviews)
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
                 uiState.navItems[3] -> PerfilScreen()
             }
@@ -93,22 +95,27 @@ fun FeedScreen(
 }
 
 @Composable
-fun ReviewsList() {
+fun ReviewsList(
+    reviews: List<Review?>,
+    onLoadNextPage: () -> Unit = {}
+) {
     LazyColumn(
         modifier = Modifier
             .padding(10.dp)
             .testTag("homeScreen"),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        item {
-            ReviewCard()
+        itemsIndexed(reviews) { index, review ->
+
+            review?.let {
+                ReviewCard(it)
+            }
+
+            if (index == reviews.lastIndex) {
+                onLoadNextPage()
+            }
         }
-        item {
-            ReviewCard()
-        }
-        item {
-            ReviewCard()
-        }
+
     }
 }
 
@@ -136,7 +143,9 @@ fun BottomBar(
 }
 
 @Composable
-fun ReviewCard(){
+fun ReviewCard(
+    review: Review
+){
     Column(
         Modifier
             .border(
@@ -154,7 +163,7 @@ fun ReviewCard(){
             contentDescription = "House",
             modifier = Modifier.size(300.dp),
         )
-        Text("Avoid this place!",
+        Text(review.title,
             fontSize = 23.sp,
             textAlign = TextAlign.Left,
             modifier = Modifier
@@ -163,7 +172,7 @@ fun ReviewCard(){
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
-        Text("123 Maple St, Anytown, USA",
+        Text(review.address,
             fontSize = 19.sp,
             textAlign = TextAlign.Left,
             modifier = Modifier
@@ -174,14 +183,17 @@ fun ReviewCard(){
         Row(Modifier
             .padding(start = 10.dp, top = 5.dp)
             .fillMaxWidth()) {
-            Icon(imageVector = Icons.Default.Star, contentDescription = "Star")
-            Icon(imageVector = Icons.Default.Star, contentDescription = "Star")
-            Icon(imageVector = Icons.Default.Star, contentDescription = "Star")
-            Icon(imageVector = Icons.Default.Star, contentDescription = "Star")
-            Icon(imageVector = Icons.Default.Star, contentDescription = "Star")
+            for (i in 1..5){
+                if(i <= review.rating){
+                    Icon(imageVector = Icons.Default.Star, contentDescription = "Star",
+                        tint = MaterialTheme.colorScheme.primary)
+                }else{
+                    Icon(imageVector = Icons.Default.Star, contentDescription = "Star")
+                }
+            }
         }
         Text(
-            "The landlord was very unresponsive to maintenance requests. Plumbing issues persisted throughout my stay",
+            review.review,
             textAlign = TextAlign.Left,
             modifier = Modifier.padding(10.dp),
             color = MaterialTheme.colorScheme.primary
@@ -229,7 +241,9 @@ fun ReviewScreenPreview(){
 fun ReviewCardPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
-            ReviewCard()
+            ReviewCard(
+                review = TODO()
+            )
         }
     }
 }
@@ -239,7 +253,9 @@ fun ReviewCardPreview(){
 fun ReviewBlackCardPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
-            ReviewCard()
+            ReviewCard(
+                review = TODO()
+            )
         }
     }
 }

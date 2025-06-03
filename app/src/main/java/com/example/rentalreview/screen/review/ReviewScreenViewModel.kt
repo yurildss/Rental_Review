@@ -64,11 +64,16 @@ class ReviewScreenViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(type = type)
     }
 
+    fun onTitleChanged(title: String){
+        _uiState.value = _uiState.value.copy(title = title)
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun onSave(onSaved: () -> Unit = {}){
         launchCatching {
             Log.d("ReviewScreenViewModel", "Review saved")
             reviewRepository.saveReview(Review(
+                title = _uiState.value.title,
                 type = _uiState.value.type,
                 startDate = _startDate.value!!,
                 endDate = _endDate.value!!,
@@ -86,7 +91,7 @@ class ReviewScreenViewModel @Inject constructor(
 }
 
 data class ReviewScreenState(
-
+    val title: String = "",
     val options: List<String> = listOf("",
         "House",
         "Apartment",
