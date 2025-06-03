@@ -59,6 +59,9 @@ class AccountServiceImpl
     }
 
     override suspend fun authenticate(email: String, password: String) {
+
         val result = auth.signInWithEmailAndPassword(email, password).await()
+
     }
+
 }

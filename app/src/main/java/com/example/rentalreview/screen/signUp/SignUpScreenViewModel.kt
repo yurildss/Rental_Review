@@ -51,7 +51,11 @@ class SignUpScreenViewModel
         }
 
         launchCatching {
-            accountService.register(uiState.value.name, uiState.value.email, uiState.value.password)
+            accountService.register(
+                email = uiState.value.email,
+                password =uiState.value.password,
+                name = uiState.value.name,
+            )
             Log.d("SignUpScreenViewModel", "onSignUpClick:5")
             SnackbarManager.showMessage(R.string.sign_up_success)
             onSignUpSuccess()

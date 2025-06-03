@@ -65,6 +65,39 @@ fun ReviewEntryScreen(
 
     val startDate by viewModel.startDate.collectAsStateWithLifecycle()
     val endDate by viewModel.endDate.collectAsStateWithLifecycle()
+
+    ReviewEntryForm(
+        uiState = uiState,
+        onSaved = { viewModel.onSave(onSaved) },
+        startDate = startDate,
+        endDate = endDate,
+        star = star,
+        updateExpandedOptions = viewModel::updateExpandedOptions,
+        typeRental = viewModel::typeRental,
+        openDialog = viewModel::openDialog,
+        closeDialog = viewModel::closeDialog,
+        onRatingChanged = viewModel::onRatingChanged,
+        updateReview = viewModel::updateReview,
+        onDateRangeSelected = viewModel::onDateRangeSelected
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun ReviewEntryForm(
+    updateExpandedOptions: (Boolean) -> Unit = {},
+    typeRental: (String) -> Unit = {},
+    openDialog: () -> Unit = {},
+    closeDialog: () -> Unit = {},
+    uiState: ReviewScreenState,
+    onRatingChanged: (Int) -> Unit = {},
+    updateReview: (String) -> Unit = {},
+    onDateRangeSelected: (Long?, Long?) -> Unit = { _, _ -> },
+    onSaved: () -> Unit = {},
+    startDate: LocalDate?,
+    endDate: LocalDate?,
+    star: Int = 0
+){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -83,9 +116,9 @@ fun ReviewEntryScreen(
             modifier = Modifier.padding(top = 15.dp)
         )
         PropertyTypeDropMenu(
-            updateExpandedOptions = viewModel::updateExpandedOptions,
+            updateExpandedOptions = updateExpandedOptions,
             expanded = uiState.expandedOptions,
-            updateType = viewModel::typeRental,
+            updateType = typeRental,
             type = uiState.type,
             options = uiState.options
         )
@@ -96,12 +129,12 @@ fun ReviewEntryScreen(
         )
         DateRangeSelector(
             openDialog = uiState.openDialog,
-            onOpenDialog = viewModel::openDialog,
-            onDismiss = viewModel::closeDialog,
+            onOpenDialog = openDialog,
+            onDismiss = closeDialog,
             startDate = startDate,
             endDate = endDate,
             onDateRangeSelected = { (startMillis, endMillis) ->
-                viewModel.onDateRangeSelected(startMillis, endMillis)
+                onDateRangeSelected(startMillis, endMillis)
             }
         )
         Text("Rating",
@@ -119,7 +152,7 @@ fun ReviewEntryScreen(
                             .padding(end = 5.dp)
                             .size(40.dp)
                             .clickable {
-                                viewModel.onRatingChanged(i)
+                                onRatingChanged(i)
                             }
                             .testTag(i.toString()),
                         tint = MaterialTheme.colorScheme.primary
@@ -132,7 +165,7 @@ fun ReviewEntryScreen(
                             .padding(end = 5.dp)
                             .size(40.dp)
                             .clickable {
-                                viewModel.onRatingChanged(i)
+                                onRatingChanged(i)
                             }
                             .testTag(i.toString())
                     )
@@ -146,14 +179,14 @@ fun ReviewEntryScreen(
         )
         OutlinedTextField(
             value = uiState.review,
-            onValueChange = viewModel::updateReview,
+            onValueChange = updateReview,
             modifier = Modifier
                 .fillMaxWidth(0.85F)
                 .padding(top = 5.dp)
                 .testTag("reviewEntry"),
         )
         Button(
-            onClick = { viewModel.onSave(onSaved) },
+            onClick = { onSaved },
             modifier = Modifier
                 .fillMaxWidth()
                 .align(CenterHorizontally)
@@ -329,7 +362,13 @@ fun PropertyTypeDropMenu(
 fun ReviewEntryScreenPreview(){
     Surface{
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
-            ReviewEntryScreen()
+            ReviewEntryForm(
+                uiState = ReviewScreenState(),
+                startDate = null,
+                endDate = null,
+                star = 0,
+                onSaved = {}
+            )
         }
     }
 }
@@ -341,7 +380,12 @@ fun ReviewEntryScreenPreview(){
 fun ReviewEntryDarkScreenPreview(){
     Surface{
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
-            ReviewEntryScreen()
+            ReviewEntryForm(
+                uiState = ReviewScreenState(),
+                startDate = null,
+                endDate = null,
+                star = 0,
+                onSaved = {})
         }
     }
 }

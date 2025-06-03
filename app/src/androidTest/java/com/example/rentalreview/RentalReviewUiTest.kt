@@ -36,7 +36,7 @@ class RentalReviewUiTest {
         composeTestRule.onNodeWithTag("signUpScreen").assertExists()
 
         composeTestRule.onNodeWithTag("nameTextField").performTextInput("Test User")
-        composeTestRule.onNodeWithTag("emailTextField").performTextInput("william.henry.harrison@hotmail.com")
+        composeTestRule.onNodeWithTag("emailTextField").performTextInput("williamhenryharrison@hotmail.com")
         composeTestRule.onNodeWithTag("passwordTextField").performTextInput("password123yY")
         composeTestRule.onNodeWithTag("repeatPasswordTextField").performTextInput("password123yY")
         composeTestRule.onNodeWithTag("signUpButton").performClick()
@@ -52,7 +52,7 @@ class RentalReviewUiTest {
         composeTestRule.onNodeWithTag("getStartedButton").performClick()
         composeTestRule.onNodeWithTag("loginScreen").assertExists()
 
-        composeTestRule.onNodeWithTag("emailTextField").performTextInput("william.henry.harrison@hotmail.com")
+        composeTestRule.onNodeWithTag("emailTextField").performTextInput("williamhenryharrison@hotmail.com")
         composeTestRule.onNodeWithTag("passwordTextField").performTextInput("password123yY")
 
         composeTestRule.onNodeWithTag("loginButton").performClick()
@@ -77,5 +77,11 @@ class RentalReviewUiTest {
         composeTestRule.onNodeWithTag("reviewEntry").performTextInput("Test Review")
 
         composeTestRule.onNodeWithTag("saveReview").performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 5000){
+            composeTestRule.onAllNodesWithTag("homeScreen").fetchSemanticsNodes().isNotEmpty()
+        }
     }
+
+
 }
