@@ -12,7 +12,7 @@ data class Review(
     val rating: Int = 0,
     val review: String = "",
     val type: String = "",
-    val startDate: LocalDate,
-    val endDate: LocalDate ,
+    val startDate: String = "",
+    val endDate: String = "" ,
     val address: String = "",
 )

@@ -110,7 +110,6 @@ fun ReviewsList(
             review?.let {
                 ReviewCard(it)
             }
-
             if (index == reviews.lastIndex) {
                 onLoadNextPage()
             }

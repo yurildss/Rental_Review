@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -75,8 +76,8 @@ class ReviewScreenViewModel @Inject constructor(
             reviewRepository.saveReview(Review(
                 title = _uiState.value.title,
                 type = _uiState.value.type,
-                startDate = _startDate.value!!,
-                endDate = _endDate.value!!,
+                startDate = _startDate.value?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: "",
+                endDate = _endDate.value?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: "",
                 rating = _uiState.value.rating,
                 review = _uiState.value.review
             ))
