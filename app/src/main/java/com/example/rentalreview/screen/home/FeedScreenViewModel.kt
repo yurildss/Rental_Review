@@ -24,7 +24,6 @@ class FeedScreenViewModel @Inject constructor(private val storageService: Storag
     val uiState = _uiState.asStateFlow()
 
     fun onNavItemClicked(navItem: NavItem) {
-        Log.d("FeedScreenViewModel", "onNavItemClicked: $navItem")
         _uiState.value = _uiState.value.copy(selectedItem = mutableStateOf(navItem))
     }
 
@@ -34,13 +33,21 @@ class FeedScreenViewModel @Inject constructor(private val storageService: Storag
 
     fun getInitialReviews(){
         launchCatching {
-            _uiState.value = _uiState.value.copy(reviews = storageService.getReviews())
+            _uiState.value = _uiState.value.copy(reviews = storageService.getReviews().toMutableList())
         }
     }
 
     fun getMoreReviews(){
         launchCatching {
-            _uiState.value = _uiState.value.copy(reviews = storageService.getMoreReviews(_uiState.value.reviews.last()!!))
+            if(uiState.value.otherReviews.isEmpty()){
+                _uiState.value = _uiState.value.copy(otherReviews = storageService.getReviews().toMutableList())
+            }else{
+                val newReviews = storageService.getReviews()// retorna List<Review>
+
+                _uiState.value = _uiState.value.copy(
+                    reviews = (_uiState.value.reviews + newReviews) as MutableList<Review?>,
+                )
+            }
         }
     }
 }
@@ -69,7 +76,8 @@ data class FeedScreenUiState(
         )
     ),
     val selectedItem: MutableState<NavItem> = mutableStateOf(navItems.first()),
-    val reviews: List<Review?> = listOf()
+    val reviews: MutableList<Review?> = mutableListOf(),
+    val otherReviews: MutableList<Review?> = mutableListOf()
 )
 
 data class NavItem(

@@ -67,7 +67,9 @@ class RentalReviewUiTest {
         login()
 
         composeTestRule.onNodeWithTag("addScreen").performClick()
-        composeTestRule.onNodeWithTag("reviewEntryScreen").assertExists()
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            composeTestRule.onAllNodesWithTag("reviewEntryScreen").fetchSemanticsNodes().isNotEmpty()
+        }
 
         composeTestRule.onNodeWithTag("propertyType").performClick()
         composeTestRule.onNodeWithText("Apartment").performClick()
