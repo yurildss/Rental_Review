@@ -1,6 +1,7 @@
 package com.example.rentalreview.screen.review
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.rentalreview.model.Review
 import com.example.rentalreview.screen.RentalReviewAppViewModel
@@ -66,6 +67,7 @@ class ReviewScreenViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     fun onSave(onSaved: () -> Unit = {}){
         launchCatching {
+            Log.d("ReviewScreenViewModel", "Review saved")
             reviewRepository.saveReview(Review(
                 type = _uiState.value.type,
                 startDate = _startDate.value!!,

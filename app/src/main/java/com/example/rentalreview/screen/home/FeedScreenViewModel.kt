@@ -9,14 +9,16 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.rentalreview.model.Review
 import com.example.rentalreview.screen.RentalReviewAppViewModel
+import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class FeedScreenViewModel @Inject constructor() : RentalReviewAppViewModel() {
+class FeedScreenViewModel @Inject constructor(private val storageService: StorageService) : RentalReviewAppViewModel() {
 
     val _uiState = MutableStateFlow(FeedScreenUiState())
     val uiState = _uiState.asStateFlow()
@@ -24,6 +26,22 @@ class FeedScreenViewModel @Inject constructor() : RentalReviewAppViewModel() {
     fun onNavItemClicked(navItem: NavItem) {
         Log.d("FeedScreenViewModel", "onNavItemClicked: $navItem")
         _uiState.value = _uiState.value.copy(selectedItem = mutableStateOf(navItem))
+    }
+
+    init {
+        getInitialReviews()
+    }
+
+    fun getInitialReviews(){
+        launchCatching {
+            _uiState.value = _uiState.value.copy(reviews = storageService.getReviews())
+        }
+    }
+
+    fun getMoreReviews(){
+        launchCatching {
+            _uiState.value = _uiState.value.copy(reviews = storageService.getMoreReviews(_uiState.value.reviews.last()!!))
+        }
     }
 }
 
@@ -50,7 +68,8 @@ data class FeedScreenUiState(
             testTag = "accountScreen"
         )
     ),
-    val selectedItem: MutableState<NavItem> = mutableStateOf(navItems.first())
+    val selectedItem: MutableState<NavItem> = mutableStateOf(navItems.first()),
+    val reviews: List<Review?> = listOf()
 )
 
 data class NavItem(

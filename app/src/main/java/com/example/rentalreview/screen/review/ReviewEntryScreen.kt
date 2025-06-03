@@ -186,7 +186,7 @@ fun ReviewEntryForm(
                 .testTag("reviewEntry"),
         )
         Button(
-            onClick = { onSaved },
+            onClick = onSaved,
             modifier = Modifier
                 .fillMaxWidth()
                 .align(CenterHorizontally)
