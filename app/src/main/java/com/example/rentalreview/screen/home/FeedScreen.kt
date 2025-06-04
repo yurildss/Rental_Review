@@ -60,12 +60,13 @@ fun FeedScreen(
         uiState.navItems.size
     }
 
-    LaunchedEffect(uiState.selectedItem.value) {
-        val index = uiState.navItems.indexOf(uiState.selectedItem.value)
+    LaunchedEffect(uiState.selectedItem) {
+        val index = uiState.navItems.indexOf(uiState.selectedItem)
         if (index != -1 && pagerState.currentPage != index) {
             pagerState.animateScrollToPage(index)
         }
     }
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -74,7 +75,7 @@ fun FeedScreen(
     }, bottomBar = {
         BottomBar(
             navItems = uiState.navItems,
-            selectedItem = uiState.selectedItem.value,
+            selectedItem = uiState.selectedItem,
             onItemClick = viewModel::onNavItemClicked
         )
     }) {
@@ -86,7 +87,7 @@ fun FeedScreen(
             val item = uiState.navItems[page]
 
             when(item){
-                uiState.navItems[0] -> ReviewsList(uiState.reviews, viewModel::getMoreReviews)
+                uiState.navItems[0] -> ReviewsList(uiState.reviews, uiState.otherReviews, viewModel::getMoreReviews)
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
                 uiState.navItems[3] -> PerfilScreen()
             }
@@ -97,6 +98,7 @@ fun FeedScreen(
 @Composable
 fun ReviewsList(
     reviews: List<Review?>,
+    othersReview : List<Review?>,
     onLoadNextPage: () -> Unit = {}
 ) {
     LazyColumn(
@@ -110,7 +112,7 @@ fun ReviewsList(
             review?.let {
                 ReviewCard(it)
             }
-            if (index == reviews.lastIndex) {
+            if (index == reviews.lastIndex - 1) {
                 onLoadNextPage()
             }
         }

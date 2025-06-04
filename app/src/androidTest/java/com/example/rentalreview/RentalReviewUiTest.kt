@@ -12,6 +12,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import kotlin.collections.isNotEmpty
+import kotlin.random.Random
 
 @HiltAndroidTest
 class RentalReviewUiTest {
@@ -66,8 +67,14 @@ class RentalReviewUiTest {
     fun review() {
         login()
 
-        composeTestRule.onNodeWithTag("addScreen").performClick()
-        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+        Thread.sleep(2000L) // Só para debug mesmo!
+        composeTestRule.onNodeWithTag("addScreen").assertExists().performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.onAllNodesWithTag("reviewEntryScreen").fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
             composeTestRule.onAllNodesWithTag("reviewEntryScreen").fetchSemanticsNodes().isNotEmpty()
         }
 
@@ -76,7 +83,7 @@ class RentalReviewUiTest {
 
         composeTestRule.onNodeWithTag("dateRangeSelector").performClick()
         composeTestRule.onNodeWithText("OK").performClick()
-        composeTestRule.onNodeWithTag("reviewEntry").performTextInput("Test Review")
+        composeTestRule.onNodeWithTag("reviewEntry").performTextInput("Test Review ${Random.nextInt(0,100)}")
 
         composeTestRule.onNodeWithTag("saveReview").performClick()
 

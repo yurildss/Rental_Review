@@ -15,6 +15,7 @@ import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,9 +24,10 @@ class FeedScreenViewModel @Inject constructor(private val storageService: Storag
     val _uiState = MutableStateFlow(FeedScreenUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun onNavItemClicked(navItem: NavItem) {
-        _uiState.value = _uiState.value.copy(selectedItem = mutableStateOf(navItem))
+    fun onNavItemClicked(item: NavItem) {
+        _uiState.update { it.copy(selectedItem = item) }
     }
+
 
     init {
         getInitialReviews()
@@ -39,15 +41,13 @@ class FeedScreenViewModel @Inject constructor(private val storageService: Storag
 
     fun getMoreReviews(){
         launchCatching {
-            if(uiState.value.otherReviews.isEmpty()){
-                _uiState.value = _uiState.value.copy(otherReviews = storageService.getReviews().toMutableList())
-            }else{
-                val newReviews = storageService.getReviews()// retorna List<Review>
+            val newReviews = storageService.getMoreReviews(
+                _uiState.value.reviews.last()!!
+            )// retorna List<Review>
 
-                _uiState.value = _uiState.value.copy(
-                    reviews = (_uiState.value.reviews + newReviews) as MutableList<Review?>,
-                )
-            }
+            _uiState.value = _uiState.value.copy(
+                reviews = (_uiState.value.reviews + newReviews) as MutableList<Review?>,
+            )
         }
     }
 }
@@ -75,9 +75,13 @@ data class FeedScreenUiState(
             testTag = "accountScreen"
         )
     ),
-    val selectedItem: MutableState<NavItem> = mutableStateOf(navItems.first()),
-    val reviews: MutableList<Review?> = mutableListOf(),
-    val otherReviews: MutableList<Review?> = mutableListOf()
+    val selectedItem: NavItem = NavItem(
+        icon = Icons.Default.Home,
+        description = "Home",
+        testTag = "homeScreen"
+    ),
+    val reviews: List<Review?> = emptyList(),
+    val otherReviews: List<Review?> = emptyList()
 )
 
 data class NavItem(
