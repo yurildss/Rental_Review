@@ -2,6 +2,7 @@ package com.example.rentalreview.model
 
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.ServerTimestamp
+import org.w3c.dom.Comment
 import java.time.LocalDate
 import java.util.Date
 
@@ -15,4 +16,5 @@ data class Review(
     val startDate: String = "",
     val endDate: String = "" ,
     val address: String = "",
+    val likesIds: MutableList<String> = mutableListOf()
 )

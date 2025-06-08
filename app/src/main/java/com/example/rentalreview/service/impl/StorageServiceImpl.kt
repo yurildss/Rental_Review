@@ -2,6 +2,7 @@ package com.example.rentalreview.service.impl
 
 import com.example.rentalreview.model.Review
 import com.example.rentalreview.service.StorageService
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -25,8 +26,24 @@ class StorageServiceImpl @Inject constructor(
         return first.toObjects(Review::class.java)
     }
 
+    override suspend fun updateLikes(reviewId: String, userId: String) {
+
+        firestore.collection(REVIEWS)
+            .document(reviewId)
+            .update(LIKES_IDS, FieldValue.arrayUnion(userId))
+            .await()
+    }
+
+    override suspend fun removeLike(reviewId: String, userId: String) {
+        firestore.collection(REVIEWS)
+            .document(reviewId)
+            .update(LIKES_IDS, FieldValue.arrayRemove(userId))
+            .await()
+    }
+
     companion object Collections{
         const val REVIEWS = "reviews"
         const val CREATE_AT = "timestamp"
+        const val LIKES_IDS = "likesIds"
     }
 }

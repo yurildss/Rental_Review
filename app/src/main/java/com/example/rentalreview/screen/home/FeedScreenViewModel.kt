@@ -11,23 +11,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.rentalreview.model.Review
 import com.example.rentalreview.screen.RentalReviewAppViewModel
+import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class FeedScreenViewModel @Inject constructor(private val storageService: StorageService) : RentalReviewAppViewModel() {
+class FeedScreenViewModel @Inject constructor(
+    private val storageService: StorageService,
+    private val accountService: AccountService
+) : RentalReviewAppViewModel() {
 
     val _uiState = MutableStateFlow(FeedScreenUiState())
     val uiState = _uiState.asStateFlow()
-
-    fun onNavItemClicked(item: NavItem) {
-        _uiState.update { it.copy(selectedItem = item) }
-    }
-
 
     init {
         getInitialReviews()
@@ -35,8 +35,44 @@ class FeedScreenViewModel @Inject constructor(private val storageService: Storag
 
     fun getInitialReviews(){
         launchCatching {
-            _uiState.value = _uiState.value.copy(reviews = storageService.getReviews().toMutableList())
+            _uiState.value = _uiState.value.copy(
+                userId = accountService.currentUser.first().id,
+                reviews = storageService.getReviews().toMutableList()
+            )
+
+            Log.d("FeedScreenViewModel", "getInitialReviews: ${_uiState.value.reviews}")
         }
+    }
+
+    fun likeReview(reviewId: String, index: Int) {
+        launchCatching {
+            val currentUserId = accountService.currentUserId
+            val currentList = _uiState.value.reviews
+
+            val updatedReview = currentList[index]?.copy(
+                likesIds = currentList[index]?.likesIds?.toMutableList()?.apply {
+                    if (!contains(currentUserId)) add(currentUserId)
+                } ?: mutableListOf(currentUserId)
+            )
+
+            if (updatedReview != null) {
+                val updatedList = currentList.toMutableList().apply {
+                    this[index] = updatedReview
+                }
+
+                _uiState.update { it.copy(reviews = updatedList) }
+
+                //backend
+                storageService.updateLikes(reviewId, currentUserId)
+
+                Log.d("FeedScreenViewModel", "likeReview: $reviewId")
+            }
+        }
+    }
+
+
+    fun onNavItemClicked(item: NavItem) {
+        _uiState.update { it.copy(selectedItem = item) }
     }
 
     fun getMoreReviews(){
@@ -53,6 +89,7 @@ class FeedScreenViewModel @Inject constructor(private val storageService: Storag
 }
 
 data class FeedScreenUiState(
+    val userId: String = "",
     val navItems: List<NavItem> = listOf(
         NavItem(
             icon = Icons.Default.Home,
@@ -80,7 +117,7 @@ data class FeedScreenUiState(
         description = "Home",
         testTag = "homeScreen"
     ),
-    val reviews: List<Review?> = emptyList(),
+    val reviews: MutableList<Review?> = mutableListOf(),
     val otherReviews: List<Review?> = emptyList()
 )
 

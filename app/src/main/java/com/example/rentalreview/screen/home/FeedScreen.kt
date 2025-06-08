@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -87,7 +88,11 @@ fun FeedScreen(
             val item = uiState.navItems[page]
 
             when(item){
-                uiState.navItems[0] -> ReviewsList(uiState.reviews, uiState.otherReviews, viewModel::getMoreReviews)
+                uiState.navItems[0] -> ReviewsList(
+                    reviews = uiState.reviews,
+                    onLike = viewModel::likeReview,
+                    userId = uiState.userId,
+                    onLoadNextPage = viewModel::getMoreReviews, )
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
                 uiState.navItems[3] -> PerfilScreen()
             }
@@ -98,7 +103,8 @@ fun FeedScreen(
 @Composable
 fun ReviewsList(
     reviews: List<Review?>,
-    othersReview : List<Review?>,
+    onLike: (id: String, index: Int) -> Unit,
+    userId: String,
     onLoadNextPage: () -> Unit = {}
 ) {
     LazyColumn(
@@ -110,7 +116,7 @@ fun ReviewsList(
         itemsIndexed(reviews) { index, review ->
 
             review?.let {
-                ReviewCard(it)
+                ReviewCard(it, onLike(it.id, index), userId)
             }
             if (index == reviews.lastIndex - 1) {
                 onLoadNextPage()
@@ -145,7 +151,9 @@ fun BottomBar(
 
 @Composable
 fun ReviewCard(
-    review: Review
+    review: Review,
+    onLike: Unit,
+    userId: String
 ){
     Column(
         Modifier
@@ -209,7 +217,15 @@ fun ReviewCard(
         ) {
             Row(horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically) {
-                Icon(imageVector = Icons.Default.ThumbUp, contentDescription = "Like")
+                Icon(
+                    imageVector = Icons.Default.ThumbUp,
+                    contentDescription = "Like",
+                    tint = if (review.likesIds.contains(userId)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.clickable{
+                        onLike
+                    }
+
+                )
                 Text("Like", modifier = Modifier.padding(start = 5.dp), color = MaterialTheme.colorScheme.primary)
             }
             Row(horizontalArrangement = Arrangement.SpaceBetween,
@@ -243,7 +259,9 @@ fun ReviewCardPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
             ReviewCard(
-                review = TODO()
+                review = Review(),
+                onLike = TODO(),
+                userId = "1"
             )
         }
     }
@@ -255,7 +273,9 @@ fun ReviewBlackCardPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
             ReviewCard(
-                review = TODO()
+                review = Review(),
+                onLike = TODO(),
+                userId = "1"
             )
         }
     }

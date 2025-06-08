@@ -7,4 +7,6 @@ interface StorageService {
     suspend fun saveReview(review: Review)
     suspend fun getReviews(): List<Review?>
     suspend fun getMoreReviews(lastReview: Review): List<Review?>
+    suspend fun updateLikes(reviewId: String, userId: String)
+    suspend fun removeLike(reviewId: String, userId: String)
 }
