@@ -105,6 +105,7 @@ fun FeedScreen(
                     comment = uiState.comment,
                     showComments = uiState.showComment,
                     onCommentChange = viewModel::onCommentChange,
+                    onShowCommentChange = viewModel::onShowCommentChange
                 )
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
                 uiState.navItems[3] -> PerfilScreen()
@@ -124,7 +125,8 @@ fun ReviewsList(
     onSendComment: (reviewId: String, index: Int) -> Unit,
     comment: String,
     showComments: Boolean,
-    onCommentChange: (String) -> Unit
+    onCommentChange: (String) -> Unit,
+    onShowCommentChange: (Boolean) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -141,7 +143,8 @@ fun ReviewsList(
                     onSendComment = { onSendComment(it.id, index) },
                     comment = comment,
                     showComments = showComments,
-                    onCommentChange = onCommentChange
+                    onCommentChange = onCommentChange,
+                    onShowCommentChange = onShowCommentChange
                 )
             }
             if (index == reviews.lastIndex - 1) {
@@ -191,7 +194,7 @@ fun CommentSection(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
+                .weight(1f)
         ) {
             itemsIndexed(comments) { _,comment ->
                 Text(
@@ -245,6 +248,7 @@ fun ReviewCard(
     onSendComment: () -> Unit,
     comment: String,
     showComments: Boolean = false,
+    onShowCommentChange: (Boolean) -> Unit,
     onCommentChange: (String) -> Unit
 ){
     Column(
@@ -254,7 +258,7 @@ fun ReviewCard(
                 color = MaterialTheme.colorScheme.primary,
                 shape = MaterialTheme.shapes.medium
             )
-            .height(490.dp)
+            .height(700.dp)
             .background(MaterialTheme.colorScheme.background)
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -322,9 +326,11 @@ fun ReviewCard(
                 Text("Like", modifier = Modifier.padding(start = 5.dp), color = MaterialTheme.colorScheme.primary)
             }
             Row(horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically) {
-                Icon(imageVector = Icons.Default.Email, contentDescription = "Like")
+                verticalAlignment = Alignment.CenterVertically)
+            {
+                Icon(imageVector = Icons.Default.Email, contentDescription = "Like", modifier = Modifier.clickable { onShowCommentChange(true) })
                 Text("Comment", modifier = Modifier.padding(start = 5.dp), color = MaterialTheme.colorScheme.primary)
+
             }
             Row(horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically) {
@@ -344,16 +350,6 @@ fun ReviewCard(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-@Preview
-fun ReviewScreenPreview(){
-    Surface {
-        RentalReviewTheme(darkTheme = false, dynamicColor = false) {
-            FeedScreen()
-        }
-    }
-}
 
 @Composable
 @Preview
@@ -361,15 +357,21 @@ fun ReviewCardPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
             ReviewCard(
-                review = Review(),
+                review = Review(
+                    comments = mutableListOf(Comments(
+                        "1",
+                        "Test Comment"
+                    )),
+                ),
                 onLike = {},
                 userId = "1",
                 desLike = {},
-                onLoadComments = TODO(),
-                onSendComment = TODO(),
-                comment = TODO(),
-                showComments = TODO(),
-                onCommentChange = TODO()
+                onLoadComments = {},
+                onSendComment = {},
+                comment = "",
+                showComments = true,
+                onCommentChange = {},
+                onShowCommentChange = {  }
             )
         }
     }
@@ -385,23 +387,13 @@ fun ReviewBlackCardPreview(){
                 onLike = {},
                 userId = "1",
                 desLike = {},
-                onLoadComments = TODO(),
-                onSendComment = TODO(),
-                comment = TODO(),
-                showComments = TODO(),
-                onCommentChange = TODO()
+                onLoadComments = {},
+                onSendComment = {},
+                comment = "",
+                showComments = true,
+                onCommentChange = {},
+                onShowCommentChange = {  }
             )
-        }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-@Preview
-fun ReviewCardDarkPreview(){
-    Surface {
-        RentalReviewTheme(darkTheme = true, dynamicColor = false) {
-            FeedScreen()
         }
     }
 }

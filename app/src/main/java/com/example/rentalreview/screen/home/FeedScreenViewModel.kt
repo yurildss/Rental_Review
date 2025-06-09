@@ -129,6 +129,10 @@ class FeedScreenViewModel @Inject constructor(
         _uiState.update { it.copy(comment = comment) }
     }
 
+    fun onShowCommentChange(showComment: Boolean){
+        _uiState.update { it.copy(showComment = showComment) }
+    }
+
     fun getMoreReviews(){
         launchCatching {
             val newReviews = storageService.getMoreReviews(
