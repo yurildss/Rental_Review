@@ -7,14 +7,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -26,6 +29,8 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -44,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.R
+import com.example.rentalreview.model.Comments
 import com.example.rentalreview.model.Review
 import com.example.rentalreview.screen.perfil.PerfilScreen
 import com.example.rentalreview.screen.review.ReviewEntryScreen
@@ -93,7 +99,13 @@ fun FeedScreen(
                     onLike = viewModel::likeReview,
                     onDesLike = viewModel::unlikeReview,
                     userId = uiState.userId,
-                    onLoadNextPage = viewModel::getMoreReviews, )
+                    onLoadNextPage = viewModel::getMoreReviews,
+                    onLoadComments = {  },
+                    onSendComment = viewModel::comment,
+                    comment = uiState.comment,
+                    showComments = uiState.showComment,
+                    onCommentChange = viewModel::onCommentChange,
+                )
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
                 uiState.navItems[3] -> PerfilScreen()
             }
@@ -107,7 +119,12 @@ fun ReviewsList(
     onLike: (id: String, index: Int) -> Unit,
     onDesLike: (id: String, index: Int) -> Unit,
     userId: String,
-    onLoadNextPage: () -> Unit = {}
+    onLoadNextPage: () -> Unit = {},
+    onLoadComments: () -> Unit,
+    onSendComment: (reviewId: String, index: Int) -> Unit,
+    comment: String,
+    showComments: Boolean,
+    onCommentChange: (String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -118,7 +135,14 @@ fun ReviewsList(
         itemsIndexed(reviews) { index, review ->
 
             review?.let {
-                ReviewCard(it, { onLike(it.id, index) }, { onDesLike(it.id, index) }, userId)
+                ReviewCard(
+                    it, { onLike(it.id, index) }, { onDesLike(it.id, index) }, userId,
+                    onLoadComments = onLoadComments,
+                    onSendComment = { onSendComment(it.id, index) },
+                    comment = comment,
+                    showComments = showComments,
+                    onCommentChange = onCommentChange
+                )
             }
             if (index == reviews.lastIndex - 1) {
                 onLoadNextPage()
@@ -152,11 +176,76 @@ fun BottomBar(
 }
 
 @Composable
+fun CommentSection(
+    comments: List<Comments> = listOf(),
+    onLoadComments: () -> Unit = {},
+    onSendComment: () -> Unit,
+    comment: String,
+    onCommentChange: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+        ) {
+            itemsIndexed(comments) { _,comment ->
+                Text(
+                    "Comment $comment",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(4.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            "Load more comments",
+            color = MaterialTheme.colorScheme.secondary,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(5.dp)
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            OutlinedTextField(
+                value = comment,
+                onValueChange = onCommentChange,
+                modifier = Modifier
+                    .padding(5.dp)
+                    .weight(1f)
+            )
+            OutlinedButton(
+                onClick =  onSendComment,
+                modifier = Modifier.padding(5.dp)
+            ) {
+                Text("Send")
+            }
+        }
+    }
+}
+
+
+@Composable
 fun ReviewCard(
     review: Review,
     onLike: () -> Unit,
     desLike: () -> Unit,
-    userId: String
+    userId: String,
+    onLoadComments: () -> Unit,
+    onSendComment: () -> Unit,
+    comment: String,
+    showComments: Boolean = false,
+    onCommentChange: (String) -> Unit
 ){
     Column(
         Modifier
@@ -165,7 +254,7 @@ fun ReviewCard(
                 color = MaterialTheme.colorScheme.primary,
                 shape = MaterialTheme.shapes.medium
             )
-            .height(530.dp)
+            .height(490.dp)
             .background(MaterialTheme.colorScheme.background)
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -243,6 +332,15 @@ fun ReviewCard(
                 Text("Like", modifier = Modifier.padding(start = 5.dp), color = MaterialTheme.colorScheme.primary)
             }
         }
+        if (showComments) {
+            CommentSection(
+                comments = review.comments,
+                onLoadComments = onLoadComments,
+                onSendComment = onSendComment,
+                comment = comment,
+                onCommentChange = onCommentChange
+            )
+        }
     }
 }
 
@@ -264,9 +362,14 @@ fun ReviewCardPreview(){
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
             ReviewCard(
                 review = Review(),
-                onLike = TODO(),
+                onLike = {},
                 userId = "1",
-                desLike = TODO()
+                desLike = {},
+                onLoadComments = TODO(),
+                onSendComment = TODO(),
+                comment = TODO(),
+                showComments = TODO(),
+                onCommentChange = TODO()
             )
         }
     }
@@ -279,9 +382,14 @@ fun ReviewBlackCardPreview(){
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
             ReviewCard(
                 review = Review(),
-                onLike = TODO(),
+                onLike = {},
                 userId = "1",
-                desLike = TODO()
+                desLike = {},
+                onLoadComments = TODO(),
+                onSendComment = TODO(),
+                comment = TODO(),
+                showComments = TODO(),
+                onCommentChange = TODO()
             )
         }
     }
@@ -314,6 +422,22 @@ fun BottomBlackBarPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
             BottomBar()
+        }
+    }
+}
+
+@Composable
+@Preview
+fun CommentSectionPreview(){
+    Surface {
+        RentalReviewTheme(darkTheme = false, dynamicColor = false) {
+            CommentSection(
+                comments = listOf(Comments()),
+                onLoadComments = {},
+                onSendComment = {},
+                comment = "",
+                onCommentChange = {}
+            )
         }
     }
 }

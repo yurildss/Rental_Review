@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.rentalreview.model.Comments
 import com.example.rentalreview.model.Review
 import com.example.rentalreview.screen.RentalReviewAppViewModel
 import com.example.rentalreview.service.AccountService
@@ -36,11 +37,38 @@ class FeedScreenViewModel @Inject constructor(
     fun getInitialReviews(){
         launchCatching {
             _uiState.value = _uiState.value.copy(
-                userId = accountService.currentUser.first().id,
+                userId = accountService.currentUserId,
                 reviews = storageService.getReviews().toMutableList()
             )
 
             Log.d("FeedScreenViewModel", "getInitialReviews: ${_uiState.value.reviews}")
+        }
+    }
+
+    fun comment(reviewId: String, index: Int){
+        launchCatching {
+            val currentList = _uiState.value.reviews
+
+            // review with new comment
+            val updatedReview = currentList[index]?.copy(
+                comments = currentList[index]?.comments?.toMutableList()?.apply {
+                    add(Comments(accountService.currentUserId, _uiState.value.comment))
+                } ?: mutableListOf()
+            )
+
+            // update review with new comment
+            if (updatedReview != null) {
+                val updatedList = currentList.toMutableList().apply {
+                    this[index] = updatedReview
+                }
+
+                // update uiState with a updated review
+                _uiState.update { it.copy(reviews = updatedList) }
+
+                //backend
+                storageService.comment(reviewId, accountService.currentUserId, _uiState.value.comment)
+                _uiState.update { it.copy(comment = "") }
+            }
         }
     }
 
@@ -65,7 +93,6 @@ class FeedScreenViewModel @Inject constructor(
                 //backend
                 storageService.updateLikes(reviewId, currentUserId)
 
-                Log.d("FeedScreenViewModel", "likeReview: $reviewId")
             }
         }
     }
@@ -96,6 +123,10 @@ class FeedScreenViewModel @Inject constructor(
 
     fun onNavItemClicked(item: NavItem) {
         _uiState.update { it.copy(selectedItem = item) }
+    }
+
+    fun onCommentChange(comment: String){
+        _uiState.update { it.copy(comment = comment) }
     }
 
     fun getMoreReviews(){
@@ -141,7 +172,9 @@ data class FeedScreenUiState(
         testTag = "homeScreen"
     ),
     val reviews: MutableList<Review?> = mutableListOf(),
-    val otherReviews: List<Review?> = emptyList()
+    val otherReviews: List<Review?> = emptyList(),
+    val comment: String = "",
+    val showComment: Boolean = false
 )
 
 data class NavItem(

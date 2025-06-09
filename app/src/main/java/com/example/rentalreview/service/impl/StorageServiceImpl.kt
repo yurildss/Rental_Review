@@ -1,5 +1,6 @@
 package com.example.rentalreview.service.impl
 
+import com.example.rentalreview.model.Comments
 import com.example.rentalreview.model.Review
 import com.example.rentalreview.service.StorageService
 import com.google.firebase.firestore.FieldValue
@@ -41,9 +42,22 @@ class StorageServiceImpl @Inject constructor(
             .await()
     }
 
+    override suspend fun comment(
+        reviewId: String,
+        userId: String,
+        comment: String
+    ) {
+        firestore
+            .collection(REVIEWS)
+            .document(reviewId)
+            .update(COMMENTS, FieldValue.arrayUnion(Comments(userId, comment)))
+            .await()
+    }
+
     companion object Collections{
         const val REVIEWS = "reviews"
         const val CREATE_AT = "timestamp"
         const val LIKES_IDS = "likesIds"
+        const val COMMENTS = "comments"
     }
 }

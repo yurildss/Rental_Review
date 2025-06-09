@@ -16,5 +16,6 @@ data class Review(
     val startDate: String = "",
     val endDate: String = "" ,
     val address: String = "",
-    val likesIds: MutableList<String> = mutableListOf()
+    val likesIds: MutableList<String> = mutableListOf(),
+    val comments: MutableList<Comments> = mutableListOf()
 )
