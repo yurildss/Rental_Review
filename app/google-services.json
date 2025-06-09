@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "326336449137",
+    "project_id": "rental-review-df8f0",
+    "storage_bucket": "rental-review-df8f0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326336449137:android:491a6964ce87f7419929d0",
+        "android_client_info": {
+          "package_name": "com.example.rentalreview"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHArHe01zwA13j2GSQ-ml9xZIdltKWN_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
