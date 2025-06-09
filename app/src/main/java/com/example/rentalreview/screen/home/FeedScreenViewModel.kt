@@ -70,6 +70,29 @@ class FeedScreenViewModel @Inject constructor(
         }
     }
 
+    fun unlikeReview(reviewId: String, index: Int) {
+        launchCatching {
+            val currentUserId = accountService.currentUserId
+            val currentList = _uiState.value.reviews
+
+            val updatedReview = currentList[index]?.copy(
+                likesIds = currentList[index]?.likesIds?.toMutableList()?.apply {
+                    if(contains(currentUserId)) remove(currentUserId)
+                } ?: mutableListOf()
+            )
+
+            if (updatedReview != null) {
+                val updatedList = currentList.toMutableList().apply {
+                    this[index] = updatedReview
+                }
+
+                _uiState.update { it.copy(reviews = updatedList) }
+
+                //backend
+                storageService.removeLike(reviewId, currentUserId)
+            }
+        }
+    }
 
     fun onNavItemClicked(item: NavItem) {
         _uiState.update { it.copy(selectedItem = item) }

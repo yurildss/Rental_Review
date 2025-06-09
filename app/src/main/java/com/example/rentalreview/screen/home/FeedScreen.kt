@@ -91,6 +91,7 @@ fun FeedScreen(
                 uiState.navItems[0] -> ReviewsList(
                     reviews = uiState.reviews,
                     onLike = viewModel::likeReview,
+                    onDesLike = viewModel::unlikeReview,
                     userId = uiState.userId,
                     onLoadNextPage = viewModel::getMoreReviews, )
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
@@ -104,6 +105,7 @@ fun FeedScreen(
 fun ReviewsList(
     reviews: List<Review?>,
     onLike: (id: String, index: Int) -> Unit,
+    onDesLike: (id: String, index: Int) -> Unit,
     userId: String,
     onLoadNextPage: () -> Unit = {}
 ) {
@@ -116,7 +118,7 @@ fun ReviewsList(
         itemsIndexed(reviews) { index, review ->
 
             review?.let {
-                ReviewCard(it, onLike(it.id, index), userId)
+                ReviewCard(it, { onLike(it.id, index) }, { onDesLike(it.id, index) }, userId)
             }
             if (index == reviews.lastIndex - 1) {
                 onLoadNextPage()
@@ -152,7 +154,8 @@ fun BottomBar(
 @Composable
 fun ReviewCard(
     review: Review,
-    onLike: Unit,
+    onLike: () -> Unit,
+    desLike: () -> Unit,
     userId: String
 ){
     Column(
@@ -222,7 +225,8 @@ fun ReviewCard(
                     contentDescription = "Like",
                     tint = if (review.likesIds.contains(userId)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.clickable{
-                        onLike
+                        if (review.likesIds.contains(userId)) desLike()
+                        else onLike()
                     }
 
                 )
@@ -261,7 +265,8 @@ fun ReviewCardPreview(){
             ReviewCard(
                 review = Review(),
                 onLike = TODO(),
-                userId = "1"
+                userId = "1",
+                desLike = TODO()
             )
         }
     }
@@ -275,7 +280,8 @@ fun ReviewBlackCardPreview(){
             ReviewCard(
                 review = Review(),
                 onLike = TODO(),
-                userId = "1"
+                userId = "1",
+                desLike = TODO()
             )
         }
     }
