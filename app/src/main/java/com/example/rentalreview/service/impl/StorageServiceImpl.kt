@@ -6,6 +6,7 @@ import com.example.rentalreview.service.StorageService
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import java.util.Date
 import javax.inject.Inject
 
 
@@ -50,7 +51,7 @@ class StorageServiceImpl @Inject constructor(
         firestore
             .collection(REVIEWS)
             .document(reviewId)
-            .update(COMMENTS, FieldValue.arrayUnion(Comments(userId, comment)))
+            .update(COMMENTS, FieldValue.arrayUnion(Comments(userId, comment, Date())))
             .await()
     }
 

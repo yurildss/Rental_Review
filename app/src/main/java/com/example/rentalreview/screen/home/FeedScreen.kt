@@ -1,6 +1,7 @@
 package com.example.rentalreview.screen.home
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -104,7 +105,8 @@ fun FeedScreen(
                     comment = uiState.comment,
                     showComments = uiState.showComment,
                     onCommentChange = viewModel::onCommentChange,
-                    onShowCommentChange = viewModel::onShowCommentChange
+                    onShowCommentChange = viewModel::onShowCommentChange,
+                    showOtherUsersComments = uiState.showOtherUsersComments
                 )
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
                 uiState.navItems[3] -> PerfilScreen()
@@ -125,7 +127,8 @@ fun ReviewsList(
     comment: String,
     showComments: Boolean,
     onCommentChange: (String) -> Unit,
-    onShowCommentChange: (Boolean) -> Unit
+    onShowCommentChange: (Boolean) -> Unit,
+    showOtherUsersComments: Boolean
 ) {
     LazyColumn(
         modifier = Modifier
@@ -143,7 +146,8 @@ fun ReviewsList(
                     comment = comment,
                     showComments = showComments,
                     onCommentChange = onCommentChange,
-                    onShowCommentChange = onShowCommentChange
+                    onShowCommentChange = onShowCommentChange,
+                    showOtherUsersComments = showOtherUsersComments
                 )
             }
             if (index == reviews.lastIndex - 1) {
@@ -179,7 +183,7 @@ fun BottomBar(
 
 @Composable
 fun CommentSection(
-    comments: List<Comments> = listOf(),
+    comments: List<Comments>,
     onLoadComments: () -> Unit = {},
     onSendComment: () -> Unit,
     comment: String,
@@ -195,6 +199,7 @@ fun CommentSection(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(100.dp)
         ) {
             itemsIndexed(comments) { _,comment ->
                 if(showOtherUserComments){
@@ -205,14 +210,12 @@ fun CommentSection(
                         modifier = Modifier.padding(4.dp)
                     )
                 }else{
-                    if(comment.userId == userId){
                         Text(
-                            "Comment ${comment.comment}",
-                            color = MaterialTheme.colorScheme.primary,
+                            comment.comment,
+                            color = MaterialTheme.colorScheme.onBackground,
                             fontSize = 16.sp,
                             modifier = Modifier.padding(4.dp)
                         )
-                    }
                 }
             }
         }
@@ -262,6 +265,7 @@ fun ReviewCard(
     comment: String,
     showComments: Boolean = false,
     onShowCommentChange: (Boolean) -> Unit,
+    showOtherUsersComments: Boolean,
     onCommentChange: (String) -> Unit
 ){
     Column(
@@ -358,8 +362,8 @@ fun ReviewCard(
                 onSendComment = onSendComment,
                 comment = comment,
                 onCommentChange = onCommentChange,
-                showOtherUserComments = TODO(),
-                userId = "1"
+                showOtherUserComments = showOtherUsersComments,
+                userId = userId
             )
         }
     }
@@ -373,12 +377,15 @@ fun ReviewCardPreview(){
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
             ReviewCard(
                 review = Review(
-                    comments = mutableListOf(Comments(
-                        "1",
-                        "Test Comment"),
+                    comments = mutableListOf(
                         Comments(
                             "1",
-                            "Test Comment")
+                            "Test Comment"
+                        ),
+                        Comments(
+                            "1",
+                            "Test Comment"
+                        )
                     ),
                 ),
                 onLike = {},
@@ -389,7 +396,8 @@ fun ReviewCardPreview(){
                 comment = "",
                 showComments = true,
                 onCommentChange = {},
-                onShowCommentChange = {  }
+                onShowCommentChange = {},
+                showOtherUsersComments = false
             )
         }
     }
@@ -410,7 +418,8 @@ fun ReviewBlackCardPreview(){
                 comment = "",
                 showComments = true,
                 onCommentChange = {},
-                onShowCommentChange = {  }
+                onShowCommentChange = {},
+                showOtherUsersComments = false
             )
         }
     }
