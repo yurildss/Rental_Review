@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -185,7 +183,9 @@ fun CommentSection(
     onLoadComments: () -> Unit = {},
     onSendComment: () -> Unit,
     comment: String,
-    onCommentChange: (String) -> Unit
+    onCommentChange: (String) -> Unit,
+    showOtherUserComments: Boolean,
+    userId: String
 ) {
     Column(
         modifier = Modifier
@@ -197,12 +197,23 @@ fun CommentSection(
                 .fillMaxWidth()
         ) {
             itemsIndexed(comments) { _,comment ->
-                Text(
-                    "Comment $comment",
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(4.dp)
-                )
+                if(showOtherUserComments){
+                    Text(
+                        "Comment ${comment.comment}",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }else{
+                    if(comment.userId == userId){
+                        Text(
+                            "Comment ${comment.comment}",
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(4.dp)
+                        )
+                    }
+                }
             }
         }
 
@@ -212,7 +223,9 @@ fun CommentSection(
             "Load more comments",
             color = MaterialTheme.colorScheme.secondary,
             fontSize = 16.sp,
-            modifier = Modifier.padding(5.dp)
+            modifier = Modifier.padding(5.dp).clickable{
+                onLoadComments()
+            }
         )
 
         Row(
@@ -344,7 +357,9 @@ fun ReviewCard(
                 onLoadComments = onLoadComments,
                 onSendComment = onSendComment,
                 comment = comment,
-                onCommentChange = onCommentChange
+                onCommentChange = onCommentChange,
+                showOtherUserComments = TODO(),
+                userId = "1"
             )
         }
     }
@@ -431,7 +446,9 @@ fun CommentSectionPreview(){
                 onLoadComments = {},
                 onSendComment = {},
                 comment = "",
-                onCommentChange = {}
+                onCommentChange = {},
+                showOtherUserComments = false,
+                userId = "1"
             )
         }
     }

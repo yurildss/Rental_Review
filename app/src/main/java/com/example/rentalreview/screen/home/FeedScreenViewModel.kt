@@ -178,7 +178,8 @@ data class FeedScreenUiState(
     val reviews: MutableList<Review?> = mutableListOf(),
     val otherReviews: List<Review?> = emptyList(),
     val comment: String = "",
-    val showComment: Boolean = false
+    val showComment: Boolean = false,
+    val showOtherUsersComments: Boolean = false
 )
 
 data class NavItem(
