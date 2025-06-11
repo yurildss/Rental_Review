@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -194,7 +195,6 @@ fun CommentSection(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
         ) {
             itemsIndexed(comments) { _,comment ->
                 Text(
@@ -258,7 +258,7 @@ fun ReviewCard(
                 color = MaterialTheme.colorScheme.primary,
                 shape = MaterialTheme.shapes.medium
             )
-            .height(700.dp)
+            .wrapContentHeight()
             .background(MaterialTheme.colorScheme.background)
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -360,8 +360,11 @@ fun ReviewCardPreview(){
                 review = Review(
                     comments = mutableListOf(Comments(
                         "1",
-                        "Test Comment"
-                    )),
+                        "Test Comment"),
+                        Comments(
+                            "1",
+                            "Test Comment")
+                    ),
                 ),
                 onLike = {},
                 userId = "1",
