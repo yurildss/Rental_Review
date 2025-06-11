@@ -127,7 +127,7 @@ fun ReviewsList(
     comment: String,
     showComments: Boolean,
     onCommentChange: (String) -> Unit,
-    onShowCommentChange: (Boolean) -> Unit,
+    onShowCommentChange: () -> Unit,
     showOtherUsersComments: Boolean
 ) {
     LazyColumn(
@@ -264,7 +264,7 @@ fun ReviewCard(
     onSendComment: () -> Unit,
     comment: String,
     showComments: Boolean = false,
-    onShowCommentChange: (Boolean) -> Unit,
+    onShowCommentChange: () -> Unit,
     showOtherUsersComments: Boolean,
     onCommentChange: (String) -> Unit
 ){
@@ -345,7 +345,7 @@ fun ReviewCard(
             Row(horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically)
             {
-                Icon(imageVector = Icons.Default.Email, contentDescription = "Like", modifier = Modifier.clickable { onShowCommentChange(true) })
+                Icon(imageVector = Icons.Default.Email, contentDescription = "Like", modifier = Modifier.clickable { onShowCommentChange() })
                 Text("Comment", modifier = Modifier.padding(start = 5.dp), color = MaterialTheme.colorScheme.primary)
 
             }
