@@ -38,7 +38,11 @@ class FeedScreenViewModel @Inject constructor(
         launchCatching {
 
             val reviews = storageService.getReviews().toMutableList()
-            val uiStateList = reviews.map { it?.toReviewUiState() ?: mutableStateOf(ReviewUiState()) }.toMutableList()
+            val uiStateList: MutableList<ReviewUiState?> = mutableListOf()
+
+            for (review in reviews){
+                uiStateList.add(review?.toReviewUiState())
+            }
 
             _uiState.value = _uiState.value.copy(
                 userId = accountService.currentUserId,
