@@ -36,12 +36,14 @@ class FeedScreenViewModel @Inject constructor(
 
     fun getInitialReviews(){
         launchCatching {
+
+            val reviews = storageService.getReviews().toMutableList()
+            val uiStateList = reviews.map { it?.toReviewUiState() ?: mutableStateOf(ReviewUiState()) }.toMutableList()
+
             _uiState.value = _uiState.value.copy(
                 userId = accountService.currentUserId,
-                reviews = storageService.getReviews().toMutableList()
+                reviews = uiStateList
             )
-
-            Log.d("FeedScreenViewModel", "getInitialReviews: ${_uiState.value.reviews}")
         }
     }
 
@@ -146,6 +148,22 @@ class FeedScreenViewModel @Inject constructor(
             )
         }
     }
+
+    fun Review.toReviewUiState(): ReviewUiState {
+        return ReviewUiState(
+            id = id,
+            title = title,
+            rating = rating,
+            review = review,
+            type = type,
+            startDate = startDate,
+            endDate = endDate,
+            address = address,
+            likesIds = likesIds,
+            comments = comments
+        )
+    }
+
 }
 
 data class FeedScreenUiState(
@@ -177,11 +195,24 @@ data class FeedScreenUiState(
         description = "Home",
         testTag = "homeScreen"
     ),
-    val reviews: MutableList<Review?> = mutableListOf(),
+    val reviews: MutableList<ReviewUiState?> = mutableListOf(),
     val otherReviews: List<Review?> = emptyList(),
     val comment: String = "",
     val showComment: Boolean = false,
     val showOtherUsersComments: Boolean = false
+)
+
+data class ReviewUiState(
+    val id: String = "",
+    val title: String = "",
+    val rating: Int = 0,
+    val review: String = "",
+    val type: String = "",
+    val startDate: String = "",
+    val endDate: String = "" ,
+    val address: String = "",
+    val likesIds: MutableList<String> = mutableListOf(),
+    val comments: MutableList<Comments> = mutableListOf()
 )
 
 data class NavItem(
