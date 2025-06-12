@@ -79,6 +79,19 @@ class FeedScreenViewModel @Inject constructor(
         }
     }
 
+    fun onShowCommentClick(index: Int){
+        val currentList = _uiState.value.reviews
+        val updatedReview = currentList[index]?.copy(
+            showComment = !currentList[index]?.showComment!!
+        )
+        if (updatedReview != null) {
+            val updatedList = currentList.toMutableList().apply {
+                this[index] = updatedReview
+            }
+            _uiState.update { it.copy(reviews = updatedList) }
+        }
+    }
+
     fun likeReview(reviewId: String, index: Int) {
         launchCatching {
             val currentUserId = accountService.currentUserId
@@ -241,7 +254,8 @@ data class ReviewUiState(
     val address: String = "",
     val likesIds: MutableList<String> = mutableListOf(),
     val comments: MutableList<Comments> = mutableListOf(),
-    val timestamp: Date? = null
+    val timestamp: Date? = null,
+    val showComment: Boolean = false,
 )
 
 data class NavItem(

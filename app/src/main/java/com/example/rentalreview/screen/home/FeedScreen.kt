@@ -105,7 +105,7 @@ fun FeedScreen(
                     comment = uiState.comment,
                     showComments = uiState.showComment,
                     onCommentChange = viewModel::onCommentChange,
-                    onShowCommentChange = viewModel::onShowCommentChange,
+                    onShowCommentChange = viewModel::onShowCommentClick,
                     showOtherUsersComments = uiState.showOtherUsersComments
                 )
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
@@ -127,7 +127,7 @@ fun ReviewsList(
     comment: String,
     showComments: Boolean,
     onCommentChange: (String) -> Unit,
-    onShowCommentChange: () -> Unit,
+    onShowCommentChange: (index: Int) -> Unit,
     showOtherUsersComments: Boolean
 ) {
     LazyColumn(
@@ -146,7 +146,7 @@ fun ReviewsList(
                     comment = comment,
                     showComments = showComments,
                     onCommentChange = onCommentChange,
-                    onShowCommentChange = onShowCommentChange,
+                    onShowCommentChange = { onShowCommentChange(index) },
                     showOtherUsersComments = showOtherUsersComments
                 )
             }
@@ -226,9 +226,11 @@ fun CommentSection(
             "Load more comments",
             color = MaterialTheme.colorScheme.secondary,
             fontSize = 16.sp,
-            modifier = Modifier.padding(5.dp).clickable{
-                onLoadComments()
-            }
+            modifier = Modifier
+                .padding(5.dp)
+                .clickable {
+                    onLoadComments()
+                }
         )
 
         Row(
@@ -345,7 +347,7 @@ fun ReviewCard(
             Row(horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically)
             {
-                Icon(imageVector = Icons.Default.Email, contentDescription = "Like", modifier = Modifier.clickable { onShowCommentChange() })
+                Icon(imageVector = Icons.Default.Email, contentDescription = "Comments", modifier = Modifier.clickable { onShowCommentChange() })
                 Text("Comment", modifier = Modifier.padding(start = 5.dp), color = MaterialTheme.colorScheme.primary)
 
             }
@@ -355,7 +357,7 @@ fun ReviewCard(
                 Text("Like", modifier = Modifier.padding(start = 5.dp), color = MaterialTheme.colorScheme.primary)
             }
         }
-        if (showComments) {
+        if (review.showComment) {
             CommentSection(
                 comments = review.comments,
                 onLoadComments = onLoadComments,
