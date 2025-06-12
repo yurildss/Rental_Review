@@ -117,7 +117,7 @@ fun FeedScreen(
 
 @Composable
 fun ReviewsList(
-    reviews: List<Review?>,
+    reviews: List<ReviewUiState?>,
     onLike: (id: String, index: Int) -> Unit,
     onDesLike: (id: String, index: Int) -> Unit,
     userId: String,
@@ -256,7 +256,7 @@ fun CommentSection(
 
 @Composable
 fun ReviewCard(
-    review: Review,
+    review: ReviewUiState,
     onLike: () -> Unit,
     desLike: () -> Unit,
     userId: String,
@@ -376,7 +376,7 @@ fun ReviewCardPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
             ReviewCard(
-                review = Review(
+                review = ReviewUiState(
                     comments = mutableListOf(
                         Comments(
                             "1",
@@ -409,7 +409,7 @@ fun ReviewBlackCardPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
             ReviewCard(
-                review = Review(),
+                review = ReviewUiState(),
                 onLike = {},
                 userId = "1",
                 desLike = {},
