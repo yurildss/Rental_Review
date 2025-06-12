@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -144,11 +145,17 @@ class FeedScreenViewModel @Inject constructor(
     fun getMoreReviews(){
         launchCatching {
             val newReviews = storageService.getMoreReviews(
-                _uiState.value.reviews.last()!!
-            )// retorna List<Review>
+                _uiState.value.reviews.last()?.toReview()!!
+            )
+
+            val uiStateList: MutableList<ReviewUiState?> = mutableListOf()
+            for (review in newReviews){
+                uiStateList.add(review?.toReviewUiState())
+            }
+            
 
             _uiState.value = _uiState.value.copy(
-                reviews = (_uiState.value.reviews + newReviews) as MutableList<Review?>,
+                reviews = (_uiState.value.reviews + uiStateList) as MutableList<ReviewUiState?>,
             )
         }
     }
@@ -164,7 +171,24 @@ class FeedScreenViewModel @Inject constructor(
             endDate = endDate,
             address = address,
             likesIds = likesIds,
-            comments = comments
+            comments = comments,
+            timestamp = timestamp
+        )
+    }
+
+    fun ReviewUiState.toReview(): Review {
+        return Review(
+            id = id,
+            title = title,
+            rating = rating,
+            review = review,
+            type = type,
+            startDate = startDate,
+            endDate = endDate,
+            address = address,
+            likesIds = likesIds,
+            comments = comments,
+            timestamp = timestamp
         )
     }
 
@@ -216,7 +240,8 @@ data class ReviewUiState(
     val endDate: String = "" ,
     val address: String = "",
     val likesIds: MutableList<String> = mutableListOf(),
-    val comments: MutableList<Comments> = mutableListOf()
+    val comments: MutableList<Comments> = mutableListOf(),
+    val timestamp: Date? = null
 )
 
 data class NavItem(
