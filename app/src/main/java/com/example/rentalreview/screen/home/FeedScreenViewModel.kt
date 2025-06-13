@@ -1,13 +1,10 @@
 package com.example.rentalreview.screen.home
 
-import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.rentalreview.model.Comments
 import com.example.rentalreview.model.Review
@@ -17,7 +14,6 @@ import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import java.util.Date
 import javax.inject.Inject
@@ -147,12 +143,6 @@ class FeedScreenViewModel @Inject constructor(
 
     fun onCommentChange(comment: String){
         _uiState.update { it.copy(comment = comment) }
-    }
-
-    fun onShowCommentChange(){
-
-        _uiState.update { it.copy(showComment = !_uiState.value.showComment) }
-
     }
 
     fun getMoreReviews(){

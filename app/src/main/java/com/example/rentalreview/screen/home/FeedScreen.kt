@@ -353,8 +353,8 @@ fun ReviewCard(
             }
             Row(horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically) {
-                Icon(imageVector = Icons.Default.ThumbUp, contentDescription = "Like")
-                Text("Like", modifier = Modifier.padding(start = 5.dp), color = MaterialTheme.colorScheme.primary)
+                Icon(imageVector = Icons.Default.Star, contentDescription = "Favorite")
+                Text("Favorite", modifier = Modifier.padding(start = 5.dp), color = MaterialTheme.colorScheme.primary)
             }
         }
         if (review.showComment) {
