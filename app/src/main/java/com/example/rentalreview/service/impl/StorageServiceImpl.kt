@@ -55,6 +55,14 @@ class StorageServiceImpl @Inject constructor(
             .await()
     }
 
+    override suspend fun addFavorite(reviewId: String, userId: String) {
+        firestore
+            .collection("users")
+            .document(userId)
+            .update("favorites", FieldValue.arrayUnion(reviewId))
+            .await()
+    }
+
     companion object Collections{
         const val REVIEWS = "reviews"
         const val CREATE_AT = "timestamp"

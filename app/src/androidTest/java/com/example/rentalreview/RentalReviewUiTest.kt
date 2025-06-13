@@ -37,7 +37,7 @@ class RentalReviewUiTest {
         composeTestRule.onNodeWithTag("signUpScreen").assertExists()
 
         composeTestRule.onNodeWithTag("nameTextField").performTextInput("Test User")
-        composeTestRule.onNodeWithTag("emailTextField").performTextInput("williamhenryharrison@hotmail.com")
+        composeTestRule.onNodeWithTag("emailTextField").performTextInput("willi${Random.nextInt(0,100)}@hotmail.com")
         composeTestRule.onNodeWithTag("passwordTextField").performTextInput("password123yY")
         composeTestRule.onNodeWithTag("repeatPasswordTextField").performTextInput("password123yY")
         composeTestRule.onNodeWithTag("signUpButton").performClick()
