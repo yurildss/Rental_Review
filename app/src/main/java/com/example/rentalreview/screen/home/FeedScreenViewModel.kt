@@ -27,6 +27,9 @@ class FeedScreenViewModel @Inject constructor(
     val _uiState = MutableStateFlow(FeedScreenUiState())
     val uiState = _uiState.asStateFlow()
 
+    val _userUiState = MutableStateFlow(UserUiState())
+    val userUiState = _userUiState.asStateFlow()
+
     init {
         getInitialReviews()
     }
@@ -109,6 +112,30 @@ class FeedScreenViewModel @Inject constructor(
                 //backend
                 storageService.updateLikes(reviewId, currentUserId)
 
+            }
+        }
+    }
+
+    fun addFavorite(reviewId: String, index: Int) {
+        launchCatching {
+            val currentUserId = accountService.currentUserId
+            val currentList = _uiState.value.reviews
+
+            val updatedReview = currentList[index]?.copy(
+                favoriteIds = currentList[index]?.favoriteIds?.toMutableList()?.apply {
+                    if (!contains(currentUserId)) add(currentUserId)
+                } ?: mutableListOf(currentUserId)
+            )
+
+            if (updatedReview != null) {
+                val updatedList = currentList.toMutableList().apply {
+                    this[index] = updatedReview
+                }
+
+                _uiState.update { it.copy(reviews = updatedList) }
+
+                //backend
+                storageService.addFavorite(reviewId, currentUserId)
             }
         }
     }
@@ -244,8 +271,16 @@ data class ReviewUiState(
     val address: String = "",
     val likesIds: MutableList<String> = mutableListOf(),
     val comments: MutableList<Comments> = mutableListOf(),
+    val favoriteIds: MutableList<String> = mutableListOf(),
     val timestamp: Date? = null,
     val showComment: Boolean = false,
+)
+
+data class UserUiState(
+    val id: String = "",
+    val name: String = "",
+    val email: String = "",
+    val favoriteReviews: MutableList<String> = mutableListOf()
 )
 
 data class NavItem(

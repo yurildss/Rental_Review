@@ -106,7 +106,8 @@ fun FeedScreen(
                     showComments = uiState.showComment,
                     onCommentChange = viewModel::onCommentChange,
                     onShowCommentChange = viewModel::onShowCommentClick,
-                    showOtherUsersComments = uiState.showOtherUsersComments
+                    showOtherUsersComments = uiState.showOtherUsersComments,
+                    onFavorite = viewModel::addFavorite
                 )
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
                 uiState.navItems[3] -> PerfilScreen()
@@ -128,7 +129,8 @@ fun ReviewsList(
     showComments: Boolean,
     onCommentChange: (String) -> Unit,
     onShowCommentChange: (index: Int) -> Unit,
-    showOtherUsersComments: Boolean
+    showOtherUsersComments: Boolean,
+    onFavorite: (reviewId: String, index: Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -147,7 +149,8 @@ fun ReviewsList(
                     showComments = showComments,
                     onCommentChange = onCommentChange,
                     onShowCommentChange = { onShowCommentChange(index) },
-                    showOtherUsersComments = showOtherUsersComments
+                    showOtherUsersComments = showOtherUsersComments,
+                    onFavorite = { onFavorite(it.id, index) }
                 )
             }
             if (index == reviews.lastIndex - 1) {
@@ -268,7 +271,8 @@ fun ReviewCard(
     showComments: Boolean = false,
     onShowCommentChange: () -> Unit,
     showOtherUsersComments: Boolean,
-    onCommentChange: (String) -> Unit
+    onCommentChange: (String) -> Unit,
+    onFavorite: () -> Unit
 ){
     Column(
         Modifier
@@ -352,8 +356,15 @@ fun ReviewCard(
 
             }
             Row(horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically) {
-                Icon(imageVector = Icons.Default.Star, contentDescription = "Favorite")
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable {
+                    onFavorite()
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = "Favorite",
+                    tint = if (review.favoriteIds.contains(userId)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground)
                 Text("Favorite", modifier = Modifier.padding(start = 5.dp), color = MaterialTheme.colorScheme.primary)
             }
         }
@@ -399,7 +410,8 @@ fun ReviewCardPreview(){
                 showComments = true,
                 onCommentChange = {},
                 onShowCommentChange = {},
-                showOtherUsersComments = false
+                showOtherUsersComments = false,
+                onFavorite = {}
             )
         }
     }
@@ -421,7 +433,8 @@ fun ReviewBlackCardPreview(){
                 showComments = true,
                 onCommentChange = {},
                 onShowCommentChange = {},
-                showOtherUsersComments = false
+                showOtherUsersComments = false,
+                onFavorite = {}
             )
         }
     }

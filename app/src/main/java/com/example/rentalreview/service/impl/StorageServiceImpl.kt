@@ -57,9 +57,9 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun addFavorite(reviewId: String, userId: String) {
         firestore
-            .collection("users")
-            .document(userId)
-            .update("favorites", FieldValue.arrayUnion(reviewId))
+            .collection(REVIEWS)
+            .document(reviewId)
+            .update(FAVORITES, FieldValue.arrayUnion(userId))
             .await()
     }
 
@@ -68,5 +68,6 @@ class StorageServiceImpl @Inject constructor(
         const val CREATE_AT = "timestamp"
         const val LIKES_IDS = "likesIds"
         const val COMMENTS = "comments"
+        const val FAVORITES = "favoriteIdsUsers"
     }
 }
