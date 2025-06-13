@@ -11,7 +11,7 @@ import com.example.rentalreview.Screens
 import com.example.rentalreview.screen.home.FeedScreen
 import com.example.rentalreview.screen.login.LoginScreen
 import com.example.rentalreview.screen.openScreen.OpenScree
-import com.example.rentalreview.screen.perfil.PerfilScreen
+import com.example.rentalreview.screen.perfil.ProfileScreen
 import com.example.rentalreview.screen.review.ReviewEntryScreen
 import com.example.rentalreview.screen.signUp.SignUpScreen
 
@@ -65,7 +65,7 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
         }
 
         composable(route = Screens.PROFILE_SCREEN.name){
-            PerfilScreen()
+            ProfileScreen()
         }
 
         composable(route = Screens.REVIEW_ENTRY_SCREEN.name){

@@ -1,7 +1,6 @@
 package com.example.rentalreview.screen.home
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,8 +49,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.R
 import com.example.rentalreview.model.Comments
-import com.example.rentalreview.model.Review
-import com.example.rentalreview.screen.perfil.PerfilScreen
+import com.example.rentalreview.screen.perfil.ProfileScreen
 import com.example.rentalreview.screen.review.ReviewEntryScreen
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 
@@ -110,7 +108,7 @@ fun FeedScreen(
                     onFavorite = viewModel::addFavorite
                 )
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
-                uiState.navItems[3] -> PerfilScreen()
+                uiState.navItems[3] -> ProfileScreen()
             }
         }
     }

@@ -25,11 +25,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.rentalreview.screen.home.BottomBar
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.ui.theme.RentalReviewTheme
+import androidx.compose.runtime.getValue
 
 @Composable
-fun PerfilScreen(){
+fun ProfileScreen(
+    viewModel: ProfileViewModel = hiltViewModel()
+){
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -40,20 +46,28 @@ fun PerfilScreen(){
         }
     ) {
         innerPadding->
-        PerfilMenu(innerPadding)
+        ProfileMenu(innerPadding, uiState.displayName)
     }
 
 }
 
 @Composable
-fun PerfilMenu(paddingValues: PaddingValues){
+fun ProfileMenu(
+    paddingValues: PaddingValues,
+    userName: String,
+    onLogOut: () -> Unit,
+    onMyReviews: () -> Unit,
+    onFavorites: () -> Unit,
+    onSettings: () -> Unit
+){
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(20.dp)) {
         Icon(
             imageVector = Icons.Default.AccountCircle,
             contentDescription = "Perfil",
             modifier = Modifier.align(Alignment.CenterHorizontally).size(60.dp)
         )
-        Text("John Doe",
+        Text(
+            text = userName,
             fontSize = 27.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally),
@@ -110,7 +124,7 @@ fun PerfilMenu(paddingValues: PaddingValues){
 fun PerfilScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
-            PerfilScreen()
+            ProfileScreen()
         }
     }
 }
@@ -120,7 +134,7 @@ fun PerfilScreenPreview(){
 fun PerfilBlackScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
-            PerfilScreen()
+            ProfileScreen()
         }
     }
 }
