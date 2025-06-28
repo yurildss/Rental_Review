@@ -63,6 +63,10 @@ class StorageServiceImpl @Inject constructor(
             .await()
     }
 
+    override suspend fun findMyReviews(userId: String): List<Review?> {
+        firestore.collection(REVIEWS).orderBy(CREATE_AT).whereEqualTo("userId", userId)
+    }
+
     companion object Collections{
         const val REVIEWS = "reviews"
         const val CREATE_AT = "timestamp"

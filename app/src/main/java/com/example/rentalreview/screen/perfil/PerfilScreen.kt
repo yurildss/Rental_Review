@@ -1,5 +1,6 @@
 package com.example.rentalreview.screen.perfil
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,7 +33,10 @@ import androidx.compose.runtime.getValue
 
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    onMyReviewsClick: () -> Unit,
+    onMyFavoritesClick: () -> Unit,
+    onSettings: () -> Unit
 ){
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -46,7 +50,14 @@ fun ProfileScreen(
         }
     ) {
         innerPadding->
-        ProfileMenu(innerPadding, uiState.displayName)
+        ProfileMenu(
+            innerPadding,
+            uiState.displayName,
+            viewModel::signOut,
+            onMyReviewsClick,
+            onMyFavoritesClick,
+            onSettings
+        )
     }
 
 }
@@ -56,7 +67,7 @@ fun ProfileMenu(
     paddingValues: PaddingValues,
     userName: String,
     onLogOut: () -> Unit,
-    onMyReviews: () -> Unit,
+    onMyReviewsClick: () -> Unit,
     onFavorites: () -> Unit,
     onSettings: () -> Unit
 ){
@@ -73,7 +84,7 @@ fun ProfileMenu(
             modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally),
             color = MaterialTheme.colorScheme.primary
         )
-        Button(onClick = {},
+        Button(onClick = onLogOut,
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .fillMaxWidth(0.85f)
@@ -111,7 +122,7 @@ fun ProfileMenu(
                 .padding(top = 10.dp)
                 .height(56.dp)
                 .align(Alignment.CenterHorizontally),
-            border = _root_ide_package_.androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.secondary)
+            border = BorderStroke(2.dp, MaterialTheme.colorScheme.secondary)
         ) {
             Text("Log out", color = MaterialTheme.colorScheme.secondary)
         }
@@ -124,7 +135,12 @@ fun ProfileMenu(
 fun PerfilScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
-            ProfileScreen()
+            ProfileScreen(
+                viewModel = TODO(),
+                onMyReviewsClick = TODO(),
+                onMyFavoritesClick = TODO(),
+                onSettings = TODO()
+            )
         }
     }
 }
@@ -134,7 +150,12 @@ fun PerfilScreenPreview(){
 fun PerfilBlackScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
-            ProfileScreen()
+            ProfileScreen(
+                viewModel = TODO(),
+                onMyReviewsClick = TODO(),
+                onMyFavoritesClick = TODO(),
+                onSettings = TODO()
+            )
         }
     }
 }

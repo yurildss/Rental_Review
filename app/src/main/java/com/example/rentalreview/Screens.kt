@@ -6,5 +6,6 @@ enum class Screens {
     FEED_SCREEN,
     LOGIN_SCREEN,
     SIGN_UP_SCREEN,
-    PROFILE_SCREEN
+    PROFILE_SCREEN,
+    MY_REVIEWS_SCREEN
 }

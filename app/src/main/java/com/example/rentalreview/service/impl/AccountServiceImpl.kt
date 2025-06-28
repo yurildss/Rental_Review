@@ -78,4 +78,10 @@ class AccountServiceImpl
 
     }
 
+    override suspend fun logOut() {
+
+        auth.signOut()
+
+    }
+
 }

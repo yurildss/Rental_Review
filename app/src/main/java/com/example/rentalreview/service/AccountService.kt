@@ -1,5 +1,6 @@
 package com.example.rentalreview.service
 
+import com.example.rentalreview.model.Review
 import com.example.rentalreview.model.User
 import kotlinx.coroutines.flow.Flow
 
@@ -11,4 +12,5 @@ interface AccountService {
 
     suspend fun register(email: String, password: String, name: String)
     suspend fun authenticate(email: String, password: String)
+    suspend fun logOut()
 }
