@@ -65,7 +65,11 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
         }
 
         composable(route = Screens.PROFILE_SCREEN.name){
-            ProfileScreen()
+            ProfileScreen(
+                onMyReviewsClick = {},
+                onMyFavoritesClick = {},
+                onSettings = {}
+            )
         }
 
         composable(route = Screens.REVIEW_ENTRY_SCREEN.name){

@@ -108,7 +108,11 @@ fun FeedScreen(
                     onFavorite = viewModel::addFavorite
                 )
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
-                uiState.navItems[3] -> ProfileScreen()
+                uiState.navItems[3] -> ProfileScreen(
+                    onMyReviewsClick = {},
+                    onMyFavoritesClick = {},
+                    onSettings = {}
+                )
             }
         }
     }

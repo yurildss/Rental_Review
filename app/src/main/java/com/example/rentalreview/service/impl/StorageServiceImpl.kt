@@ -64,7 +64,8 @@ class StorageServiceImpl @Inject constructor(
     }
 
     override suspend fun findMyReviews(userId: String): List<Review?> {
-        firestore.collection(REVIEWS).orderBy(CREATE_AT).whereEqualTo("userId", userId)
+        val myReviews = firestore.collection(REVIEWS).orderBy(CREATE_AT).whereEqualTo("userId", userId).get().await()
+        return myReviews.toObjects(Review::class.java)
     }
 
     companion object Collections{
