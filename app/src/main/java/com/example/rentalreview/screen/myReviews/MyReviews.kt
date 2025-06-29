@@ -1,4 +1,4 @@
-package com.example.rentalreview.screen
+package com.example.rentalreview.screen.myReviews
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,13 +19,11 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -34,25 +32,36 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.R
 import com.example.rentalreview.model.Comments
-import com.example.rentalreview.model.Review
-import com.example.rentalreview.screen.home.CommentSection
 import com.example.rentalreview.screen.home.ReviewUiState
-import java.util.Date
 
 @Composable
-fun MyReviewsScreen(){
+fun MyReviewsScreen(
+    viewModel: MyReviewsViewModel = hiltViewModel()
+){
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    Column(Modifier.fillMaxSize()) {
+        ReviewsList(reviews = uiState.reviews)
+    }
 }
 
 @Composable
 fun ReviewsList(
-    reviews: List<Review>
+    reviews: List<ReviewUiState>
 ){
     LazyColumn(modifier = Modifier.fillMaxSize().padding( 10.dp )) {
         itemsIndexed(reviews) { index, review ->
-
+            ReviewCardVisualizer(
+                review = review,
+                onLoadComments = {},
+                onShowCommentChange = {},
+                showOtherUsersComments = false,
+                onFavorite = {}
+            )
         }
     }
 }
@@ -60,7 +69,6 @@ fun ReviewsList(
 @Composable
 fun ReviewCardVisualizer(
     review: ReviewUiState,
-    userId: String,
     onLoadComments: () -> Unit,
     onShowCommentChange: () -> Unit,
     showOtherUsersComments: Boolean,
@@ -142,7 +150,7 @@ fun ReviewCardVisualizer(
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = "Favorite",
-                    tint = if (review.favoriteIds.contains(userId)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground)
+                    tint = MaterialTheme.colorScheme.onBackground)
                 Text("Favorite", modifier = Modifier.padding(start = 5.dp), color = MaterialTheme.colorScheme.primary)
             }
         }
@@ -214,7 +222,6 @@ fun CommentSectionWithOutEntry(
 fun MyReviewsScreenPreview(){
     ReviewCardVisualizer(
         review = ReviewUiState(),
-        userId = "1",
         onLoadComments = {},
         onShowCommentChange = {},
         showOtherUsersComments = false,
