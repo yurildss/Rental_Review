@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.R
 import com.example.rentalreview.model.Comments
 import com.example.rentalreview.screen.home.ReviewUiState
+import com.example.rentalreview.ui.theme.RentalReviewTheme
 
 @Composable
 fun MyReviewsScreen(
@@ -51,17 +53,19 @@ fun MyReviewsScreen(
 
 @Composable
 fun ReviewsList(
-    reviews: List<ReviewUiState>
+    reviews: List<ReviewUiState?>
 ){
     LazyColumn(modifier = Modifier.fillMaxSize().padding( 10.dp )) {
         itemsIndexed(reviews) { index, review ->
-            ReviewCardVisualizer(
-                review = review,
-                onLoadComments = {},
-                onShowCommentChange = {},
-                showOtherUsersComments = false,
-                onFavorite = {}
-            )
+            review?.let {
+                ReviewCardVisualizer(
+                    review = it,
+                    onLoadComments = {},
+                    onShowCommentChange = {},
+                    showOtherUsersComments = false,
+                    onFavorite = {}
+                )
+            }
         }
     }
 }
@@ -216,6 +220,25 @@ fun CommentSectionWithOutEntry(
 }
 
 
+@Preview
+@Composable
+fun CommentSectionWithOutEntryPreview(){
+    Surface {
+        RentalReviewTheme(darkTheme = false, dynamicColor = false) {
+            CommentSectionWithOutEntry(
+                comments = listOf(
+                    Comments("Comment 1"),
+                    Comments("Comment 2"),
+                    Comments("Comment 3"),
+                    Comments("Comment 4"),
+                    Comments("Comment 5")
+                ),
+                onLoadComments = {},
+                showOtherUserComments = true
+            )
+        }
+    }
+}
 
 @Preview
 @Composable

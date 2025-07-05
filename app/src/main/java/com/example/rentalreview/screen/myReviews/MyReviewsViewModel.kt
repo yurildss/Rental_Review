@@ -17,6 +17,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
+/**
+ * View model for my reviews screen
+ * @param storageService
+ * @param accountService
+ * @property _uiState
+ * @property uiState
+ * get initial my reviews from storageService and convert to ReviewUiState
+ * to show in the screen
+ */
 class MyReviewsViewModel @Inject constructor(
     private val storageService: StorageService,
     private val accountService: AccountService
@@ -29,13 +38,16 @@ class MyReviewsViewModel @Inject constructor(
         getMyReviews()
     }
 
+    /**
+     * Get my reviews from storageService
+     */
     fun getMyReviews(){
 
         launchCatching {
             val userId = accountService.currentUserId
             val myReviews = storageService.findMyReviews(userId)
-
             val uiStateList: MutableList<ReviewUiState?> = mutableListOf()
+
             for (review in myReviews){
                 uiStateList.add(review?.toReviewUiState())
             }
@@ -69,12 +81,18 @@ class MyReviewsViewModel @Inject constructor(
 
 }
 
-
+/**
+ * Data class for my reviews screen
+ * @property userId user id
+ * @property reviews list of my reviews
+ * @property otherReviews list of other users reviews
+ * @property showComment show comment section
+ * @property showOtherUsersComments show other users comments
+ */
 data class ReviewScreenUiState(
     val userId: String = "",
     val reviews: MutableList<ReviewUiState?> = mutableListOf(),
     val otherReviews: List<Review?> = emptyList(),
-    val comment: String = "",
     val showComment: Boolean = false,
     val showOtherUsersComments: Boolean = false
 )
