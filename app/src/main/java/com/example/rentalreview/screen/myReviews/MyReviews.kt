@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.R
+import com.example.rentalreview.model.Address
 import com.example.rentalreview.model.Comments
 import com.example.rentalreview.screen.home.ReviewUiState
 import com.example.rentalreview.ui.theme.RentalReviewTheme
@@ -104,7 +105,7 @@ fun ReviewCardVisualizer(
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
-        Text(review.address,
+        Text(review.address.toString(),
             fontSize = 19.sp,
             textAlign = TextAlign.Left,
             modifier = Modifier
@@ -244,7 +245,7 @@ fun CommentSectionWithOutEntryPreview(){
 @Composable
 fun MyReviewsScreenPreview(){
     ReviewCardVisualizer(
-        review = ReviewUiState(),
+        review = ReviewUiState(address = Address()),
         onLoadComments = {},
         onShowCommentChange = {},
         showOtherUsersComments = false,

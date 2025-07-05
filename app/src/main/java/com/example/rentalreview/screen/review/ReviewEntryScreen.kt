@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -74,13 +75,25 @@ fun ReviewEntryScreen(
         onRatingChanged = viewModel::onRatingChanged,
         updateReview = viewModel::updateReview,
         onDateRangeSelected = viewModel::onDateRangeSelected,
-        onTitleChanged = viewModel::onTitleChanged
+        onTitleChanged = viewModel::onTitleChanged,
+        onStreeetChanged = viewModel::onStreetChanged,
+        onNumberChanged = viewModel::onNumberChanged,
+        onCityChanged = viewModel::onCityChanged,
+        onStateChanged = viewModel::onStateChanged,
+        onZipChanged = viewModel::onZipChanged,
+        onCountryChanged = viewModel::onCountryChanged
     )
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReviewEntryForm(
+    onStreeetChanged: (String) -> Unit,
+    onNumberChanged: (String) -> Unit,
+    onCityChanged: (String) -> Unit,
+    onStateChanged: (String) -> Unit,
+    onZipChanged: (String) -> Unit,
+    onCountryChanged: (String) -> Unit,
     updateExpandedOptions: (Boolean) -> Unit = {},
     typeRental: (String) -> Unit = {},
     openDialog: () -> Unit = {},
@@ -99,7 +112,7 @@ fun ReviewEntryForm(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(top = 70.dp, start = 20.dp, end = 20.dp)
+            .padding(top = 10.dp, start = 20.dp, end = 20.dp)
             .testTag("reviewEntryScreen")
     ) {
         Text("Rate Your Stay",
@@ -123,12 +136,54 @@ fun ReviewEntryForm(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(top = 15.dp)
         )
-        OutlinedTextField(
-            value = uiState.title,
-            onValueChange = onTitleChanged,
-            modifier = Modifier
-                .fillMaxWidth(0.85F)
-        )
+        Row(modifier = Modifier.fillMaxWidth(0.85F) ,horizontalArrangement = Arrangement.SpaceBetween) {
+            OutlinedTextField(
+                value = uiState.street,
+                onValueChange = onStreeetChanged,
+                modifier = Modifier
+                    .fillMaxWidth(0.65F),
+                label = { Text("Street", color = MaterialTheme.colorScheme.primary) }
+            )
+            OutlinedTextField(
+                value = uiState.number,
+                onValueChange = onNumberChanged,
+                modifier = Modifier
+                    .fillMaxWidth(0.95F),
+                label = { Text("n", color = MaterialTheme.colorScheme.primary) }
+            )
+        }
+        Row(modifier = Modifier.fillMaxWidth(0.85F) ,horizontalArrangement = Arrangement.SpaceBetween) {
+            OutlinedTextField(
+                value = uiState.city,
+                onValueChange = onCityChanged,
+                modifier = Modifier
+                    .fillMaxWidth(0.50F),
+                label = { Text("city", color = MaterialTheme.colorScheme.primary) }
+            )
+            OutlinedTextField(
+                value = uiState.state,
+                onValueChange = onStateChanged,
+                modifier = Modifier
+                    .fillMaxWidth(0.95F),
+                label = { Text("state", color = MaterialTheme.colorScheme.primary) }
+            )
+        }
+        Row(modifier = Modifier.fillMaxWidth(0.85F) ,horizontalArrangement = Arrangement.SpaceBetween) {
+            OutlinedTextField(
+                value = uiState.country,
+                onValueChange = onCountryChanged,
+                modifier = Modifier
+                    .fillMaxWidth(0.60F),
+                label = { Text("country", color = MaterialTheme.colorScheme.primary) }
+            )
+            OutlinedTextField(
+                value = uiState.zip,
+                onValueChange = onZipChanged,
+                modifier = Modifier
+                    .fillMaxWidth(0.95F),
+                label = { Text("zip", color = MaterialTheme.colorScheme.primary) }
+            )
+        }
         Text("Property type",
             fontSize = 20.sp,
             color = MaterialTheme.colorScheme.primary,
@@ -386,7 +441,21 @@ fun ReviewEntryScreenPreview(){
                 startDate = null,
                 endDate = null,
                 star = 0,
-                onSaved = {}
+                onSaved = {},
+                onStreeetChanged = TODO(),
+                onNumberChanged = TODO(),
+                onCityChanged = TODO(),
+                onStateChanged = TODO(),
+                onZipChanged = TODO(),
+                onCountryChanged = TODO(),
+                updateExpandedOptions = TODO(),
+                typeRental = TODO(),
+                openDialog = TODO(),
+                closeDialog = TODO(),
+                onRatingChanged = TODO(),
+                updateReview = TODO(),
+                onDateRangeSelected = TODO(),
+                onTitleChanged = TODO()
             )
         }
     }
@@ -404,7 +473,22 @@ fun ReviewEntryDarkScreenPreview(){
                 startDate = null,
                 endDate = null,
                 star = 0,
-                onSaved = {})
+                onSaved = {},
+                onStreeetChanged = TODO(),
+                onNumberChanged = TODO(),
+                onCityChanged = TODO(),
+                onStateChanged = TODO(),
+                onZipChanged = TODO(),
+                onCountryChanged = TODO(),
+                updateExpandedOptions = TODO(),
+                typeRental = TODO(),
+                openDialog = TODO(),
+                closeDialog = TODO(),
+                onRatingChanged = TODO(),
+                updateReview = TODO(),
+                onDateRangeSelected = TODO(),
+                onTitleChanged = TODO()
+            )
         }
     }
 }

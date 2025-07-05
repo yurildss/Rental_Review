@@ -36,6 +36,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     onMyReviewsClick: () -> Unit,
     onMyFavoritesClick: () -> Unit,
+    navAfterLogOut: () -> Unit,
     onSettings: () -> Unit
 ){
 
@@ -53,7 +54,7 @@ fun ProfileScreen(
         ProfileMenu(
             innerPadding,
             uiState.displayName,
-            viewModel::signOut,
+            { viewModel.signOut(navAfterLogOut) },
             onMyReviewsClick,
             onMyFavoritesClick,
             onSettings
@@ -69,19 +70,26 @@ fun ProfileMenu(
     onLogOut: () -> Unit,
     onMyReviewsClick: () -> Unit,
     onFavorites: () -> Unit,
-    onSettings: () -> Unit
+    onSettings: () -> Unit,
 ){
-    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(20.dp)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .padding(20.dp)) {
         Icon(
             imageVector = Icons.Default.AccountCircle,
             contentDescription = "Perfil",
-            modifier = Modifier.align(Alignment.CenterHorizontally).size(60.dp)
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .size(60.dp)
         )
         Text(
             text = userName,
             fontSize = 27.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .padding(top = 10.dp)
+                .align(Alignment.CenterHorizontally),
             color = MaterialTheme.colorScheme.primary
         )
         Button(onClick = onLogOut,
@@ -135,11 +143,13 @@ fun ProfileMenu(
 fun PerfilScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
-            ProfileScreen(
-                viewModel = TODO(),
-                onMyReviewsClick = TODO(),
-                onMyFavoritesClick = TODO(),
-                onSettings = TODO()
+            ProfileMenu(
+                paddingValues = PaddingValues(),
+                userName = "Yuri Lima",
+                onLogOut = {},
+                onFavorites = {},
+                onMyReviewsClick = {},
+                onSettings = {}
             )
         }
     }
@@ -150,11 +160,13 @@ fun PerfilScreenPreview(){
 fun PerfilBlackScreenPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
-            ProfileScreen(
-                viewModel = TODO(),
-                onMyReviewsClick = TODO(),
-                onMyFavoritesClick = TODO(),
-                onSettings = TODO()
+            ProfileMenu(
+                paddingValues = PaddingValues(),
+                userName = "Yuri Lima",
+                onLogOut = {},
+                onFavorites = {},
+                onMyReviewsClick = {},
+                onSettings = {}
             )
         }
     }

@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.rentalreview.model.Address
 import com.example.rentalreview.model.Comments
 import com.example.rentalreview.model.Review
 import com.example.rentalreview.screen.RentalReviewAppViewModel
@@ -268,7 +269,7 @@ data class ReviewUiState(
     val type: String = "",
     val startDate: String = "",
     val endDate: String = "" ,
-    val address: String = "",
+    val address: Address,
     val likesIds: MutableList<String> = mutableListOf(),
     val comments: MutableList<Comments> = mutableListOf(),
     val favoriteIds: MutableList<String> = mutableListOf(),

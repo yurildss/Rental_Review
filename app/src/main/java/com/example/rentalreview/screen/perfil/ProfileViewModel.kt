@@ -27,9 +27,10 @@ class ProfileViewModel
         }
     }
 
-    fun signOut(){
+    fun signOut(navAfterLogOut: () -> Unit){
         launchCatching {
             accountService.logOut()
+            navAfterLogOut()
         }
     }
 

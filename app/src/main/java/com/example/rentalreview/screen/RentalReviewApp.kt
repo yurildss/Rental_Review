@@ -55,20 +55,37 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
         }
 
         composable(route = Screens.FEED_SCREEN.name){
-            FeedScreen(onSave = {
-                navController.navigate(Screens.FEED_SCREEN.name){
-                    popUpTo(Screens.FEED_SCREEN.name){
-                        inclusive = true
+            FeedScreen(
+                onSave = {
+                    navController.navigate(Screens.FEED_SCREEN.name) {
+                        popUpTo(Screens.FEED_SCREEN.name) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onMyReviewsClick = TODO(),
+                navAfterLogOut = {
+                    navController.navigate(Screens.LOGIN_SCREEN.name){
+                        popUpTo(0){
+                            inclusive = true
+                        }
                     }
                 }
-            })
+            )
         }
 
         composable(route = Screens.PROFILE_SCREEN.name){
             ProfileScreen(
                 onMyReviewsClick = {},
                 onMyFavoritesClick = {},
-                onSettings = {}
+                onSettings = {},
+                navAfterLogOut = {
+                    navController.navigate(Screens.LOGIN_SCREEN.name){
+                        popUpTo(0){
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
 

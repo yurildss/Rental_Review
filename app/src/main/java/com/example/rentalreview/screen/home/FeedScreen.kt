@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.R
+import com.example.rentalreview.model.Address
 import com.example.rentalreview.model.Comments
 import com.example.rentalreview.screen.perfil.ProfileScreen
 import com.example.rentalreview.screen.review.ReviewEntryScreen
@@ -56,7 +57,9 @@ import com.example.rentalreview.ui.theme.RentalReviewTheme
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FeedScreen(
-    onSave: () -> Unit = {},
+    onSave: () -> Unit,
+    onMyReviewsClick: () -> Unit,
+    navAfterLogOut: () -> Unit,
     viewModel: FeedScreenViewModel = hiltViewModel()
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -109,9 +112,10 @@ fun FeedScreen(
                 )
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
                 uiState.navItems[3] -> ProfileScreen(
-                    onMyReviewsClick = {},
+                    onMyReviewsClick = onMyReviewsClick,
                     onMyFavoritesClick = {},
-                    onSettings = {}
+                    onSettings = {},
+                    navAfterLogOut = navAfterLogOut
                 )
             }
         }
@@ -302,7 +306,7 @@ fun ReviewCard(
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
-        Text(review.address,
+        Text(review.address.toString(),
             fontSize = 19.sp,
             textAlign = TextAlign.Left,
             modifier = Modifier
@@ -402,6 +406,7 @@ fun ReviewCardPreview(){
                             "Test Comment"
                         )
                     ),
+                    address = Address()
                 ),
                 onLike = {},
                 userId = "1",
@@ -425,7 +430,7 @@ fun ReviewBlackCardPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
             ReviewCard(
-                review = ReviewUiState(),
+                review = ReviewUiState(address = Address()),
                 onLike = {},
                 userId = "1",
                 desLike = {},

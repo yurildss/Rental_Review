@@ -3,6 +3,7 @@ package com.example.rentalreview.screen.review
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.example.rentalreview.model.Address
 import com.example.rentalreview.model.Review
 import com.example.rentalreview.screen.RentalReviewAppViewModel
 import com.example.rentalreview.service.StorageService
@@ -69,6 +70,30 @@ class ReviewScreenViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(title = title)
     }
 
+    fun onStreetChanged(street: String){
+        _uiState.value = _uiState.value.copy(street = street)
+    }
+
+    fun onNumberChanged(number: String){
+        _uiState.value = _uiState.value.copy(number = number)
+    }
+
+    fun onCityChanged(city: String){
+        _uiState.value = _uiState.value.copy(city = city)
+    }
+
+    fun onStateChanged(state: String){
+        _uiState.value = _uiState.value.copy(state = state)
+    }
+
+    fun onZipChanged(zip: String){
+        _uiState.value = _uiState.value.copy(zip = zip)
+    }
+
+    fun onCountryChanged(country: String){
+        _uiState.value = _uiState.value.copy(country = country)
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun onSave(onSaved: () -> Unit = {}){
         launchCatching {
@@ -79,7 +104,8 @@ class ReviewScreenViewModel @Inject constructor(
                 startDate = _startDate.value?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: "",
                 endDate = _endDate.value?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: "",
                 rating = _uiState.value.rating,
-                review = _uiState.value.review
+                review = _uiState.value.review,
+                address = _uiState.value.toAddress()
             ))
             onSaved()
         }
@@ -88,6 +114,15 @@ class ReviewScreenViewModel @Inject constructor(
     fun onRatingChanged(rating: Int){
         _uiState.value = _uiState.value.copy(rating = rating)
     }
+
+    fun ReviewScreenState.toAddress() = Address(
+        street = street,
+        number = number,
+        city = city,
+        state = state,
+        zip = zip,
+        country = country
+    )
 
 }
 
@@ -101,11 +136,14 @@ data class ReviewScreenState(
         "Commercial Space",
         "Other"),
     val expandedOptions: Boolean = false,
-
     val rating: Int = 0,
-
     val review: String = "",
     val type: String = "",
     val openDialog: Boolean = false,
-
+    val street: String = "",
+    val number: String = "",
+    val city: String = "",
+    val state: String = "",
+    val zip: String = "",
+    val country: String = ""
 )
