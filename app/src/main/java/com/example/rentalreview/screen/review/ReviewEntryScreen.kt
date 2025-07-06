@@ -141,14 +141,14 @@ fun ReviewEntryForm(
                 value = uiState.street,
                 onValueChange = onStreeetChanged,
                 modifier = Modifier
-                    .fillMaxWidth(0.65F),
+                    .fillMaxWidth(0.65F).testTag("streetEntry"),
                 label = { Text("Street", color = MaterialTheme.colorScheme.primary) }
             )
             OutlinedTextField(
                 value = uiState.number,
                 onValueChange = onNumberChanged,
                 modifier = Modifier
-                    .fillMaxWidth(0.95F),
+                    .fillMaxWidth(0.95F).testTag("numberEntry"),
                 label = { Text("n", color = MaterialTheme.colorScheme.primary) }
             )
         }
@@ -157,14 +157,14 @@ fun ReviewEntryForm(
                 value = uiState.city,
                 onValueChange = onCityChanged,
                 modifier = Modifier
-                    .fillMaxWidth(0.50F),
+                    .fillMaxWidth(0.50F).testTag("cityEntry"),
                 label = { Text("city", color = MaterialTheme.colorScheme.primary) }
             )
             OutlinedTextField(
                 value = uiState.state,
                 onValueChange = onStateChanged,
                 modifier = Modifier
-                    .fillMaxWidth(0.95F),
+                    .fillMaxWidth(0.95F).testTag("stateEntry"),
                 label = { Text("state", color = MaterialTheme.colorScheme.primary) }
             )
         }
@@ -173,14 +173,14 @@ fun ReviewEntryForm(
                 value = uiState.country,
                 onValueChange = onCountryChanged,
                 modifier = Modifier
-                    .fillMaxWidth(0.60F),
+                    .fillMaxWidth(0.60F).testTag("countryEntry"),
                 label = { Text("country", color = MaterialTheme.colorScheme.primary) }
             )
             OutlinedTextField(
                 value = uiState.zip,
                 onValueChange = onZipChanged,
                 modifier = Modifier
-                    .fillMaxWidth(0.95F),
+                    .fillMaxWidth(0.95F).testTag("zipEntry"),
                 label = { Text("zip", color = MaterialTheme.colorScheme.primary) }
             )
         }
@@ -442,20 +442,20 @@ fun ReviewEntryScreenPreview(){
                 endDate = null,
                 star = 0,
                 onSaved = {},
-                onStreeetChanged = TODO(),
-                onNumberChanged = TODO(),
-                onCityChanged = TODO(),
-                onStateChanged = TODO(),
-                onZipChanged = TODO(),
-                onCountryChanged = TODO(),
-                updateExpandedOptions = TODO(),
-                typeRental = TODO(),
-                openDialog = TODO(),
-                closeDialog = TODO(),
-                onRatingChanged = TODO(),
-                updateReview = TODO(),
-                onDateRangeSelected = TODO(),
-                onTitleChanged = TODO()
+                onStreeetChanged = {},
+                onNumberChanged = {  },
+                onCityChanged = {},
+                onStateChanged = {},
+                onZipChanged = {},
+                onCountryChanged = {},
+                updateExpandedOptions = {},
+                typeRental = {},
+                openDialog = {  },
+                closeDialog = {},
+                onRatingChanged = {},
+                updateReview = {},
+                onDateRangeSelected = { _, _ -> },
+                onTitleChanged = {}
             )
         }
     }
@@ -474,20 +474,20 @@ fun ReviewEntryDarkScreenPreview(){
                 endDate = null,
                 star = 0,
                 onSaved = {},
-                onStreeetChanged = TODO(),
-                onNumberChanged = TODO(),
-                onCityChanged = TODO(),
-                onStateChanged = TODO(),
-                onZipChanged = TODO(),
-                onCountryChanged = TODO(),
-                updateExpandedOptions = TODO(),
-                typeRental = TODO(),
-                openDialog = TODO(),
-                closeDialog = TODO(),
-                onRatingChanged = TODO(),
-                updateReview = TODO(),
-                onDateRangeSelected = TODO(),
-                onTitleChanged = TODO()
+                onStreeetChanged = {},
+                onNumberChanged = {  },
+                onCityChanged = {},
+                onStateChanged = {},
+                onZipChanged = {},
+                onCountryChanged = {},
+                updateExpandedOptions = {},
+                typeRental = {},
+                openDialog = {  },
+                closeDialog = {},
+                onRatingChanged = {},
+                updateReview = {},
+                onDateRangeSelected = { _, _ -> },
+                onTitleChanged = {}
             )
         }
     }

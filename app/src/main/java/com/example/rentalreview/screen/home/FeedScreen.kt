@@ -306,7 +306,7 @@ fun ReviewCard(
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
-        Text(review.address.toString(),
+        Text("${review.address.street}, ${review.address.number}, ${review.address.city}, ${review.address.state}, ${review.address.country}",
             fontSize = 19.sp,
             textAlign = TextAlign.Left,
             modifier = Modifier
@@ -430,7 +430,13 @@ fun ReviewBlackCardPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
             ReviewCard(
-                review = ReviewUiState(address = Address()),
+                review = ReviewUiState(address =
+                    Address(street = "Manoel Pedro da Silveira",
+                        number = "338",
+                        city = "São Paulo",
+                        state = "Ba",
+                        country = "Brazil"
+                    )),
                 onLike = {},
                 userId = "1",
                 desLike = {},
