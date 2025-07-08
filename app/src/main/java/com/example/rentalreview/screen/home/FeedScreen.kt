@@ -40,6 +40,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -289,7 +291,7 @@ fun ReviewCard(
             )
             .wrapContentHeight()
             .background(MaterialTheme.colorScheme.background)
-            .padding(10.dp),
+            .padding(10.dp).testTag("reviewCard"),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
@@ -306,9 +308,15 @@ fun ReviewCard(
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
-        Text("${review.address.street}, ${review.address.number}, ${review.address.city}, ${review.address.state}, ${review.address.country}",
-            fontSize = 19.sp,
+        Text("${review.address.street}," +
+                " ${review.address.number}," +
+                " ${review.address.city}," +
+                " ${review.address.state}," +
+                " ${review.address.country}",
+            fontSize = 17.sp,
             textAlign = TextAlign.Left,
+            fontStyle = FontStyle.Italic,
+            fontFamily = FontFamily.Monospace,
             modifier = Modifier
                 .padding(start = 10.dp, top = 5.dp)
                 .fillMaxWidth(),

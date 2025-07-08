@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import com.example.rentalreview.Screens
 import com.example.rentalreview.screen.home.FeedScreen
 import com.example.rentalreview.screen.login.LoginScreen
+import com.example.rentalreview.screen.myReviews.MyReviewsScreen
 import com.example.rentalreview.screen.openScreen.OpenScree
 import com.example.rentalreview.screen.perfil.ProfileScreen
 import com.example.rentalreview.screen.review.ReviewEntryScreen
@@ -63,7 +64,9 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
                         }
                     }
                 },
-                onMyReviewsClick = TODO(),
+                onMyReviewsClick = {
+                    navController.navigate(Screens.MY_REVIEWS_SCREEN.name)
+                },
                 navAfterLogOut = {
                     navController.navigate(Screens.LOGIN_SCREEN.name){
                         popUpTo(0){
@@ -76,7 +79,9 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
 
         composable(route = Screens.PROFILE_SCREEN.name){
             ProfileScreen(
-                onMyReviewsClick = {},
+                onMyReviewsClick = {
+                    navController.navigate(Screens.MY_REVIEWS_SCREEN.name)
+                },
                 onMyFavoritesClick = {},
                 onSettings = {},
                 navAfterLogOut = {
@@ -91,6 +96,10 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
 
         composable(route = Screens.REVIEW_ENTRY_SCREEN.name){
             ReviewEntryScreen()
+        }
+
+        composable(route = Screens.MY_REVIEWS_SCREEN.name){
+            MyReviewsScreen()
         }
     }
 }

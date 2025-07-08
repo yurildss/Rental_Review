@@ -27,7 +27,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,7 +59,7 @@ fun MyReviewsScreen(
 fun ReviewsList(
     reviews: List<ReviewUiState?>
 ){
-    LazyColumn(modifier = Modifier.fillMaxSize().padding( 10.dp )) {
+    LazyColumn(modifier = Modifier.fillMaxSize().padding( 10.dp ).testTag("reviewCard")) {
         itemsIndexed(reviews) { index, review ->
             review?.let {
                 ReviewCardVisualizer(
@@ -105,9 +108,15 @@ fun ReviewCardVisualizer(
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
-        Text(review.address.toString(),
-            fontSize = 19.sp,
+        Text("${review.address.street}," +
+                " ${review.address.number}," +
+                " ${review.address.city}," +
+                " ${review.address.state}," +
+                " ${review.address.country}",
+            fontSize = 17.sp,
             textAlign = TextAlign.Left,
+            fontStyle = FontStyle.Italic,
+            fontFamily = FontFamily.Monospace,
             modifier = Modifier
                 .padding(start = 10.dp, top = 5.dp)
                 .fillMaxWidth(),

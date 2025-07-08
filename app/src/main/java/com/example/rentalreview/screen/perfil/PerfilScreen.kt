@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun ProfileScreen(
@@ -92,13 +93,13 @@ fun ProfileMenu(
                 .align(Alignment.CenterHorizontally),
             color = MaterialTheme.colorScheme.primary
         )
-        Button(onClick = onLogOut,
+        Button(onClick = onMyReviewsClick,
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .fillMaxWidth(0.85f)
                 .padding(top = 20.dp)
                 .height(56.dp)
-                .align(Alignment.CenterHorizontally),
+                .align(Alignment.CenterHorizontally).testTag("myReviewsTag"),
 
             ) {
             Text("My Reviews")
@@ -123,7 +124,7 @@ fun ProfileMenu(
         ) {
             Text("Settings")
         }
-        OutlinedButton(onClick = {},
+        OutlinedButton(onClick = onLogOut,
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .fillMaxWidth(0.85f)

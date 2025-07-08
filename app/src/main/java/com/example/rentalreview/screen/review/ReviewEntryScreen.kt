@@ -129,7 +129,7 @@ fun ReviewEntryForm(
             value = uiState.title,
             onValueChange = onTitleChanged,
             modifier = Modifier
-                .fillMaxWidth(0.85F)
+                .fillMaxWidth(0.85F).testTag("titleEntry"),
         )
         Text("Address",
             fontSize = 20.sp,

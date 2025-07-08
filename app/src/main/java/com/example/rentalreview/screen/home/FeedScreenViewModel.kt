@@ -1,5 +1,6 @@
 package com.example.rentalreview.screen.home
 
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.Date
 import javax.inject.Inject
+import kotlin.math.log
 
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
@@ -203,7 +205,7 @@ class FeedScreenViewModel @Inject constructor(
             address = address,
             likesIds = likesIds,
             comments = comments,
-            timestamp = timestamp
+            timestamp = timestamp,
         )
     }
 
