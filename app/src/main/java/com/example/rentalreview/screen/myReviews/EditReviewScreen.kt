@@ -13,7 +13,7 @@ import com.example.rentalreview.screen.review.ReviewScreenViewModel
 @Composable
 fun ReviewEditEntryScreen(
     onSaved: () -> Unit = {},
-    viewModel: ReviewScreenViewModel = hiltViewModel(),
+    viewModel: EditReviewViewModel = hiltViewModel(),
 ){
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

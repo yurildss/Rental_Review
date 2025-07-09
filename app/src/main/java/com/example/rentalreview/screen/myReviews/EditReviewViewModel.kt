@@ -2,6 +2,7 @@ package com.example.rentalreview.screen.myReviews
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.rentalreview.model.Address
 import com.example.rentalreview.screen.RentalReviewAppViewModel
 import com.example.rentalreview.screen.review.ReviewScreenState
 import com.example.rentalreview.service.AccountService
@@ -94,10 +95,40 @@ class EditReviewViewModel
         _uiState.value = _uiState.value.copy(country = country)
     }
 
+    fun onRatingChanged(rating: Int){
+        _uiState.value = _uiState.value.copy(rating = rating)
+    }
+
+    fun ReviewScreenState.toAddress() = Address(
+        street = street,
+        number = number,
+        city = city,
+        state = state,
+        zip = zip,
+        country = country
+    )
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getReviewById(reviewId: String){
 
         launchCatching {
+
             val review = storageService.getReviewById(reviewId)
+
+            _uiState.value = _uiState.value.copy(
+                title = review?.title ?: "",
+                street = review?.address?.street ?: "",
+                number = review?.address?.number ?: "",
+                city = review?.address?.city ?: "",
+                state = review?.address?.state ?: "",
+                zip = review?.address?.zip ?: "",
+                country = review?.address?.country ?: "",
+                type = review?.type ?: "",
+                review = review?.review ?: ""
+            )
+            _startDate.value = runCatching{ LocalDate.parse(review?.startDate) }.getOrNull()
+            _endDate.value = runCatching{ LocalDate.parse(review?.endDate) }.getOrNull()
+
         }
 
     }

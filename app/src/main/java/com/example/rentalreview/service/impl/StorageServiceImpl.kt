@@ -68,6 +68,18 @@ class StorageServiceImpl @Inject constructor(
         return myReviews.toObjects(Review::class.java)
     }
 
+    override suspend fun getReviewById(reviewId: String): Review? {
+        val review = firestore.collection(REVIEWS).document(reviewId).get().await()
+        return review.toObject(Review::class.java)
+    }
+
+    override suspend fun updateReview(
+        reviewId: String,
+        review: Review
+    ) {
+        firestore.collection(REVIEWS).document(reviewId).set(review).await()
+    }
+
     companion object Collections{
         const val REVIEWS = "reviews"
         const val CREATE_AT = "timestamp"
