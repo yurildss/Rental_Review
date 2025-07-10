@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,13 +19,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -46,20 +55,28 @@ import com.example.rentalreview.ui.theme.RentalReviewTheme
 
 @Composable
 fun MyReviewsScreen(
-    viewModel: MyReviewsViewModel = hiltViewModel()
+    viewModel: MyReviewsViewModel = hiltViewModel(),
+    onEditReviewClick: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(Modifier.fillMaxSize()) {
-        ReviewsList(reviews = uiState.reviews)
+        ReviewsList(
+            reviews = uiState.reviews,
+            onEditReviewClick = { onEditReviewClick() }
+        )
     }
 }
 
 @Composable
 fun ReviewsList(
-    reviews: List<ReviewUiState?>
+    reviews: List<ReviewUiState?>,
+    onEditReviewClick: (String) -> Unit
 ){
-    LazyColumn(modifier = Modifier.fillMaxSize().padding( 10.dp ).testTag("reviewCard")) {
+    LazyColumn(modifier = Modifier
+        .fillMaxSize()
+        .padding(10.dp)
+        .testTag("reviewCard")) {
         itemsIndexed(reviews) { index, review ->
             review?.let {
                 ReviewCardVisualizer(
@@ -67,7 +84,8 @@ fun ReviewsList(
                     onLoadComments = {},
                     onShowCommentChange = {},
                     showOtherUsersComments = false,
-                    onFavorite = {}
+                    onFavorite = {},
+                    onEditReviewClick = { onEditReviewClick(review.id) }
                 )
             }
         }
@@ -80,7 +98,8 @@ fun ReviewCardVisualizer(
     onLoadComments: () -> Unit,
     onShowCommentChange: () -> Unit,
     showOtherUsersComments: Boolean,
-    onFavorite: () -> Unit
+    onFavorite: () -> Unit,
+    onEditReviewClick: () -> Unit
 ){
     Column(
         Modifier
@@ -94,6 +113,20 @@ fun ReviewCardVisualizer(
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        var expanded by remember { mutableStateOf(false) }
+
+        Box (modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp), contentAlignment = Alignment.TopEnd){
+            IconButton(onClick = {expanded = !expanded}) {
+                Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More options")
+            }
+
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                DropdownMenuItem(text = { Text("Edit") }, onClick =  onEditReviewClick )
+            }
+        }
+
         Image(
             painter = painterResource(id = R.drawable.chatgpt_image_12_de_mai__de_2025__21_11_19),
             contentDescription = "House",
@@ -258,6 +291,7 @@ fun MyReviewsScreenPreview(){
         onLoadComments = {},
         onShowCommentChange = {},
         showOtherUsersComments = false,
-        onFavorite = {}
+        onFavorite = {},
+        onEditReviewClick = {}
     )
 }

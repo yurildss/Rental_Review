@@ -24,7 +24,7 @@ fun ReviewEditEntryScreen(
 
     ReviewEntryForm(
         uiState = uiState,
-        onSaved = { viewModel.onSave(onSaved) },
+        onSaved = {  },
         startDate = startDate,
         endDate = endDate,
         star = star,

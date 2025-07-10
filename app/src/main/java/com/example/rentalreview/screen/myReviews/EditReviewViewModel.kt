@@ -2,6 +2,7 @@ package com.example.rentalreview.screen.myReviews
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.SavedStateHandle
 import com.example.rentalreview.model.Address
 import com.example.rentalreview.screen.RentalReviewAppViewModel
 import com.example.rentalreview.screen.review.ReviewScreenState
@@ -16,11 +17,13 @@ import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class EditReviewViewModel
 @Inject constructor (
     private val storageService: StorageService,
-    private val accountService: AccountService
+    private val accountService: AccountService,
+    savedStateHandle: SavedStateHandle
 ) : RentalReviewAppViewModel() {
 
     private val _uiState = MutableStateFlow(ReviewScreenState())
@@ -35,6 +38,12 @@ class EditReviewViewModel
     private val _endDate = MutableStateFlow<LocalDate?>(LocalDate.of(2025, 12, 31))
     @RequiresApi(Build.VERSION_CODES.O)
     val endDate: StateFlow<LocalDate?> = _endDate.asStateFlow()
+
+    private val reviewId: String = checkNotNull(savedStateHandle["reviewId"])
+
+    init {
+        getReviewById(reviewId)
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun onDateRangeSelected(startMillis: Long?, endMillis: Long?) {

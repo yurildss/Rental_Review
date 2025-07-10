@@ -10,7 +10,9 @@ import androidx.navigation.compose.composable
 import com.example.rentalreview.Screens
 import com.example.rentalreview.screen.home.FeedScreen
 import com.example.rentalreview.screen.login.LoginScreen
+import com.example.rentalreview.screen.myReviews.EditReviewViewModel
 import com.example.rentalreview.screen.myReviews.MyReviewsScreen
+import com.example.rentalreview.screen.myReviews.ReviewEditEntryScreen
 import com.example.rentalreview.screen.openScreen.OpenScree
 import com.example.rentalreview.screen.perfil.ProfileScreen
 import com.example.rentalreview.screen.review.ReviewEntryScreen
@@ -98,8 +100,16 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
             ReviewEntryScreen()
         }
 
+        composable(route = "${Screens.EDIT_REVIEW_SCREEN.name}/{reviewId}") {
+            ReviewEditEntryScreen()
+        }
+
         composable(route = Screens.MY_REVIEWS_SCREEN.name){
-            MyReviewsScreen()
+            MyReviewsScreen(
+                onEditReviewClick = {
+                    navController.navigate("${Screens.EDIT_REVIEW_SCREEN.name}/$it")
+                }
+            )
         }
     }
 }

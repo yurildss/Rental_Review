@@ -28,7 +28,7 @@ import javax.inject.Inject
  */
 class MyReviewsViewModel @Inject constructor(
     private val storageService: StorageService,
-    private val accountService: AccountService
+    private val accountService: AccountService,
 ) : RentalReviewAppViewModel() {
 
     val _uiState = MutableStateFlow(ReviewScreenUiState())

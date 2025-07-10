@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import com.example.rentalreview.model.Address
 import com.example.rentalreview.model.Review
 import com.example.rentalreview.screen.RentalReviewAppViewModel
+import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ReviewScreenViewModel @Inject constructor(
-    private val reviewRepository: StorageService
+    private val reviewRepository: StorageService,
+    private val accountService: AccountService
 ) : RentalReviewAppViewModel() {
 
     private val _uiState = MutableStateFlow(ReviewScreenState())
@@ -34,6 +36,10 @@ class ReviewScreenViewModel @Inject constructor(
     private val _endDate = MutableStateFlow<LocalDate?>(LocalDate.of(2025, 12, 31))
     @RequiresApi(Build.VERSION_CODES.O)
     val endDate: StateFlow<LocalDate?> = _endDate.asStateFlow()
+
+    init {
+        _uiState.value = _uiState.value.copy(userId = accountService.currentUserId)
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun onDateRangeSelected(startMillis: Long?, endMillis: Long?) {
@@ -105,7 +111,8 @@ class ReviewScreenViewModel @Inject constructor(
                 endDate = _endDate.value?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: "",
                 rating = _uiState.value.rating,
                 review = _uiState.value.review,
-                address = _uiState.value.toAddress()
+                address = _uiState.value.toAddress(),
+                userId = uiState.value.userId
             ))
             onSaved()
         }
@@ -145,5 +152,6 @@ data class ReviewScreenState(
     val city: String = "",
     val state: String = "",
     val zip: String = "",
-    val country: String = ""
+    val country: String = "",
+    val userId: String = ""
 )
