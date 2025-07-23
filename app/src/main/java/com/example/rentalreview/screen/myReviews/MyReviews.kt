@@ -24,11 +24,13 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -58,11 +61,18 @@ import com.example.rentalreview.ui.theme.RentalReviewTheme
 @Composable
 fun MyReviewsScreen(
     viewModel: MyReviewsViewModel = hiltViewModel(),
-    onEditReviewClick: () -> Unit
+    onEditReviewClick: () -> Unit,
+    onBackClick: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(Modifier.fillMaxSize()) {
+        IconButton(onClick = {}, modifier = Modifier.padding(top = 10.dp )) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back"
+            )
+        }
         ReviewsList(
             reviews = uiState.reviews,
             onEditReviewClick = { onEditReviewClick() }
@@ -101,6 +111,7 @@ fun ReviewsList(
                     onFavorite = {},
                     onEditReviewClick = { onEditReviewClick(review.id) }
                 )
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
@@ -283,9 +294,6 @@ fun ReviewCardVisualizerPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
             Column(modifier = Modifier.fillMaxSize()) {
-                Button(onClick = {}) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack)
-                }
                 ReviewsList(
                     reviews = listOf(
                         ReviewUiState(address = Address()),

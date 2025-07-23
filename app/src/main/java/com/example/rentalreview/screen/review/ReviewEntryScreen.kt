@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -61,28 +62,31 @@ fun ReviewEntryScreen(
 
     val startDate by viewModel.startDate.collectAsStateWithLifecycle()
     val endDate by viewModel.endDate.collectAsStateWithLifecycle()
-
-    ReviewEntryForm(
-        uiState = uiState,
-        onSaved = { viewModel.onSave(onSaved) },
-        startDate = startDate,
-        endDate = endDate,
-        star = star,
-        updateExpandedOptions = viewModel::updateExpandedOptions,
-        typeRental = viewModel::typeRental,
-        openDialog = viewModel::openDialog,
-        closeDialog = viewModel::closeDialog,
-        onRatingChanged = viewModel::onRatingChanged,
-        updateReview = viewModel::updateReview,
-        onDateRangeSelected = viewModel::onDateRangeSelected,
-        onTitleChanged = viewModel::onTitleChanged,
-        onStreeetChanged = viewModel::onStreetChanged,
-        onNumberChanged = viewModel::onNumberChanged,
-        onCityChanged = viewModel::onCityChanged,
-        onStateChanged = viewModel::onStateChanged,
-        onZipChanged = viewModel::onZipChanged,
-        onCountryChanged = viewModel::onCountryChanged
-    )
+    LazyColumn {
+        item {
+            ReviewEntryForm(
+                uiState = uiState,
+                onSaved = { viewModel.onSave(onSaved) },
+                startDate = startDate,
+                endDate = endDate,
+                star = star,
+                updateExpandedOptions = viewModel::updateExpandedOptions,
+                typeRental = viewModel::typeRental,
+                openDialog = viewModel::openDialog,
+                closeDialog = viewModel::closeDialog,
+                onRatingChanged = viewModel::onRatingChanged,
+                updateReview = viewModel::updateReview,
+                onDateRangeSelected = viewModel::onDateRangeSelected,
+                onTitleChanged = viewModel::onTitleChanged,
+                onStreeetChanged = viewModel::onStreetChanged,
+                onNumberChanged = viewModel::onNumberChanged,
+                onCityChanged = viewModel::onCityChanged,
+                onStateChanged = viewModel::onStateChanged,
+                onZipChanged = viewModel::onZipChanged,
+                onCountryChanged = viewModel::onCountryChanged
+            )
+        }
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
