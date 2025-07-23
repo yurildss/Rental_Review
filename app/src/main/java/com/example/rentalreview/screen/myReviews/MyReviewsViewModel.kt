@@ -1,5 +1,6 @@
 package com.example.rentalreview.screen.myReviews
 
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
@@ -56,6 +57,7 @@ class MyReviewsViewModel @Inject constructor(
                 userId = userId,
                 reviews = uiStateList
             )
+
         }
 
     }

@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
@@ -73,14 +75,26 @@ fun ReviewsList(
     reviews: List<ReviewUiState?>,
     onEditReviewClick: (String) -> Unit
 ){
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .padding(10.dp)
-        .testTag("reviewCard")) {
-        itemsIndexed(reviews) { index, review ->
-            review?.let {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp)
+            .testTag("reviewCard")
+    ) {
+        if (reviews.isEmpty()) {
+            item {
+                Text(
+                    text = "Nenhuma avaliação encontrada",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                    , fontFamily = FontFamily.Monospace
+                )
+            }
+        } else {
+            itemsIndexed(reviews) { index, review ->
                 ReviewCardVisualizer(
-                    review = it,
+                    review = review!!,
                     onLoadComments = {},
                     onShowCommentChange = {},
                     showOtherUsersComments = false,
@@ -90,6 +104,7 @@ fun ReviewsList(
             }
         }
     }
+
 }
 
 @Composable
@@ -262,6 +277,29 @@ fun CommentSectionWithOutEntry(
     }
 }
 
+@Preview
+@Composable
+fun ReviewCardVisualizerPreview(){
+    Surface {
+        RentalReviewTheme(darkTheme = false, dynamicColor = false) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Button(onClick = {}) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack)
+                }
+                ReviewsList(
+                    reviews = listOf(
+                        ReviewUiState(address = Address()),
+                        ReviewUiState(address = Address()),
+                        ReviewUiState(address = Address()),
+                        ReviewUiState(address = Address()),
+                        ReviewUiState(address = Address()),
+                    ),
+                    onEditReviewClick = {}
+                )
+            }
+        }
+    }
+}
 
 @Preview
 @Composable
