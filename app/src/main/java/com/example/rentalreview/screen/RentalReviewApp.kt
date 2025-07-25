@@ -108,7 +108,8 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
             MyReviewsScreen(
                 onEditReviewClick = {
                     navController.navigate("${Screens.EDIT_REVIEW_SCREEN.name}/$it")
-                }
+                },
+                onBackClick = TODO()
             )
         }
     }

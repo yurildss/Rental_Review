@@ -82,4 +82,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
 
+    testImplementation ("org.mockito:mockito-core:5.5.0")
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:5.1.0")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9")
 }
