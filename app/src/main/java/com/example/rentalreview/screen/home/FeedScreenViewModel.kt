@@ -81,6 +81,10 @@ class FeedScreenViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Show comments on review card in a list of reviews on
+     * a specific position
+     */
     fun onShowCommentClick(index: Int){
         val currentList = _uiState.value.reviews
         val updatedReview = currentList[index]?.copy(
@@ -94,6 +98,12 @@ class FeedScreenViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Like a review
+     * in a list of reviews
+     * in a position with given index
+     * add a user id to the likesIds list
+     */
     fun likeReview(reviewId: String, index: Int) {
         launchCatching {
             val currentUserId = accountService.currentUserId
@@ -118,6 +128,11 @@ class FeedScreenViewModel @Inject constructor(
             }
         }
     }
+
+    /**
+     * Add a review to favorites
+     * add a user id in a list of favoriteIds
+     */
 
     fun addFavorite(reviewId: String, index: Int) {
         launchCatching {
