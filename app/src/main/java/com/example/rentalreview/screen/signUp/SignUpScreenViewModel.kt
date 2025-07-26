@@ -1,7 +1,5 @@
 package com.example.rentalreview.screen.signUp
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
 import com.example.rentalreview.R
 import com.example.rentalreview.common.SnackbarManager
 import com.example.rentalreview.common.isValidEmail

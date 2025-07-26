@@ -18,7 +18,6 @@ open class RentalReviewAppViewModel() : ViewModel() {
             context = CoroutineExceptionHandler { _, throwable ->
                 if (snackbar) {
                     SnackbarManager.showMessage(throwable.toSnackbarMessage())
-                    Log.d("TAG", "launchCatching: $throwable")
                 }
             },
             block = block

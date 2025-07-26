@@ -103,7 +103,7 @@ class ReviewScreenViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     fun onSave(onSaved: () -> Unit = {}){
         launchCatching {
-            Log.d("ReviewScreenViewModel", "Review saved")
+
             reviewRepository.saveReview(Review(
                 title = _uiState.value.title,
                 type = _uiState.value.type,
@@ -114,7 +114,9 @@ class ReviewScreenViewModel @Inject constructor(
                 address = _uiState.value.toAddress(),
                 userId = uiState.value.userId
             ))
+
             onSaved()
+
         }
     }
 
