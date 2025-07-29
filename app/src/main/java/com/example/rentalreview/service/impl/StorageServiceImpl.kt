@@ -80,6 +80,14 @@ class StorageServiceImpl @Inject constructor(
         firestore.collection(REVIEWS).document(reviewId).set(review).await()
     }
 
+    override suspend fun getFavoriteReviews(userId: String): List<Review?> {
+        return firestore
+            .collection(REVIEWS)
+            .whereArrayContains(FAVORITES, userId)
+            .get()
+            .await().toObjects(Review::class.java)
+    }
+
     companion object Collections{
         const val REVIEWS = "reviews"
         const val CREATE_AT = "timestamp"

@@ -9,5 +9,5 @@ enum class Screens {
     PROFILE_SCREEN,
     MY_REVIEWS_SCREEN,
     EDIT_REVIEW_SCREEN,
-
+    FAVORITES_SCREEN
 }

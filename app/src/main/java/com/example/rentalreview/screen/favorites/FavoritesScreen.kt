@@ -1,4 +1,4 @@
-package com.example.rentalreview.screen.myReviews
+package com.example.rentalreview.screen.favorites
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,18 +19,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +36,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -56,12 +51,12 @@ import com.example.rentalreview.R
 import com.example.rentalreview.model.Address
 import com.example.rentalreview.model.Comments
 import com.example.rentalreview.screen.home.ReviewUiState
+import com.example.rentalreview.screen.myReviews.MyReviewsViewModel
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 
 @Composable
-fun MyReviewsScreen(
-    viewModel: MyReviewsViewModel = hiltViewModel(),
-    onEditReviewClick: () -> Unit,
+fun FavoritesScreen(
+    viewModel: FavoritesViewModel = hiltViewModel(),
     onBackClick: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -74,16 +69,14 @@ fun MyReviewsScreen(
             )
         }
         ReviewsList(
-            reviews = uiState.reviews,
-            onEditReviewClick = { onEditReviewClick() }
+            reviews = uiState.reviews
         )
     }
 }
 
 @Composable
 fun ReviewsList(
-    reviews: List<ReviewUiState?>,
-    onEditReviewClick: (String) -> Unit
+    reviews: List<ReviewUiState?>
 ){
     LazyColumn(
         modifier = Modifier
@@ -108,8 +101,7 @@ fun ReviewsList(
                     onLoadComments = {},
                     onShowCommentChange = {},
                     showOtherUsersComments = false,
-                    onFavorite = {},
-                    onEditReviewClick = { onEditReviewClick(review.id) }
+                    onFavorite = {}
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -124,8 +116,7 @@ fun ReviewCardVisualizer(
     onLoadComments: () -> Unit,
     onShowCommentChange: () -> Unit,
     showOtherUsersComments: Boolean,
-    onFavorite: () -> Unit,
-    onEditReviewClick: () -> Unit
+    onFavorite: () -> Unit
 ){
     Column(
         Modifier
@@ -139,20 +130,6 @@ fun ReviewCardVisualizer(
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        var expanded by remember { mutableStateOf(false) }
-
-        Box (modifier = Modifier
-            .fillMaxWidth()
-            .padding(5.dp), contentAlignment = Alignment.TopEnd){
-            IconButton(onClick = {expanded = !expanded}) {
-                Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More options")
-            }
-
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                DropdownMenuItem(text = { Text("Edit") }, onClick =  onEditReviewClick )
-            }
-        }
-
         Image(
             painter = painterResource(id = R.drawable.chatgpt_image_12_de_mai__de_2025__21_11_19),
             contentDescription = "House",
@@ -301,8 +278,7 @@ fun ReviewCardVisualizerPreview(){
                         ReviewUiState(address = Address()),
                         ReviewUiState(address = Address()),
                         ReviewUiState(address = Address()),
-                    ),
-                    onEditReviewClick = {}
+                    )
                 )
             }
         }
@@ -331,13 +307,12 @@ fun CommentSectionWithOutEntryPreview(){
 
 @Preview
 @Composable
-fun MyReviewsScreenPreview(){
+fun FavoritesScreenPreview(){
     ReviewCardVisualizer(
         review = ReviewUiState(address = Address()),
         onLoadComments = {},
         onShowCommentChange = {},
         showOtherUsersComments = false,
         onFavorite = {},
-        onEditReviewClick = {}
     )
 }

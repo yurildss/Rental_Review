@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.rentalreview.Screens
+import com.example.rentalreview.screen.favorites.FavoritesScreen
 import com.example.rentalreview.screen.home.FeedScreen
 import com.example.rentalreview.screen.login.LoginScreen
 import com.example.rentalreview.screen.myReviews.EditReviewViewModel
@@ -104,12 +105,18 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
             ReviewEditEntryScreen()
         }
 
+        composable(route = Screens.FAVORITES_SCREEN.name){
+            FavoritesScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
         composable(route = Screens.MY_REVIEWS_SCREEN.name){
             MyReviewsScreen(
                 onEditReviewClick = {
                     navController.navigate("${Screens.EDIT_REVIEW_SCREEN.name}/$it")
                 },
-                onBackClick = TODO()
+                onBackClick = { navController.popBackStack() }
             )
         }
     }
