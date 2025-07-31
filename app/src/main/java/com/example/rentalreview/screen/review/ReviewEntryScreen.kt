@@ -390,7 +390,6 @@ fun PropertyTypeDropMenu(
     type: String = "",
     options: List<String>
 ){
-
     ExposedDropdownMenuBox(
         onExpandedChange =
             updateExpandedOptions,
