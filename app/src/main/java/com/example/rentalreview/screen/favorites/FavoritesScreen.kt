@@ -62,6 +62,12 @@ fun FavoritesScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(Modifier.fillMaxSize()) {
+        Text("Favorites",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.Monospace,
+            modifier = Modifier.padding(start = 10.dp, top = 5.dp)
+        )
         IconButton(onClick = onBackClick, modifier = Modifier.padding(top = 10.dp )) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -271,6 +277,12 @@ fun ReviewCardVisualizerPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
             Column(modifier = Modifier.fillMaxSize()) {
+                Text("Favorites",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace,
+                    modifier = Modifier.padding(start = 10.dp, top = 5.dp)
+                )
                 ReviewsList(
                     reviews = listOf(
                         ReviewUiState(address = Address()),
