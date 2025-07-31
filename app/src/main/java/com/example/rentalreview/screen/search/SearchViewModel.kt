@@ -1,6 +1,7 @@
 package com.example.rentalreview.screen.search
 
 import com.example.rentalreview.model.Review
+import com.example.rentalreview.network.GeoApi
 import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,6 +13,7 @@ class SearchViewModel @Inject constructor(
     private val accountService: AccountService
 ){
 
+    val listCountry = GeoApi.retrofitService.getCountry()
 }
 
 data class SearchScreenUiState(
