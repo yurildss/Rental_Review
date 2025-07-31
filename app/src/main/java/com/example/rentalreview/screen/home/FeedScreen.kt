@@ -199,8 +199,7 @@ fun CommentSection(
     onSendComment: () -> Unit,
     comment: String,
     onCommentChange: (String) -> Unit,
-    showOtherUserComments: Boolean,
-    userId: String
+    showOtherUserComments: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -389,8 +388,7 @@ fun ReviewCard(
                 onSendComment = onSendComment,
                 comment = comment,
                 onCommentChange = onCommentChange,
-                showOtherUserComments = showOtherUsersComments,
-                userId = userId
+                showOtherUserComments = showOtherUsersComments
             )
         }
     }
@@ -492,8 +490,7 @@ fun CommentSectionPreview(){
                 onSendComment = {},
                 comment = "",
                 onCommentChange = {},
-                showOtherUserComments = false,
-                userId = "1"
+                showOtherUserComments = false
             )
         }
     }

@@ -19,18 +19,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +36,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -66,7 +61,14 @@ fun MyReviewsScreen(
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(Modifier.fillMaxSize()) {
+    Column(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
+        Text("My reviews",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.Monospace,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(start = 10.dp, top = 5.dp)
+        )
         IconButton(onClick = onBackClick, modifier = Modifier.padding(top = 10.dp )) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -94,7 +96,7 @@ fun ReviewsList(
         if (reviews.isEmpty()) {
             item {
                 Text(
-                    text = "Nenhuma avaliação encontrada",
+                    text = "None review find",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
@@ -293,7 +295,28 @@ fun CommentSectionWithOutEntry(
 fun ReviewCardVisualizerPreview(){
     Surface {
         RentalReviewTheme(darkTheme = false, dynamicColor = false) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
+                ReviewsList(
+                    reviews = listOf(
+                        ReviewUiState(address = Address()),
+                        ReviewUiState(address = Address()),
+                        ReviewUiState(address = Address()),
+                        ReviewUiState(address = Address()),
+                        ReviewUiState(address = Address()),
+                    ),
+                    onEditReviewClick = {}
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ReviewCardVisualizerDarkThemePreview(){
+    Surface {
+        RentalReviewTheme(darkTheme = true, dynamicColor = false) {
+            Column(modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
                 ReviewsList(
                     reviews = listOf(
                         ReviewUiState(address = Address()),
@@ -341,3 +364,24 @@ fun MyReviewsScreenPreview(){
         onEditReviewClick = {}
     )
 }
+
+@Preview
+@Composable
+fun CommentSectionWithOutEntryPreviewDarkTheme(){
+    Surface {
+        RentalReviewTheme(darkTheme = true, dynamicColor = false) {
+            CommentSectionWithOutEntry(
+                comments = listOf(
+                    Comments("Comment 1"),
+                    Comments("Comment 2"),
+                    Comments("Comment 3"),
+                    Comments("Comment 4"),
+                    Comments("Comment 5")
+                ),
+                onLoadComments = {},
+                showOtherUserComments = true
+            )
+        }
+    }
+}
+
