@@ -54,6 +54,7 @@ import com.example.rentalreview.model.Address
 import com.example.rentalreview.model.Comments
 import com.example.rentalreview.screen.perfil.ProfileScreen
 import com.example.rentalreview.screen.review.ReviewEntryScreen
+import com.example.rentalreview.screen.search.SearchScreen
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -112,6 +113,7 @@ fun FeedScreen(
                     showOtherUsersComments = uiState.showOtherUsersComments,
                     onFavorite = viewModel::addFavorite
                 )
+                uiState.navItems[1] -> SearchScreen()
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
                 uiState.navItems[3] -> ProfileScreen(
                     onMyReviewsClick = onMyReviewsClick,

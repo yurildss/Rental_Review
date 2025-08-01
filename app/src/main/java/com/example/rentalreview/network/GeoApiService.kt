@@ -9,6 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 private const val BASE_URL = "https://wft-geo-db.p.rapidapi.com/v1/geo/"
 
@@ -34,7 +35,10 @@ private val retrofit = Retrofit.Builder()
 interface GeoApiService{
 
     @GET("countries")
-    suspend fun getCountry() : GeoResponse<Country>
+    suspend fun getCountry(
+        @Query("limit") limit: Int = 10,
+        @Query("offset") offset: Int = 0
+    ) : GeoResponse<Country>
 
     @GET("countries/{countryCode}/regions")
     suspend fun getRegion( @Path("countryCode") countryCode: String): GeoResponse<Region>

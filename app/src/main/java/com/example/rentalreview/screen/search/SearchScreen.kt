@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
@@ -26,9 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun SearchScreen(){
+fun SearchScreen(
+    viewModel: SearchViewModel = hiltViewModel()
+){
     Column(modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
         Row {
             Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
@@ -40,7 +44,9 @@ fun SearchScreen(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterCard(
-    label: String
+    label: String,
+    list: List<String>,
+    selectedIndex: (index: Int) -> Unit
 ){
     Column(
         Modifier
@@ -89,7 +95,13 @@ fun FilterCard(
                 expanded = true,
                 onDismissRequest = {}
             ){
-
+                list.forEach {
+                    item ->
+                    DropdownMenuItem(
+                        text = { Text(text = item, color = MaterialTheme.colorScheme.primary) },
+                        onClick = {}
+                    )
+                }
             }
         }
     }
@@ -98,5 +110,5 @@ fun FilterCard(
 @Preview
 @Composable
 fun FilterCardPreview(){
-    FilterCard("")
+    FilterCard("", emptyList(), {})
 }
