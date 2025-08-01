@@ -1,15 +1,18 @@
 package com.example.rentalreview.screen.search
 
-import android.R.attr.type
-import android.graphics.drawable.Icon
+import androidx.compose.runtime.getValue
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
@@ -22,22 +25,37 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.rentalreview.model.Country
 
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ){
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Column(modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
         Row {
             Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
             Text("Search some reviews")
         }
+        FilterCard(
+            label = "Country",
+            list = uiState.countries,
+            selectedItem = uiState.selectedItem,
+            selectedIndex = viewModel::onSelectedItem
+        )
     }
 }
 
@@ -45,9 +63,13 @@ fun SearchScreen(
 @Composable
 fun FilterCard(
     label: String,
-    list: List<String>,
+    updateExpandedOptions: (Boolean) -> Unit = {},
+    expandedDropMenu: Boolean = false,
+    list: List<Country>,
+    selectedItem: String = "",
     selectedIndex: (index: Int) -> Unit
 ){
+
     Column(
         Modifier
             .border(
@@ -60,15 +82,30 @@ fun FilterCard(
             .padding(10.dp).testTag("FilterCard"),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+
+        val listState = rememberLazyListState()
+        val isAtEnd = remember {
+            derivedStateOf {
+                val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                lastVisible >= list.size - 1
+            }
+        }
+
+        LaunchedEffect(isAtEnd.value) {
+            if (isAtEnd.value) {
+
+            }
+        }
+
         ExposedDropdownMenuBox(
-            expanded = true,
-            onExpandedChange = {},
+            expanded = expandedDropMenu,
+            onExpandedChange = updateExpandedOptions,
             modifier = Modifier
                 .fillMaxWidth(0.85F)
                 .padding(top = 10.dp)
         ) {
             OutlinedTextField(
-                value = "",
+                value = selectedItem,
                 onValueChange = {},
                 readOnly = true,
                 modifier = Modifier
@@ -94,13 +131,14 @@ fun FilterCard(
             ExposedDropdownMenu(
                 expanded = true,
                 onDismissRequest = {}
-            ){
-                list.forEach {
-                    item ->
-                    DropdownMenuItem(
-                        text = { Text(text = item, color = MaterialTheme.colorScheme.primary) },
-                        onClick = {}
-                    )
+            ) {
+                LazyColumn(state = listState, modifier = Modifier.heightIn(max = 300.dp)) {
+                    itemsIndexed(list) { index, item ->
+                        DropdownMenuItem(
+                            text = { Text(text = item.name, color = MaterialTheme.colorScheme.primary) },
+                            onClick = { selectedIndex(index) }
+                        )
+                    }
                 }
             }
         }
@@ -110,5 +148,10 @@ fun FilterCard(
 @Preview
 @Composable
 fun FilterCardPreview(){
-    FilterCard("", emptyList(), {})
+    FilterCard(
+        label = "type",
+        list = listOf(),
+        selectedItem = "",
+        selectedIndex = {}
+    )
 }
