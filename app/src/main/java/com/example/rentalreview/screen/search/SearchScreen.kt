@@ -7,12 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
@@ -26,8 +23,6 @@ import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -67,8 +62,17 @@ fun FilterCard(
     expandedDropMenu: Boolean = false,
     list: List<Country>,
     selectedItem: String = "",
-    selectedIndex: (index: Int) -> Unit
+    selectedIndex: (index: Int) -> Unit,
+    onEndOfListReached: (index: Int) -> Unit = {}
 ){
+
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(scrollState.value) {
+        if (scrollState.value == scrollState.maxValue && list.isNotEmpty()) {
+            onEndOfListReached(list.lastIndex)
+        }
+    }
 
     Column(
         Modifier
@@ -83,19 +87,6 @@ fun FilterCard(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        val listState = rememberLazyListState()
-        val isAtEnd = remember {
-            derivedStateOf {
-                val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-                lastVisible >= list.size - 1
-            }
-        }
-
-        LaunchedEffect(isAtEnd.value) {
-            if (isAtEnd.value) {
-
-            }
-        }
 
         ExposedDropdownMenuBox(
             expanded = expandedDropMenu,
@@ -131,14 +122,15 @@ fun FilterCard(
             ExposedDropdownMenu(
                 expanded = true,
                 onDismissRequest = {}
-            ) {
-                LazyColumn(state = listState, modifier = Modifier.heightIn(max = 300.dp)) {
-                    itemsIndexed(list) { index, item ->
-                        DropdownMenuItem(
-                            text = { Text(text = item.name, color = MaterialTheme.colorScheme.primary) },
-                            onClick = { selectedIndex(index) }
-                        )
-                    }
+            ){
+                list.forEach {
+                    item ->
+                    DropdownMenuItem(
+                        text = { Text(text = item.name, color = MaterialTheme.colorScheme.primary) },
+                        onClick = {
+                            selectedIndex(list.indexOf(item))
+                        },
+                    )
                 }
             }
         }

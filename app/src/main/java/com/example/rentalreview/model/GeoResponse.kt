@@ -5,13 +5,14 @@ data class GeoResponse<T>(
 )
 
 data class Country(
-    val code: String,
+    val iso2: String,
     val name: String
 )
 
-data class Region(
-    val code: String,
-    val name: String
+data class State(
+    val country_code: String,
+    val name: String,
+    val iso2: String
 )
 
 data class City(

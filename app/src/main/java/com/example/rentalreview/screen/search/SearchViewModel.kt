@@ -24,15 +24,16 @@ class SearchViewModel @Inject constructor(
     init {
         launchCatching {
             val listCountry = GeoApi.retrofitService.getCountry()
-            _uiState.value = _uiState.value.copy(countries = listCountry.data)
-
-            Log.d("Country", listCountry.toString())
         }
     }
 
     fun onSelectedItem(index: Int){
         _uiState.value = _uiState.value.copy(selectedItemIndex = index)
         Log.d("SelectedItem", _uiState.value.selectedItemIndex.toString())
+    }
+
+    fun onEndOfListReached(index: Int){
+        Log.d("EndOfListReached", index.toString())
     }
 }
 
