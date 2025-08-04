@@ -1,8 +1,10 @@
 package com.example.rentalreview.screen.search
 
 import android.util.Log
+import com.example.rentalreview.model.City
 import com.example.rentalreview.model.Country
 import com.example.rentalreview.model.Review
+import com.example.rentalreview.model.State
 import com.example.rentalreview.network.GeoApi
 import com.example.rentalreview.screen.RentalReviewAppViewModel
 import com.example.rentalreview.service.AccountService
@@ -24,23 +26,24 @@ class SearchViewModel @Inject constructor(
     init {
         launchCatching {
             val listCountry = GeoApi.retrofitService.getCountry()
+            _uiState.value = _uiState.value.copy(countries = listCountry)
+
         }
     }
 
     fun onSelectedItem(index: Int){
         _uiState.value = _uiState.value.copy(selectedItemIndex = index)
-        Log.d("SelectedItem", _uiState.value.selectedItemIndex.toString())
+
     }
 
-    fun onEndOfListReached(index: Int){
-        Log.d("EndOfListReached", index.toString())
-    }
 }
 
 data class SearchScreenUiState(
     val userId: String = "",
     val reviews: List<Review?> = mutableListOf(),
     val countries: List<Country> = mutableListOf(),
+    val cities: List<City> = mutableListOf(),
+    val states: List<State> = mutableListOf(),
     val selectedItemIndex: Int = 0,
     val selectedItem: String = ""
 )

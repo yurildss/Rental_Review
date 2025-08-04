@@ -1,12 +1,10 @@
 package com.example.rentalreview.model
 
-data class GeoResponse<T>(
-    val data: List<T>
-)
 
 data class Country(
+    val name: String,
     val iso2: String,
-    val name: String
+    val iso3: String
 )
 
 data class State(

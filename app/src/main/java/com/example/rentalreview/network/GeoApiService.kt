@@ -2,7 +2,6 @@ package com.example.rentalreview.network
 
 import com.example.rentalreview.model.City
 import com.example.rentalreview.model.Country
-import com.example.rentalreview.model.GeoResponse
 import com.example.rentalreview.model.State
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -10,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-private const val BASE_URL = "https://api.countrystatecity.in/v1"
+private const val BASE_URL = "https://api.countrystatecity.in/v1/"
 
 val client = OkHttpClient
     .Builder()
@@ -19,7 +18,7 @@ val client = OkHttpClient
         val newRequest = chain
             .request()
             .newBuilder()
-            .addHeader("X-CSCAPI-KEY", "12f8307d74msh521d46ebf01771ap1898e1jsnd9fe95d59af5")
+            .addHeader("X-CSCAPI-KEY", "WHhIaW1YRDlCV2I4dXNxUnBucGZ1emFPcmQ3dWpiOFFjZUhuSzB3RQ==")
             .build()
         chain.proceed(newRequest)
     }.build()
@@ -34,17 +33,25 @@ interface GeoApiService{
 
     @GET("countries")
     suspend fun getCountry(
-    ) : GeoResponse<Country>
+    ) : List<Country>
 
-    @GET("countries/{countryCode}/regions")
-    suspend fun getRegion( @Path("countryCode") countryCode: String): GeoResponse<State>
+    @GET("countries/{countryCode}/states")
+    suspend fun getState( @Path("countryCode") countryCode: String): List<State>
 
-    @GET("regions/{regionCode}/cities")
-    suspend fun getCities( @Path("regionCode") regionCode: String) : GeoResponse<City>
+    @GET("countries/{countryCode}/states/{stateCode}/cities")
+    suspend fun getCities(
+        @Path("countryCode") countryCode: String,
+        @Path("stateCode") stateCode: String
+    ): List<City>
+
 }
 
-object GeoApi{
-    val retrofitService: GeoApiService by lazy{
-        retrofit.create(GeoApiService::class.java)
+object GeoApi {
+    val retrofitService: GeoApiService by lazy {
+        try {
+            retrofit.create(GeoApiService::class.java)
+        } catch (e: Exception) {
+            throw RuntimeException("Erro ao criar o serviço Retrofit: ${e.message}", e)
+        }
     }
 }
