@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
@@ -19,14 +18,10 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,7 +35,9 @@ fun SearchScreen(
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
+    Column(modifier = Modifier
+        .background(MaterialTheme.colorScheme.background)
+        .fillMaxSize()) {
         Row {
             Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
             Text("Search some reviews")
@@ -49,7 +46,10 @@ fun SearchScreen(
             label = "Country",
             list = uiState.countries,
             selectedItem = uiState.selectedItem,
-            selectedIndex = viewModel::onSelectedItem
+            selectedIndex = viewModel::onSelectedItemIndex,
+            expandedDropMenu = uiState.expandedCountryOptions,
+            updateExpandedOptions = viewModel::updateExpandedOptions,
+            onSelected = viewModel::onSelectItem
         )
     }
 }
@@ -58,21 +58,13 @@ fun SearchScreen(
 @Composable
 fun FilterCard(
     label: String,
-    updateExpandedOptions: (Boolean) -> Unit = {},
-    expandedDropMenu: Boolean = false,
+    updateExpandedOptions: () -> Unit = {},
+    expandedDropMenu: Boolean,
     list: List<Country>,
-    selectedItem: String = "",
+    selectedItem: String,
     selectedIndex: (index: Int) -> Unit,
-    onEndOfListReached: (index: Int) -> Unit = {}
+    onSelected: (item: Country) -> Unit
 ){
-
-    val scrollState = rememberScrollState()
-
-    LaunchedEffect(scrollState.value) {
-        if (scrollState.value == scrollState.maxValue && list.isNotEmpty()) {
-            onEndOfListReached(list.lastIndex)
-        }
-    }
 
     Column(
         Modifier
@@ -83,21 +75,24 @@ fun FilterCard(
             )
             .wrapContentHeight()
             .background(MaterialTheme.colorScheme.background)
-            .padding(10.dp).testTag("FilterCard"),
+            .padding(10.dp)
+            .testTag("FilterCard"),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
 
         ExposedDropdownMenuBox(
             expanded = expandedDropMenu,
-            onExpandedChange = updateExpandedOptions,
+            onExpandedChange = { updateExpandedOptions() },
             modifier = Modifier
                 .fillMaxWidth(0.85F)
                 .padding(top = 10.dp)
         ) {
             OutlinedTextField(
                 value = selectedItem,
-                onValueChange = {},
+                onValueChange = {
+
+                },
                 readOnly = true,
                 modifier = Modifier
                     .menuAnchor()
@@ -120,8 +115,10 @@ fun FilterCard(
                 }
             )
             ExposedDropdownMenu(
-                expanded = true,
-                onDismissRequest = {}
+                expanded = expandedDropMenu,
+                onDismissRequest = {
+                    updateExpandedOptions()
+                }
             ){
                 list.forEach {
                     item ->
@@ -129,6 +126,8 @@ fun FilterCard(
                         text = { Text(text = item.name, color = MaterialTheme.colorScheme.primary) },
                         onClick = {
                             selectedIndex(list.indexOf(item))
+                            onSelected(item)
+                            updateExpandedOptions()
                         },
                     )
                 }
@@ -144,6 +143,9 @@ fun FilterCardPreview(){
         label = "type",
         list = listOf(),
         selectedItem = "",
-        selectedIndex = {}
+        selectedIndex = {},
+        expandedDropMenu = false,
+        updateExpandedOptions = {},
+        onSelected = {}
     )
 }

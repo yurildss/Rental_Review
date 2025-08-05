@@ -1,6 +1,5 @@
 package com.example.rentalreview.screen.search
 
-import android.util.Log
 import com.example.rentalreview.model.City
 import com.example.rentalreview.model.Country
 import com.example.rentalreview.model.Review
@@ -31,11 +30,20 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun onSelectedItem(index: Int){
+    fun onSelectedItemIndex(index: Int){
         _uiState.value = _uiState.value.copy(selectedItemIndex = index)
 
     }
 
+    fun updateExpandedOptions(){
+        _uiState.value = _uiState.value.copy(
+            expandedCountryOptions = !_uiState.value.expandedCountryOptions
+        )
+    }
+
+    fun onSelectItem(item: Country){
+        _uiState.value = _uiState.value.copy(selectedItem = item.name)
+    }
 }
 
 data class SearchScreenUiState(
@@ -45,5 +53,6 @@ data class SearchScreenUiState(
     val cities: List<City> = mutableListOf(),
     val states: List<State> = mutableListOf(),
     val selectedItemIndex: Int = 0,
-    val selectedItem: String = ""
+    val selectedItem: String = "",
+    val expandedCountryOptions: Boolean = false,
 )
