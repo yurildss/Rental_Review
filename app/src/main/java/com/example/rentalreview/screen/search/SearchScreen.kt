@@ -3,20 +3,25 @@ package com.example.rentalreview.screen.search
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +35,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.model.City
 import com.example.rentalreview.model.Country
 import com.example.rentalreview.model.State
+import com.example.rentalreview.screen.favorites.ReviewsList
+import com.example.rentalreview.screen.home.ReviewCard
+import com.example.rentalreview.screen.myReviews.ReviewCardVisualizer
 
 @Composable
 fun SearchScreen(
@@ -39,8 +47,9 @@ fun SearchScreen(
 
     Column(modifier = Modifier
         .background(MaterialTheme.colorScheme.background)
-        .fillMaxSize()) {
-        Row {
+        .fillMaxSize().padding(10.dp),)
+    {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
             Text("Search some reviews")
         }
@@ -71,6 +80,19 @@ fun SearchScreen(
             expandedDropMenu = uiState.expandedCityOptions,
             updateExpandedOptions = viewModel::updateExpandedCityOptions,
             onSelected = viewModel::onSelectCityItem
+        )
+
+        OutlinedButton(
+            onClick = viewModel::onSearch,
+            border = _root_ide_package_.androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
+            modifier = Modifier
+                .fillMaxWidth(0.75f)
+                .testTag("searchButton")
+        ) {
+            Text(text = "Search", color = MaterialTheme.colorScheme.secondary)
+        }
+        ReviewsList(
+            reviews = uiState.reviews
         )
     }
 }
@@ -326,13 +348,20 @@ fun FilterCityCard(
 @Preview
 @Composable
 fun FilterCardPreview(){
-    FilterCard(
-        label = "type",
-        list = listOf(),
-        selectedItem = Country("", "", ""),
-        selectedIndex = {},
-        expandedDropMenu = false,
-        updateExpandedOptions = {},
-        onSelected = {}
-    )
+
+    Column {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+            Text("Search some reviews")
+        }
+        FilterCard(
+            label = "type",
+            list = listOf(),
+            selectedItem = Country("", "", ""),
+            selectedIndex = {},
+            expandedDropMenu = false,
+            updateExpandedOptions = {},
+            onSelected = {}
+        )
+    }
 }

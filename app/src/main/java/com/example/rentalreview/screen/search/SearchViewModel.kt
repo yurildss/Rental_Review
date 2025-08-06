@@ -6,6 +6,7 @@ import com.example.rentalreview.model.Review
 import com.example.rentalreview.model.State
 import com.example.rentalreview.network.GeoApi
 import com.example.rentalreview.screen.RentalReviewAppViewModel
+import com.example.rentalreview.screen.home.ReviewUiState
 import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -86,14 +87,39 @@ class SearchViewModel @Inject constructor(
     fun onSearch(){
         launchCatching {
             val reviews = reviewRepository.getReviewsByCity(_uiState.value.selectedCityItem.name)
-            _uiState.value = _uiState.value.copy(reviews = reviews)
+
+            val uiStateList: MutableList<ReviewUiState?> = mutableListOf()
+            for (review in reviews){
+                uiStateList.add(review?.toReviewUiState())
+            }
+
+            _uiState.value = _uiState.value.copy(reviews = uiStateList)
         }
+    }
+
+    /***
+     * Convert to data class ReviewUiState
+     */
+    fun Review.toReviewUiState(): ReviewUiState {
+        return ReviewUiState(
+            id = id,
+            title = title,
+            rating = rating,
+            review = review,
+            type = type,
+            startDate = startDate,
+            endDate = endDate,
+            address = address,
+            likesIds = likesIds,
+            comments = comments,
+            timestamp = timestamp
+        )
     }
 }
 
 data class SearchScreenUiState(
     val userId: String = "",
-    val reviews: List<Review?> = mutableListOf(),
+    val reviews: List<ReviewUiState?> = mutableListOf(),
     val countries: List<Country> = mutableListOf(),
     val cities: List<City> = mutableListOf(),
     val states: List<State> = mutableListOf(),
