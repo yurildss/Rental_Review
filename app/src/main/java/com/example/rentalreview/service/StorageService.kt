@@ -15,4 +15,5 @@ interface StorageService {
     suspend fun getReviewById(reviewId: String): Review?
     suspend fun updateReview(reviewId: String, review: Review)
     suspend fun getFavoriteReviews(userId: String): List<Review?>
+    suspend fun getReviewsByCity(city: String): List<Review?>
 }

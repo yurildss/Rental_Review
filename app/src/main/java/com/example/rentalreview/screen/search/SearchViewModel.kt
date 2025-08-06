@@ -26,7 +26,6 @@ class SearchViewModel @Inject constructor(
         launchCatching {
             val listCountry = GeoApi.retrofitService.getCountry()
             _uiState.value = _uiState.value.copy(countries = listCountry)
-
         }
     }
 
@@ -41,8 +40,54 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    fun onSelectItem(item: Country){
-        _uiState.value = _uiState.value.copy(selectedItem = item.name)
+    fun updateExpandedStateOptions(){
+        _uiState.value = _uiState.value.copy(
+            expandedStateOptions = !_uiState.value.expandedStateOptions
+        )
+    }
+
+    fun onSelectCountryItem(item: Country){
+        _uiState.value = _uiState.value.copy(selectedCountryItem = item)
+        getStates()
+    }
+
+    fun onSelectStateItem(item: State){
+        _uiState.value = _uiState.value.copy(selectedStateItem = item)
+        getCities()
+    }
+
+    fun getStates(){
+        launchCatching {
+            val listState = GeoApi.retrofitService.getState(_uiState.value.selectedCountryItem.iso2)
+            _uiState.value = _uiState.value.copy(states = listState)
+        }
+    }
+
+    fun updateExpandedCityOptions(){
+        _uiState.value = _uiState.value.copy(
+            expandedCityOptions = !_uiState.value.expandedCityOptions
+        )
+    }
+
+    fun onSelectCityItem(item: City){
+        _uiState.value = _uiState.value.copy(selectedCityItem = item)
+    }
+
+    fun getCities(){
+        launchCatching {
+            val listCity = GeoApi.retrofitService.getCities(
+                _uiState.value.selectedCountryItem.iso2,
+                _uiState.value.selectedStateItem.iso2
+            )
+            _uiState.value = _uiState.value.copy(cities = listCity)
+        }
+    }
+
+    fun onSearch(){
+        launchCatching {
+            val reviews = reviewRepository.getReviewsByCity(_uiState.value.selectedCityItem.name)
+            _uiState.value = _uiState.value.copy(reviews = reviews)
+        }
     }
 }
 
@@ -53,6 +98,10 @@ data class SearchScreenUiState(
     val cities: List<City> = mutableListOf(),
     val states: List<State> = mutableListOf(),
     val selectedItemIndex: Int = 0,
-    val selectedItem: String = "",
+    val selectedCountryItem: Country = Country("", "", ""),
     val expandedCountryOptions: Boolean = false,
+    val selectedStateItem: State = State("", "", ""),
+    val expandedStateOptions: Boolean = false,
+    val selectedCityItem: City = City(0, ""),
+    val expandedCityOptions: Boolean = false
 )

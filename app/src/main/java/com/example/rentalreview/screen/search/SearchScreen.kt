@@ -27,7 +27,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.rentalreview.model.City
 import com.example.rentalreview.model.Country
+import com.example.rentalreview.model.State
 
 @Composable
 fun SearchScreen(
@@ -45,14 +47,116 @@ fun SearchScreen(
         FilterCard(
             label = "Country",
             list = uiState.countries,
-            selectedItem = uiState.selectedItem,
+            selectedItem = uiState.selectedCountryItem,
             selectedIndex = viewModel::onSelectedItemIndex,
             expandedDropMenu = uiState.expandedCountryOptions,
             updateExpandedOptions = viewModel::updateExpandedOptions,
-            onSelected = viewModel::onSelectItem
+            onSelected = viewModel::onSelectCountryItem
+        )
+        FilterStateCard(
+            label = "State",
+            list = uiState.states,
+            selectedItem = uiState.selectedStateItem,
+            selectedIndex = viewModel::onSelectedItemIndex,
+            expandedDropMenu = uiState.expandedStateOptions,
+            updateExpandedOptions = viewModel::updateExpandedStateOptions,
+            onSelected = viewModel::onSelectStateItem
+        )
+
+        FilterCityCard(
+            label = "City",
+            list = uiState.cities,
+            selectedItem = uiState.selectedCityItem,
+            selectedIndex = viewModel::onSelectedItemIndex,
+            expandedDropMenu = uiState.expandedCityOptions,
+            updateExpandedOptions = viewModel::updateExpandedCityOptions,
+            onSelected = viewModel::onSelectCityItem
         )
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FilterStateCard(
+    label: String,
+    updateExpandedOptions: () -> Unit,
+    expandedDropMenu: Boolean,
+    list: List<State>,
+    selectedItem: State,
+    selectedIndex: (index: Int) -> Unit,
+    onSelected: (item: State) -> Unit
+){
+
+    Column(
+        Modifier
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = MaterialTheme.shapes.medium
+            )
+            .wrapContentHeight()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(10.dp)
+            .testTag("FilterCard"),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+
+
+        ExposedDropdownMenuBox(
+            expanded = expandedDropMenu,
+            onExpandedChange = { updateExpandedOptions() },
+            modifier = Modifier
+                .fillMaxWidth(0.85F)
+                .padding(top = 10.dp)
+        ) {
+            OutlinedTextField(
+                value = selectedItem.name,
+                onValueChange = {
+
+                },
+                readOnly = true,
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+                    .testTag(label),
+                label = {
+                    Text(
+                        "Select the $label of the property",
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
+                trailingIcon = {
+                    Icon(
+                        Icons
+                            .AutoMirrored
+                            .Filled
+                            .KeyboardArrowRight,
+                        contentDescription = ""
+                    )
+                }
+            )
+            ExposedDropdownMenu(
+                expanded = expandedDropMenu,
+                onDismissRequest = {
+                    updateExpandedOptions()
+                }
+            ){
+                list.forEach {
+                        item ->
+                    DropdownMenuItem(
+                        text = { Text(text = item.name, color = MaterialTheme.colorScheme.primary) },
+                        onClick = {
+                            selectedIndex(list.indexOf(item))
+                            onSelected(item)
+                            updateExpandedOptions()
+                        },
+                    )
+                }
+            }
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,7 +165,7 @@ fun FilterCard(
     updateExpandedOptions: () -> Unit = {},
     expandedDropMenu: Boolean,
     list: List<Country>,
-    selectedItem: String,
+    selectedItem: Country,
     selectedIndex: (index: Int) -> Unit,
     onSelected: (item: Country) -> Unit
 ){
@@ -89,7 +193,7 @@ fun FilterCard(
                 .padding(top = 10.dp)
         ) {
             OutlinedTextField(
-                value = selectedItem,
+                value = selectedItem.name,
                 onValueChange = {
 
                 },
@@ -136,13 +240,96 @@ fun FilterCard(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FilterCityCard(
+    label: String,
+    updateExpandedOptions: () -> Unit = {},
+    expandedDropMenu: Boolean,
+    list: List<City>,
+    selectedItem: City,
+    selectedIndex: (index: Int) -> Unit,
+    onSelected: (item: City) -> Unit
+){
+
+    Column(
+        Modifier
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = MaterialTheme.shapes.medium
+            )
+            .wrapContentHeight()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(10.dp)
+            .testTag("FilterCard"),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+
+
+        ExposedDropdownMenuBox(
+            expanded = expandedDropMenu,
+            onExpandedChange = { updateExpandedOptions() },
+            modifier = Modifier
+                .fillMaxWidth(0.85F)
+                .padding(top = 10.dp)
+        ) {
+            OutlinedTextField(
+                value = selectedItem.name,
+                onValueChange = {
+
+                },
+                readOnly = true,
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+                    .testTag(label),
+                label = {
+                    Text(
+                        "Select the $label of the property",
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
+                trailingIcon = {
+                    Icon(
+                        Icons
+                            .AutoMirrored
+                            .Filled
+                            .KeyboardArrowRight,
+                        contentDescription = ""
+                    )
+                }
+            )
+            ExposedDropdownMenu(
+                expanded = expandedDropMenu,
+                onDismissRequest = {
+                    updateExpandedOptions()
+                }
+            ){
+                list.forEach {
+                        item ->
+                    DropdownMenuItem(
+                        text = { Text(text = item.name, color = MaterialTheme.colorScheme.primary) },
+                        onClick = {
+                            selectedIndex(list.indexOf(item))
+                            onSelected(item)
+                            updateExpandedOptions()
+                        },
+                    )
+                }
+            }
+        }
+    }
+}
+
+
 @Preview
 @Composable
 fun FilterCardPreview(){
     FilterCard(
         label = "type",
         list = listOf(),
-        selectedItem = "",
+        selectedItem = Country("", "", ""),
         selectedIndex = {},
         expandedDropMenu = false,
         updateExpandedOptions = {},

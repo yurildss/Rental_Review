@@ -88,11 +88,20 @@ class StorageServiceImpl @Inject constructor(
             .await().toObjects(Review::class.java)
     }
 
+    override suspend fun getReviewsByCity(city: String): List<Review?> {
+        return firestore
+            .collection(REVIEWS)
+            .whereEqualTo(CITY, city)
+            .get()
+            .await().toObjects(Review::class.java)
+    }
+
     companion object Collections{
         const val REVIEWS = "reviews"
         const val CREATE_AT = "timestamp"
         const val LIKES_IDS = "likesIds"
         const val COMMENTS = "comments"
         const val FAVORITES = "favoriteIdsUsers"
+        const val CITY = "address.city"
     }
 }
