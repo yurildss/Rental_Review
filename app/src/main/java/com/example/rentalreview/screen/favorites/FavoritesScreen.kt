@@ -58,7 +58,8 @@ fun FavoritesScreen(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily.Monospace,
-            modifier = Modifier.padding(start = 10.dp, top = 5.dp)
+            modifier = Modifier.padding(start = 10.dp, top = 5.dp),
+            color = MaterialTheme.colorScheme.primary
         )
         IconButton(onClick = onBackClick, modifier = Modifier.padding(top = 10.dp )) {
             Icon(
@@ -67,14 +68,16 @@ fun FavoritesScreen(
             )
         }
         ReviewsList(
-            reviews = uiState.reviews
+            reviews = uiState.reviews,
+            userId = uiState.userId
         )
     }
 }
 
 @Composable
 fun ReviewsList(
-    reviews: List<ReviewUiState?>
+    reviews: List<ReviewUiState?>,
+    userId: String
 ){
     LazyColumn(
         modifier = Modifier
@@ -99,7 +102,8 @@ fun ReviewsList(
                     onLoadComments = {},
                     onShowCommentChange = {},
                     showOtherUsersComments = false,
-                    onFavorite = {}
+                    onFavorite = {},
+                    userId = userId
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -114,7 +118,8 @@ fun ReviewCardVisualizer(
     onLoadComments: () -> Unit,
     onShowCommentChange: () -> Unit,
     showOtherUsersComments: Boolean,
-    onFavorite: () -> Unit
+    onFavorite: () -> Unit,
+    userId: String
 ){
     Column(
         Modifier
@@ -198,7 +203,8 @@ fun ReviewCardVisualizer(
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = "Favorite",
-                    tint = MaterialTheme.colorScheme.onBackground)
+                    tint = if (review.favoriteIds.contains(userId)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
+                )
                 Text("Favorite", modifier = Modifier.padding(start = 5.dp), color = MaterialTheme.colorScheme.primary)
             }
         }
@@ -282,7 +288,8 @@ fun ReviewCardVisualizerPreview(){
                         ReviewUiState(address = Address()),
                         ReviewUiState(address = Address()),
                         ReviewUiState(address = Address()),
-                    )
+                    ),
+                    userId = "0"
                 )
             }
         }
@@ -318,5 +325,6 @@ fun FavoritesScreenPreview(){
         onShowCommentChange = {},
         showOtherUsersComments = false,
         onFavorite = {},
+        userId = "0"
     )
 }

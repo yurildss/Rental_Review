@@ -12,6 +12,7 @@ import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -94,6 +95,36 @@ class SearchViewModel @Inject constructor(
             }
 
             _uiState.value = _uiState.value.copy(reviews = uiStateList)
+        }
+    }
+
+
+    /**
+     * Add a review to favorites
+     * add a user id in a list of favoriteIds
+     */
+
+    fun addFavorite(reviewId: String, index: Int) {
+        launchCatching {
+            val currentUserId = accountService.currentUserId
+            val currentList = _uiState.value.reviews
+
+            val updatedReview = currentList[index]?.copy(
+                favoriteIds = currentList[index]?.favoriteIds?.toMutableList()?.apply {
+                    if (!contains(currentUserId)) add(currentUserId)
+                } ?: mutableListOf(currentUserId)
+            )
+
+            if (updatedReview != null) {
+                val updatedList = currentList.toMutableList().apply {
+                    this[index] = updatedReview
+                }
+
+                _uiState.update { it.copy(reviews = updatedList) }
+
+                //backend
+                reviewRepository.addFavorite(reviewId, currentUserId)
+            }
         }
     }
 
