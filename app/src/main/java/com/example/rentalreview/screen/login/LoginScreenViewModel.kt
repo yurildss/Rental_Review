@@ -45,10 +45,23 @@ class LoginScreenViewModel
     }
 
     fun onForgotPasswordClick(){
-        launchCatching {
-            accountService.passwordResetEmail()
+        if (uiState.value.email.isBlank()){
+            SnackbarManager.showMessage(R.string.email_error)
+            return
         }
-        SnackbarManager.showMessage(R.string.not_implemented)
+
+        launchCatching {
+            accountService.passwordResetEmail(_uiState.value.emailPasswordReset)
+        }
+    }
+
+    fun onEmailPasswordResetChange(email: String){
+        _uiState.value = _uiState.value.copy(emailPasswordReset = email)
+    }
+
+    fun onShowEmailPasswordResetChange(){
+        _uiState.value = _uiState.value.copy(
+            showEmailPasswordReset = !_uiState.value.showEmailPasswordReset)
     }
 
 }
@@ -56,4 +69,6 @@ class LoginScreenViewModel
 data class LoginUiState(
     val email: String = "",
     val password: String = "",
+    val emailPasswordReset: String = "",
+    val showEmailPasswordReset: Boolean = false
 )
