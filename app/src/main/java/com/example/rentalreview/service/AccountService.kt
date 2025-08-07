@@ -13,4 +13,5 @@ interface AccountService {
     suspend fun register(email: String, password: String, name: String)
     suspend fun authenticate(email: String, password: String)
     suspend fun logOut()
+    suspend fun passwordResetEmail(email: String)
 }

@@ -43,6 +43,14 @@ class LoginScreenViewModel
             onLoginSuccess()
         }
     }
+
+    fun onForgotPasswordClick(){
+        launchCatching {
+            accountService.passwordResetEmail()
+        }
+        SnackbarManager.showMessage(R.string.not_implemented)
+    }
+
 }
 
 data class LoginUiState(

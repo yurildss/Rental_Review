@@ -1,6 +1,7 @@
 package com.example.rentalreview.screen.login
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,7 +41,8 @@ fun LoginScreen(
         viewModel::onEmailChange,
         viewModel::onPasswordChange,
         { viewModel.onLoginClick(onLoginSuccess) },
-        onSignUpClick
+        onSignUpClick,
+        viewModel::onForgotPasswordClick
     )
 }
 
@@ -50,7 +52,8 @@ fun LoginForm(
     onEmailChange: (String) -> Unit = {},
     onPasswordChange: (String) -> Unit = {},
     onLoginClick: () -> Unit = {},
-    onSignUpClick: () -> Unit = {}
+    onSignUpClick: () -> Unit = {},
+    onForgotPasswordClick: () -> Unit
 ){
     Column(Modifier
         .fillMaxSize()
@@ -81,7 +84,14 @@ fun LoginForm(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = _root_ide_package_.androidx.compose.ui.text.input.PasswordVisualTransformation()
         )
-        Text(text = "Forgot Password?", textAlign = TextAlign.Center)
+        Text(
+            text = "Forgot Password?",
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(0.75f).clickable{
+                onForgotPasswordClick()
+            }.testTag("forgotPasswordText"),
+            color = MaterialTheme.colorScheme.primary
+        )
         Button(
             onClick = onLoginClick,
             modifier = Modifier.fillMaxWidth(0.75f).testTag("loginButton")

@@ -84,4 +84,8 @@ class AccountServiceImpl
 
     }
 
+    override suspend fun passwordResetEmail(email: String) {
+        auth.sendPasswordResetEmail(email).await()
+    }
+
 }
