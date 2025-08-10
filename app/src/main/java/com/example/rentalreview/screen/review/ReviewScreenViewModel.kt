@@ -143,10 +143,10 @@ class ReviewScreenViewModel @Inject constructor(
     fun ReviewScreenState.toAddress() = Address(
         street = street,
         number = number,
-        city = selectedCityItem.name,
-        state = selectedStateItem.name,
+        city = selectedCityItem,
+        state = selectedStateItem,
         zip = zip,
-        country = selectedCountryItem.name
+        country = selectedCountryItem
     )
 
 }

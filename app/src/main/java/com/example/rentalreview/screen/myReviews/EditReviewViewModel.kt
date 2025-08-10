@@ -114,10 +114,10 @@ class EditReviewViewModel
     fun ReviewScreenState.toAddress() = Address(
         street = street,
         number = number,
-        city = selectedCityItem.name,
-        state = selectedStateItem.name,
+        city = selectedCityItem,
+        state = selectedStateItem,
         zip = zip,
-        country = selectedCountryItem.name
+        country = selectedCountryItem
     )
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -131,10 +131,10 @@ class EditReviewViewModel
                 title = review?.title ?: "",
                 street = review?.address?.street ?: "",
                 number = review?.address?.number ?: "",
-                selectedCityItem = City(0, review?.address?.city ?: ""),
-                selectedStateItem = State(review?.address?.state ?: "", "", ""),
+                selectedCityItem = review?.address?.city ?: City(0, ""),
+                selectedStateItem = review?.address?.state ?: State("", "", ""),
                 zip = review?.address?.zip ?: "",
-                selectedCountryItem = Country(review?.address?.country ?: "", "", ""),
+                selectedCountryItem = review?.address?.country ?: Country("", "", ""),
                 type = review?.type ?: "",
                 review = review?.review ?: ""
             )
