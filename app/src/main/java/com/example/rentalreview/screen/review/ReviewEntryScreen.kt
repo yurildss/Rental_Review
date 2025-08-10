@@ -46,9 +46,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.rentalreview.model.City
 import com.example.rentalreview.model.Country
 import com.example.rentalreview.model.State
+import com.example.rentalreview.screen.search.FilterCityCard
 import com.example.rentalreview.screen.search.FilterCountryCard
+import com.example.rentalreview.screen.search.FilterStateCard
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -82,15 +85,20 @@ fun ReviewEntryScreen(
                 updateReview = viewModel::updateReview,
                 onDateRangeSelected = viewModel::onDateRangeSelected,
                 onTitleChanged = viewModel::onTitleChanged,
-                onStreeetChanged = viewModel::onStreetChanged,
+                onStreetChanged = viewModel::onStreetChanged,
                 onNumberChanged = viewModel::onNumberChanged,
-                onStateChanged = viewModel::onStateChanged,
                 onZipChanged = viewModel::onZipChanged,
                 onCountrySelected = viewModel::onCountryChanged,
                 selectedCountryItem = uiState.selectedCountryItem,
                 expandedCountryOptions = uiState.expandedCountryOptions,
                 onCountryExpandedOptions = viewModel::onCountryExpandedOptions,
-                countryList = uiState.listOfCountries
+                countryList = uiState.listOfCountries,
+                onStateExpandedOptions = viewModel::onStateExpandedOptions,
+                onCityExpandedOptions = viewModel::onCityExpandedOptions,
+                onStateSelected = viewModel::onStateSelected,
+                onCitySelected = viewModel::onCitySelected,
+                stateList = uiState.listOfStates,
+                cityList = uiState.listOfCities
             )
         }
     }
@@ -99,15 +107,20 @@ fun ReviewEntryScreen(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReviewEntryForm(
-    onStreeetChanged: (String) -> Unit,
+    onStreetChanged: (String) -> Unit,
     onNumberChanged: (String) -> Unit,
     selectedCountryItem: Country,
-    onStateChanged: (State) -> Unit,
     onZipChanged: (String) -> Unit,
     expandedCountryOptions: Boolean,
     onCountryExpandedOptions: () -> Unit,
+    onStateExpandedOptions: () -> Unit,
+    onCityExpandedOptions: () -> Unit,
     onCountrySelected: (Country) -> Unit,
+    onStateSelected: (State) -> Unit,
+    onCitySelected: (City) -> Unit,
     countryList: List<Country>,
+    stateList: List<State>,
+    cityList: List<City>,
     updateExpandedOptions: (Boolean) -> Unit = {},
     typeRental: (String) -> Unit = {},
     openDialog: () -> Unit = {},
@@ -160,10 +173,29 @@ fun ReviewEntryForm(
             updateExpandedOptions = onCountryExpandedOptions,
             onSelected = onCountrySelected,
         )
+        FilterStateCard(
+            label = "State",
+            list = stateList,
+            selectedItem = uiState.selectedStateItem,
+            selectedIndex = {},
+            expandedDropMenu = uiState.expandedStateOptions,
+            updateExpandedOptions = onStateExpandedOptions,
+            onSelected = onStateSelected
+        )
+
+        FilterCityCard(
+            label = "City",
+            list = cityList,
+            selectedItem = uiState.selectedCityItem,
+            selectedIndex = {},
+            expandedDropMenu = uiState.expandedCityOptions,
+            updateExpandedOptions = onCityExpandedOptions,
+            onSelected = onCitySelected
+        )
         Row(modifier = Modifier.fillMaxWidth(0.85F) ,horizontalArrangement = Arrangement.SpaceBetween) {
             OutlinedTextField(
                 value = uiState.street,
-                onValueChange = onStreeetChanged,
+                onValueChange = onStreetChanged,
                 modifier = Modifier
                     .fillMaxWidth(0.65F)
                     .testTag("streetEntry"),
@@ -435,9 +467,8 @@ fun ReviewEntryScreenPreview(){
                 endDate = null,
                 star = 0,
                 onSaved = {},
-                onStreeetChanged = {},
+                onStreetChanged = {},
                 onNumberChanged = { },
-                onStateChanged = {},
                 onZipChanged = {},
                 onCountrySelected = {},
                 updateExpandedOptions = {},
@@ -451,7 +482,13 @@ fun ReviewEntryScreenPreview(){
                 selectedCountryItem = TODO(),
                 expandedCountryOptions = TODO(),
                 onCountryExpandedOptions = TODO(),
-                countryList = TODO()
+                countryList = TODO(),
+                onStateExpandedOptions = TODO(),
+                onCityExpandedOptions = TODO(),
+                onStateSelected = TODO(),
+                onCitySelected = TODO(),
+                stateList = TODO(),
+                cityList = TODO()
             )
         }
     }
@@ -470,9 +507,8 @@ fun ReviewEntryDarkScreenPreview(){
                 endDate = null,
                 star = 0,
                 onSaved = {},
-                onStreeetChanged = {},
+                onStreetChanged = {},
                 onNumberChanged = { },
-                onStateChanged = {},
                 onZipChanged = {},
                 onCountrySelected = {},
                 updateExpandedOptions = {},
@@ -485,8 +521,14 @@ fun ReviewEntryDarkScreenPreview(){
                 onTitleChanged = {},
                 selectedCountryItem = Country("", "", ""),
                 expandedCountryOptions = false,
-                onCountryExpandedOptions = {  },
-                countryList = listOf()
+                onCountryExpandedOptions = { },
+                countryList = listOf(),
+                onStateExpandedOptions = TODO(),
+                onCityExpandedOptions = TODO(),
+                onStateSelected = TODO(),
+                onCitySelected = TODO(),
+                stateList = TODO(),
+                cityList = TODO()
             )
         }
     }

@@ -87,14 +87,6 @@ class ReviewScreenViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(number = number)
     }
 
-    fun onCityChanged(city: City){
-        _uiState.value = _uiState.value.copy(selectedCityItem = city)
-    }
-
-    fun onStateChanged(state: State){
-        _uiState.value = _uiState.value.copy(selectedStateItem = state)
-    }
-
     fun onZipChanged(zip: String){
         _uiState.value = _uiState.value.copy(zip = zip)
     }
@@ -106,6 +98,23 @@ class ReviewScreenViewModel @Inject constructor(
     fun onCountryExpandedOptions(){
         _uiState.value = _uiState.value.copy(expandedCountryOptions = !_uiState.value.expandedCountryOptions)
     }
+
+    fun onStateExpandedOptions(){
+        _uiState.value = _uiState.value.copy(expandedStateOptions = !_uiState.value.expandedStateOptions)
+    }
+
+    fun onCityExpandedOptions(){
+        _uiState.value = _uiState.value.copy(expandedCityOptions = !_uiState.value.expandedCityOptions)
+    }
+
+    fun onStateSelected(state: State){
+        _uiState.value = _uiState.value.copy(selectedStateItem = state)
+    }
+
+    fun onCitySelected(city: City){
+        _uiState.value = _uiState.value.copy(selectedCityItem = city)
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun onSave(onSaved: () -> Unit = {}){
@@ -167,5 +176,8 @@ data class ReviewScreenState(
     val selectedCityItem: City = City(0, ""),
     val expandedCityOptions: Boolean = false,
     val userId: String = "",
-    val listOfCountries: List<Country> = listOf()
+    val listOfCountries: List<Country> = listOf(),
+    val listOfStates: List<State> = listOf(),
+    val listOfCities: List<City> = listOf()
+
 )

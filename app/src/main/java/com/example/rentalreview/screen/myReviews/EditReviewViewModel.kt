@@ -4,6 +4,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.SavedStateHandle
 import com.example.rentalreview.model.Address
+import com.example.rentalreview.model.City
+import com.example.rentalreview.model.Country
+import com.example.rentalreview.model.State
 import com.example.rentalreview.screen.RentalReviewAppViewModel
 import com.example.rentalreview.screen.review.ReviewScreenState
 import com.example.rentalreview.service.AccountService
@@ -88,20 +91,20 @@ class EditReviewViewModel
         _uiState.value = _uiState.value.copy(number = number)
     }
 
-    fun onCityChanged(city: String){
-        _uiState.value = _uiState.value.copy(city = city)
+    fun onCityChanged(city: City){
+        _uiState.value = _uiState.value.copy(selectedCityItem = city)
     }
 
-    fun onStateChanged(state: String){
-        _uiState.value = _uiState.value.copy(state = state)
+    fun onStateChanged(state: State){
+        _uiState.value = _uiState.value.copy(selectedStateItem = state)
     }
 
     fun onZipChanged(zip: String){
         _uiState.value = _uiState.value.copy(zip = zip)
     }
 
-    fun onCountryChanged(country: String){
-        _uiState.value = _uiState.value.copy(country = country)
+    fun onCountryChanged(country: Country){
+        _uiState.value = _uiState.value.copy(selectedCountryItem = country)
     }
 
     fun onRatingChanged(rating: Int){
@@ -111,10 +114,10 @@ class EditReviewViewModel
     fun ReviewScreenState.toAddress() = Address(
         street = street,
         number = number,
-        city = city,
-        state = state,
+        city = selectedCityItem.name,
+        state = selectedStateItem.name,
         zip = zip,
-        country = country
+        country = selectedCountryItem.name
     )
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -128,10 +131,10 @@ class EditReviewViewModel
                 title = review?.title ?: "",
                 street = review?.address?.street ?: "",
                 number = review?.address?.number ?: "",
-                city = review?.address?.city ?: "",
-                state = review?.address?.state ?: "",
+                selectedCityItem = City(0, review?.address?.city ?: ""),
+                selectedStateItem = State(review?.address?.state ?: "", "", ""),
                 zip = review?.address?.zip ?: "",
-                country = review?.address?.country ?: "",
+                selectedCountryItem = Country(review?.address?.country ?: "", "", ""),
                 type = review?.type ?: "",
                 review = review?.review ?: ""
             )

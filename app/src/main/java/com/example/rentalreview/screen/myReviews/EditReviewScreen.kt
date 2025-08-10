@@ -23,7 +23,7 @@ fun ReviewEditEntryScreen(
 
     ReviewEntryForm(
         uiState = uiState,
-        onSaved = {  },
+        onSaved = { },
         startDate = startDate,
         endDate = endDate,
         star = star,
@@ -35,10 +35,20 @@ fun ReviewEditEntryScreen(
         updateReview = viewModel::updateReview,
         onDateRangeSelected = viewModel::onDateRangeSelected,
         onTitleChanged = viewModel::onTitleChanged,
-        onStreeetChanged = viewModel::onStreetChanged,
+        onStreetChanged = viewModel::onStreetChanged,
         onNumberChanged = viewModel::onNumberChanged,
         onStateChanged = viewModel::onStateChanged,
         onZipChanged = viewModel::onZipChanged,
-        onCountrySelected = viewModel::onCountryChanged
+        onCountrySelected = viewModel::onCountryChanged,
+        selectedCountryItem = TODO(),
+        expandedCountryOptions = TODO(),
+        onCountryExpandedOptions = TODO(),
+        onStateExpandedOptions = TODO(),
+        onCityExpandedOptions = TODO(),
+        onStateSelected = TODO(),
+        onCitySelected = TODO(),
+        countryList = TODO(),
+        stateList = TODO(),
+        cityList = TODO()
     )
 }

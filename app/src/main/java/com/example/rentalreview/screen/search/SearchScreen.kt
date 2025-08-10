@@ -180,7 +180,7 @@ fun FilterStateCard(
 @Composable
 fun FilterCountryCard(
     label: String,
-    updateExpandedOptions: () -> Unit = {},
+    updateExpandedOptions: () -> Unit,
     expandedDropMenu: Boolean,
     list: List<Country>,
     selectedItem: Country,
@@ -262,7 +262,7 @@ fun FilterCountryCard(
 @Composable
 fun FilterCityCard(
     label: String,
-    updateExpandedOptions: () -> Unit = {},
+    updateExpandedOptions: () -> Unit,
     expandedDropMenu: Boolean,
     list: List<City>,
     selectedItem: City,
