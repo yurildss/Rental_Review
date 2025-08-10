@@ -4,7 +4,10 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.rentalreview.model.Address
+import com.example.rentalreview.model.City
+import com.example.rentalreview.model.Country
 import com.example.rentalreview.model.Review
+import com.example.rentalreview.model.State
 import com.example.rentalreview.screen.RentalReviewAppViewModel
 import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
@@ -84,20 +87,24 @@ class ReviewScreenViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(number = number)
     }
 
-    fun onCityChanged(city: String){
-        _uiState.value = _uiState.value.copy(city = city)
+    fun onCityChanged(city: City){
+        _uiState.value = _uiState.value.copy(selectedCityItem = city)
     }
 
-    fun onStateChanged(state: String){
-        _uiState.value = _uiState.value.copy(state = state)
+    fun onStateChanged(state: State){
+        _uiState.value = _uiState.value.copy(selectedStateItem = state)
     }
 
     fun onZipChanged(zip: String){
         _uiState.value = _uiState.value.copy(zip = zip)
     }
 
-    fun onCountryChanged(country: String){
-        _uiState.value = _uiState.value.copy(country = country)
+    fun onCountryChanged(country: Country){
+        _uiState.value = _uiState.value.copy(selectedCountryItem = country)
+    }
+
+    fun onCountryExpandedOptions(){
+        _uiState.value = _uiState.value.copy(expandedCountryOptions = !_uiState.value.expandedCountryOptions)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -127,10 +134,10 @@ class ReviewScreenViewModel @Inject constructor(
     fun ReviewScreenState.toAddress() = Address(
         street = street,
         number = number,
-        city = city,
-        state = state,
+        city = selectedCityItem.name,
+        state = selectedStateItem.name,
         zip = zip,
-        country = country
+        country = selectedCountryItem.name
     )
 
 }
@@ -151,9 +158,14 @@ data class ReviewScreenState(
     val openDialog: Boolean = false,
     val street: String = "",
     val number: String = "",
-    val city: String = "",
-    val state: String = "",
     val zip: String = "",
-    val country: String = "",
-    val userId: String = ""
+    val selectedItemIndex: Int = 0,
+    val selectedCountryItem: Country = Country("", "", ""),
+    val expandedCountryOptions: Boolean = false,
+    val selectedStateItem: State = State("", "", ""),
+    val expandedStateOptions: Boolean = false,
+    val selectedCityItem: City = City(0, ""),
+    val expandedCityOptions: Boolean = false,
+    val userId: String = "",
+    val listOfCountries: List<Country> = listOf()
 )

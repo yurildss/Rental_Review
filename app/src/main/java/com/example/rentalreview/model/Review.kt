@@ -6,6 +6,9 @@ import org.w3c.dom.Comment
 import java.time.LocalDate
 import java.util.Date
 
+/**
+ * Review model
+ */
 data class Review(
     @DocumentId val id: String = "",
     @ServerTimestamp val timestamp: Date? = null,

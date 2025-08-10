@@ -1,6 +1,9 @@
 package com.example.rentalreview.model
 
-
+/**
+ * Types of the responses of the API for
+ * find cities, states and countries
+ */
 data class Country(
     val name: String,
     val iso2: String,

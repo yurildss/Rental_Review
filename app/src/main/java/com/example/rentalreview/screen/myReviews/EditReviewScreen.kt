@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.screen.review.ReviewEntryForm
-import com.example.rentalreview.screen.review.ReviewScreenViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -38,9 +37,8 @@ fun ReviewEditEntryScreen(
         onTitleChanged = viewModel::onTitleChanged,
         onStreeetChanged = viewModel::onStreetChanged,
         onNumberChanged = viewModel::onNumberChanged,
-        onCityChanged = viewModel::onCityChanged,
         onStateChanged = viewModel::onStateChanged,
         onZipChanged = viewModel::onZipChanged,
-        onCountryChanged = viewModel::onCountryChanged
+        onCountrySelected = viewModel::onCountryChanged
     )
 }

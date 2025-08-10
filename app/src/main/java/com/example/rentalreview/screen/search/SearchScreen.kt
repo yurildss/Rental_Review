@@ -48,7 +48,7 @@ fun SearchScreen(
             Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
             Text("Search some reviews")
         }
-        FilterCard(
+        FilterCountryCard(
             label = "Country",
             list = uiState.countries,
             selectedItem = uiState.selectedCountryItem,
@@ -178,7 +178,7 @@ fun FilterStateCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterCard(
+fun FilterCountryCard(
     label: String,
     updateExpandedOptions: () -> Unit = {},
     expandedDropMenu: Boolean,
@@ -350,7 +350,7 @@ fun FilterCardPreview(){
             Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
             Text("Search some reviews")
         }
-        FilterCard(
+        FilterCountryCard(
             label = "type",
             list = listOf(),
             selectedItem = Country("", "", ""),

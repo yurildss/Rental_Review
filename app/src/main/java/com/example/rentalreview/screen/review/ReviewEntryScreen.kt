@@ -46,6 +46,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.rentalreview.model.Country
+import com.example.rentalreview.model.State
+import com.example.rentalreview.screen.search.FilterCountryCard
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -62,6 +65,7 @@ fun ReviewEntryScreen(
 
     val startDate by viewModel.startDate.collectAsStateWithLifecycle()
     val endDate by viewModel.endDate.collectAsStateWithLifecycle()
+    
     LazyColumn {
         item {
             ReviewEntryForm(
@@ -80,10 +84,13 @@ fun ReviewEntryScreen(
                 onTitleChanged = viewModel::onTitleChanged,
                 onStreeetChanged = viewModel::onStreetChanged,
                 onNumberChanged = viewModel::onNumberChanged,
-                onCityChanged = viewModel::onCityChanged,
                 onStateChanged = viewModel::onStateChanged,
                 onZipChanged = viewModel::onZipChanged,
-                onCountryChanged = viewModel::onCountryChanged
+                onCountrySelected = viewModel::onCountryChanged,
+                selectedCountryItem = uiState.selectedCountryItem,
+                expandedCountryOptions = uiState.expandedCountryOptions,
+                onCountryExpandedOptions = viewModel::onCountryExpandedOptions,
+                countryList = uiState.listOfCountries
             )
         }
     }
@@ -94,10 +101,13 @@ fun ReviewEntryScreen(
 fun ReviewEntryForm(
     onStreeetChanged: (String) -> Unit,
     onNumberChanged: (String) -> Unit,
-    onCityChanged: (String) -> Unit,
-    onStateChanged: (String) -> Unit,
+    selectedCountryItem: Country,
+    onStateChanged: (State) -> Unit,
     onZipChanged: (String) -> Unit,
-    onCountryChanged: (String) -> Unit,
+    expandedCountryOptions: Boolean,
+    onCountryExpandedOptions: () -> Unit,
+    onCountrySelected: (Country) -> Unit,
+    countryList: List<Country>,
     updateExpandedOptions: (Boolean) -> Unit = {},
     typeRental: (String) -> Unit = {},
     openDialog: () -> Unit = {},
@@ -133,59 +143,39 @@ fun ReviewEntryForm(
             value = uiState.title,
             onValueChange = onTitleChanged,
             modifier = Modifier
-                .fillMaxWidth(0.85F).testTag("titleEntry"),
+                .fillMaxWidth(0.85F)
+                .testTag("titleEntry"),
         )
         Text("Address",
             fontSize = 20.sp,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(top = 15.dp)
         )
+        FilterCountryCard(
+            label = "Country",
+            list = countryList,
+            selectedItem = selectedCountryItem,
+            selectedIndex = {},
+            expandedDropMenu = expandedCountryOptions,
+            updateExpandedOptions = onCountryExpandedOptions,
+            onSelected = onCountrySelected,
+        )
         Row(modifier = Modifier.fillMaxWidth(0.85F) ,horizontalArrangement = Arrangement.SpaceBetween) {
             OutlinedTextField(
                 value = uiState.street,
                 onValueChange = onStreeetChanged,
                 modifier = Modifier
-                    .fillMaxWidth(0.65F).testTag("streetEntry"),
+                    .fillMaxWidth(0.65F)
+                    .testTag("streetEntry"),
                 label = { Text("Street", color = MaterialTheme.colorScheme.primary) }
             )
             OutlinedTextField(
                 value = uiState.number,
                 onValueChange = onNumberChanged,
                 modifier = Modifier
-                    .fillMaxWidth(0.95F).testTag("numberEntry"),
+                    .fillMaxWidth(0.95F)
+                    .testTag("numberEntry"),
                 label = { Text("n", color = MaterialTheme.colorScheme.primary) }
-            )
-        }
-        Row(modifier = Modifier.fillMaxWidth(0.85F) ,horizontalArrangement = Arrangement.SpaceBetween) {
-            OutlinedTextField(
-                value = uiState.city,
-                onValueChange = onCityChanged,
-                modifier = Modifier
-                    .fillMaxWidth(0.50F).testTag("cityEntry"),
-                label = { Text("city", color = MaterialTheme.colorScheme.primary) }
-            )
-            OutlinedTextField(
-                value = uiState.state,
-                onValueChange = onStateChanged,
-                modifier = Modifier
-                    .fillMaxWidth(0.95F).testTag("stateEntry"),
-                label = { Text("state", color = MaterialTheme.colorScheme.primary) }
-            )
-        }
-        Row(modifier = Modifier.fillMaxWidth(0.85F) ,horizontalArrangement = Arrangement.SpaceBetween) {
-            OutlinedTextField(
-                value = uiState.country,
-                onValueChange = onCountryChanged,
-                modifier = Modifier
-                    .fillMaxWidth(0.60F).testTag("countryEntry"),
-                label = { Text("country", color = MaterialTheme.colorScheme.primary) }
-            )
-            OutlinedTextField(
-                value = uiState.zip,
-                onValueChange = onZipChanged,
-                modifier = Modifier
-                    .fillMaxWidth(0.95F).testTag("zipEntry"),
-                label = { Text("zip", color = MaterialTheme.colorScheme.primary) }
             )
         }
         Text("Property type",
@@ -446,19 +436,22 @@ fun ReviewEntryScreenPreview(){
                 star = 0,
                 onSaved = {},
                 onStreeetChanged = {},
-                onNumberChanged = {  },
-                onCityChanged = {},
+                onNumberChanged = { },
                 onStateChanged = {},
                 onZipChanged = {},
-                onCountryChanged = {},
+                onCountrySelected = {},
                 updateExpandedOptions = {},
                 typeRental = {},
-                openDialog = {  },
+                openDialog = { },
                 closeDialog = {},
                 onRatingChanged = {},
                 updateReview = {},
                 onDateRangeSelected = { _, _ -> },
-                onTitleChanged = {}
+                onTitleChanged = {},
+                selectedCountryItem = TODO(),
+                expandedCountryOptions = TODO(),
+                onCountryExpandedOptions = TODO(),
+                countryList = TODO()
             )
         }
     }
@@ -478,19 +471,22 @@ fun ReviewEntryDarkScreenPreview(){
                 star = 0,
                 onSaved = {},
                 onStreeetChanged = {},
-                onNumberChanged = {  },
-                onCityChanged = {},
+                onNumberChanged = { },
                 onStateChanged = {},
                 onZipChanged = {},
-                onCountryChanged = {},
+                onCountrySelected = {},
                 updateExpandedOptions = {},
                 typeRental = {},
-                openDialog = {  },
+                openDialog = { },
                 closeDialog = {},
                 onRatingChanged = {},
                 updateReview = {},
                 onDateRangeSelected = { _, _ -> },
-                onTitleChanged = {}
+                onTitleChanged = {},
+                selectedCountryItem = Country("", "", ""),
+                expandedCountryOptions = false,
+                onCountryExpandedOptions = {  },
+                countryList = listOf()
             )
         }
     }
