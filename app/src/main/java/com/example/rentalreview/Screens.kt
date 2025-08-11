@@ -1,5 +1,9 @@
 package com.example.rentalreview
 
+/**
+ * Screens used in [RentalReviewApp]
+ * for navigation.
+ */
 enum class Screens {
                    OPEN_SCREEN,
     REVIEW_ENTRY_SCREEN,
