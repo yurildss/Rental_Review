@@ -37,18 +37,17 @@ fun ReviewEditEntryScreen(
         onTitleChanged = viewModel::onTitleChanged,
         onStreetChanged = viewModel::onStreetChanged,
         onNumberChanged = viewModel::onNumberChanged,
-        onStateChanged = viewModel::onStateChanged,
         onZipChanged = viewModel::onZipChanged,
         onCountrySelected = viewModel::onCountryChanged,
-        selectedCountryItem = TODO(),
-        expandedCountryOptions = TODO(),
-        onCountryExpandedOptions = TODO(),
-        onStateExpandedOptions = TODO(),
-        onCityExpandedOptions = TODO(),
-        onStateSelected = TODO(),
-        onCitySelected = TODO(),
-        countryList = TODO(),
-        stateList = TODO(),
-        cityList = TODO()
+        selectedCountryItem = uiState.selectedCountryItem,
+        expandedCountryOptions = uiState.expandedCountryOptions,
+        onCountryExpandedOptions = viewModel::onCountryExpandedOptions,
+        onStateExpandedOptions = viewModel::onStateExpandedOptions,
+        onCityExpandedOptions = viewModel::onCityExpandedOptions,
+        onStateSelected = viewModel::onStateChanged,
+        onCitySelected = viewModel::onCityChanged,
+        countryList = uiState.listOfCountries,
+        stateList = uiState.listOfStates,
+        cityList = uiState.listOfCities
     )
 }

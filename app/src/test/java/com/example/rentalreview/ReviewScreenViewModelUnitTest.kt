@@ -1,5 +1,8 @@
 package com.example.rentalreview
 
+import com.example.rentalreview.model.City
+import com.example.rentalreview.model.Country
+import com.example.rentalreview.model.State
 import kotlinx.coroutines.test.resetMain
 
 import com.example.rentalreview.screen.review.ReviewScreenViewModel
@@ -58,8 +61,8 @@ class ReviewScreenViewModelUnitTest {
 
     @Test
     fun `on country changed`(){
-        viewModel.onCountryChanged("Unit Test")
-        assert(viewModel.uiState.value.country == "Unit Test")
+        viewModel.onCountryChanged(Country("Unit Test", "Unit Test", "Unit Test"))
+        assert(viewModel.uiState.value.selectedCountryItem == Country("Unit Test", "Unit Test", "Unit Test"))
 
     }
 
@@ -71,13 +74,13 @@ class ReviewScreenViewModelUnitTest {
 
     @Test
     fun `on State Changed`(){
-        viewModel.onStateChanged("Unit Test")
-        assert(viewModel.uiState.value.state == "Unit Test")
+        viewModel.onStateSelected(State("Unit Test", "Unit Test", "Unit Test"))
+        assert(viewModel.uiState.value.selectedStateItem == State("Unit Test", "Unit Test", "Unit Test"))
     }
 
     @Test
     fun `on City Changed`(){
-        viewModel.onCityChanged("Unit Test")
+        viewModel.onCitySelected(City(0, "Unit Test"))
     }
 
     @Test

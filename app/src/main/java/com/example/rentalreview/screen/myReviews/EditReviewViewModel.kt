@@ -59,6 +59,19 @@ class EditReviewViewModel
         }
     }
 
+    fun onCountryExpandedOptions(){
+        _uiState.value = _uiState.value.copy(expandedCountryOptions = !_uiState.value.expandedCountryOptions)
+
+    }
+
+    fun onStateExpandedOptions(){
+        _uiState.value = _uiState.value.copy(expandedStateOptions = !_uiState.value.expandedStateOptions)
+    }
+
+    fun onCityExpandedOptions(){
+        _uiState.value = _uiState.value.copy(expandedCityOptions = !_uiState.value.expandedCityOptions)
+    }
+
     fun openDialog() {
         _uiState.value = _uiState.value.copy(openDialog = true)
     }
