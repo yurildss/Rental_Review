@@ -283,8 +283,6 @@ fun FilterCityCard(
             .testTag("FilterCard"),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
-
         ExposedDropdownMenuBox(
             expanded = expandedDropMenu,
             onExpandedChange = { updateExpandedOptions() },
@@ -294,9 +292,7 @@ fun FilterCityCard(
         ) {
             OutlinedTextField(
                 value = selectedItem.name,
-                onValueChange = {
-
-                },
+                onValueChange = {},
                 readOnly = true,
                 modifier = Modifier
                     .menuAnchor()

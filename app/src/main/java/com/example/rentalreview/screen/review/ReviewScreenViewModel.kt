@@ -1,7 +1,6 @@
 package com.example.rentalreview.screen.review
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.rentalreview.model.Address
 import com.example.rentalreview.model.City

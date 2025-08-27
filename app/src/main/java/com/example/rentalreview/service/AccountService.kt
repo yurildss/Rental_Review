@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface AccountService {
 
     val currentUserId: String
-    val hasUser: Boolean
     val currentUser: Flow<User>
 
     suspend fun register(email: String, password: String, name: String)
