@@ -175,7 +175,9 @@ fun ReviewEntryForm(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(top = 10.dp, start = 20.dp, end = 20.dp)
-            .testTag("reviewEntryScreen")
+            .testTag("reviewEntryScreen"),
+        horizontalAlignment = CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         Text("Rate Your Stay",
             fontSize = 30.sp,
