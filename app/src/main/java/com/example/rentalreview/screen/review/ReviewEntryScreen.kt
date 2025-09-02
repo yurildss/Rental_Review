@@ -485,7 +485,8 @@ fun PropertyTypeDropMenu(
                     onClick = {
                         updateType(selectionOption)
                         updateExpandedOptions(false)
-                    }
+                    },
+                    modifier = Modifier.testTag(selectionOption)
                 )
             }
         }

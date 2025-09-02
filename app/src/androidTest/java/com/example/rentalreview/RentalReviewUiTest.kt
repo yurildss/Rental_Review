@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
@@ -73,30 +74,37 @@ class RentalReviewUiTest {
     fun review() {
         login()
 
-        Thread.sleep(2000L) // Só para debug mesmo!
+        Thread.sleep(2000L)
+        //navigate to add screen
         composeTestRule.onNodeWithTag("addScreen").assertExists().performClick()
-
+        //wait for screen to load
         composeTestRule.waitUntil(timeoutMillis = 5000) {
             composeTestRule.onAllNodesWithTag("reviewEntryScreen").fetchSemanticsNodes().isNotEmpty()
         }
-
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
-            composeTestRule.onAllNodesWithTag("reviewEntryScreen").fetchSemanticsNodes().isNotEmpty()
-        }
-
+        //write a tittle review
         composeTestRule.onNodeWithTag("titleEntry").performTextInput("Test Title ${Random.nextInt(0,100)}")
+        //choose a country
+        composeTestRule.onNodeWithTag("Country").performClick()
+        composeTestRule.waitUntil(timeoutMillis = 20000){
+            composeTestRule.onAllNodesWithTag("Argentina").fetchSemanticsNodes().isNotEmpty()
+        }
+        composeTestRule.onNodeWithTag("Argentina").performClick()
+        //choose a street and number
         composeTestRule.onNodeWithTag("streetEntry").performTextInput("Test Street ${Random.nextInt(0,100)}")
         composeTestRule.onNodeWithTag("numberEntry").performTextInput("123")
-        composeTestRule.onNodeWithTag("cityEntry").performTextInput("Test City ${Random.nextInt(0,100)}")
-        composeTestRule.onNodeWithTag("stateEntry").performTextInput("Test State ${Random.nextInt(0,100)}")
-        composeTestRule.onNodeWithTag("countryEntry").performTextInput("Test Country ${Random.nextInt(0,100)}")
-        composeTestRule.onNodeWithTag("zipEntry").performTextInput("12345")
 
         composeTestRule.onNodeWithTag("propertyType").performClick()
-        composeTestRule.onNodeWithText("Apartment").performClick()
+        composeTestRule.waitUntil(timeoutMillis = 10000){
+            composeTestRule.onAllNodesWithTag("Apartment").fetchSemanticsNodes().isNotEmpty()
+        }
+        composeTestRule.onNodeWithTag("Apartment").performClick()
 
         composeTestRule.onNodeWithTag("dateRangeSelector").performClick()
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule.onAllNodesWithText("OK").fetchSemanticsNodes().isNotEmpty()
+        }
         composeTestRule.onNodeWithText("OK").performClick()
+
         composeTestRule.onNodeWithTag("reviewEntry").performTextInput("Test Review ${Random.nextInt(0,100)}")
 
         composeTestRule.onNodeWithTag("saveReview").performClick()
@@ -106,17 +114,6 @@ class RentalReviewUiTest {
         }
     }
 
-    @Test
-    fun captureScreenshotManually() {
-        val bitmap = composeTestRule.onRoot().captureToImage().asAndroidBitmap()
-
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val file = File(context.filesDir, "screenshot_from_compose.png")
-        file.outputStream().use {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
-        }
-
-    }
 
     @Test
     fun navigateToFeedScreen(){

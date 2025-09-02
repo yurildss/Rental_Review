@@ -209,8 +209,7 @@ fun FilterCountryCard(
             )
             .wrapContentHeight()
             .background(MaterialTheme.colorScheme.background)
-            .padding(10.dp)
-            .testTag(label),
+            .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
