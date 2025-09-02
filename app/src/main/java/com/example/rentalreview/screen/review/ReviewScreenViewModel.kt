@@ -9,6 +9,7 @@ import com.example.rentalreview.model.City
 import com.example.rentalreview.model.Country
 import com.example.rentalreview.model.Review
 import com.example.rentalreview.model.State
+import com.example.rentalreview.network.GeoApi
 import com.example.rentalreview.screen.RentalReviewAppViewModel
 import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
@@ -42,7 +43,34 @@ class ReviewScreenViewModel @Inject constructor(
     val endDate: StateFlow<LocalDate?> = _endDate.asStateFlow()
 
     init {
-        _uiState.value = _uiState.value.copy(userId = accountService.currentUserId)
+        launchCatching {
+            _uiState.value = _uiState.value.copy(userId = accountService.currentUserId)
+            val listCountry = GeoApi.retrofitService.getCountry()
+            _uiState.value = _uiState.value.copy(listOfCountries = listCountry)
+        }
+    }
+
+    /**
+     * Retrieves the list of states for the selected country.
+     */
+    fun getStates(){
+        launchCatching {
+            val listState = GeoApi.retrofitService.getState(_uiState.value.selectedCountryItem.iso2)
+            _uiState.value = _uiState.value.copy(listOfStates = listState)
+        }
+    }
+
+    /**
+     * Retrieves the list of cities for the selected state and country.
+     */
+    fun getCities(){
+        launchCatching {
+            val listCity = GeoApi.retrofitService.getCities(
+                _uiState.value.selectedCountryItem.iso2,
+                _uiState.value.selectedStateItem.iso2
+            )
+            _uiState.value = _uiState.value.copy(listOfCities = listCity)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -94,6 +122,7 @@ class ReviewScreenViewModel @Inject constructor(
 
     fun onCountryChanged(country: Country){
         _uiState.value = _uiState.value.copy(selectedCountryItem = country)
+        getStates()
     }
 
     fun onCountryExpandedOptions(){
@@ -110,6 +139,7 @@ class ReviewScreenViewModel @Inject constructor(
 
     fun onStateSelected(state: State){
         _uiState.value = _uiState.value.copy(selectedStateItem = state)
+        getCities()
     }
 
     fun onCitySelected(city: City){

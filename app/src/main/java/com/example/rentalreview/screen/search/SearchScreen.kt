@@ -179,6 +179,7 @@ fun FilterStateCard(
                             onSelected(item)
                             updateExpandedOptions()
                         },
+                        modifier = Modifier.testTag(item.name)
                     )
                 }
             }
@@ -209,7 +210,7 @@ fun FilterCountryCard(
             .wrapContentHeight()
             .background(MaterialTheme.colorScheme.background)
             .padding(10.dp)
-            .testTag("FilterCard"),
+            .testTag(label),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
@@ -262,6 +263,7 @@ fun FilterCountryCard(
                             onSelected(item)
                             updateExpandedOptions()
                         },
+                        modifier = Modifier.testTag(item.name)
                     )
                 }
             }
@@ -291,7 +293,7 @@ fun FilterCityCard(
             .wrapContentHeight()
             .background(MaterialTheme.colorScheme.background)
             .padding(10.dp)
-            .testTag("FilterCard"),
+            .testTag(label),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ExposedDropdownMenuBox(
@@ -340,6 +342,7 @@ fun FilterCityCard(
                             onSelected(item)
                             updateExpandedOptions()
                         },
+                        modifier = Modifier.testTag(item.name)
                     )
                 }
             }
