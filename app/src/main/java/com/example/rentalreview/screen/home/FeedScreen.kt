@@ -38,6 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -145,33 +146,50 @@ fun ReviewsList(
     showOtherUsersComments: Boolean,
     onFavorite: (reviewId: String, index: Int) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .padding(10.dp)
-            .testTag("homeScreen"),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        itemsIndexed(reviews) { index, review ->
-
-            review?.let {
-                ReviewCard(
-                    it, { onLike(it.id, index) }, { onDesLike(it.id, index) }, userId,
-                    onLoadComments = onLoadComments,
-                    onSendComment = { onSendComment(it.id, index) },
-                    comment = comment,
-                    showComments = showComments,
-                    onCommentChange = onCommentChange,
-                    onShowCommentChange = { onShowCommentChange(index) },
-                    showOtherUsersComments = showOtherUsersComments,
-                    onFavorite = { onFavorite(it.id, index) }
-                )
-            }
-            if (index == reviews.lastIndex - 1) {
-                onLoadNextPage()
-            }
+    if(reviews.isEmpty()){
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "No reviews yet, be our first!",
+                color = Color.Black,
+                fontSize = 20.sp,
+            )
         }
+    }else{
+        LazyColumn(
+            modifier = Modifier
+                .padding(10.dp)
+                .testTag("homeScreen"),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            itemsIndexed(reviews) { index, review ->
 
+                review?.let {
+                    ReviewCard(
+                        it, { onLike(it.id, index) }, { onDesLike(it.id, index) }, userId,
+                        onLoadComments = onLoadComments,
+                        onSendComment = { onSendComment(it.id, index) },
+                        comment = comment,
+                        showComments = showComments,
+                        onCommentChange = onCommentChange,
+                        onShowCommentChange = { onShowCommentChange(index) },
+                        showOtherUsersComments = showOtherUsersComments,
+                        onFavorite = { onFavorite(it.id, index) }
+                    )
+                }
+                if (index == reviews.lastIndex - 1) {
+                    onLoadNextPage()
+                }
+            }
+
+        }
     }
+
 }
 
 @Composable
