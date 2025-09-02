@@ -130,6 +130,7 @@ class SearchViewModel @Inject constructor(
             }
 
             _uiState.value = _uiState.value.copy(reviews = uiStateList)
+            _uiState.value = _uiState.value.copy(successSearching = true)
         }
     }
 
@@ -214,5 +215,6 @@ data class SearchScreenUiState(
     val selectedStateItem: State = State("", "", ""),
     val expandedStateOptions: Boolean = false,
     val selectedCityItem: City = City(0, ""),
-    val expandedCityOptions: Boolean = false
+    val expandedCityOptions: Boolean = false,
+    val successSearching: Boolean = false
 )

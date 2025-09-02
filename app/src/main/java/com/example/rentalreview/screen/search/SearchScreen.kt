@@ -3,6 +3,7 @@ package com.example.rentalreview.screen.search
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,56 +41,66 @@ fun SearchScreen(
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(modifier = Modifier
-        .background(MaterialTheme.colorScheme.background)
-        .fillMaxSize().padding(10.dp),)
-    {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-            Text("Search some reviews")
-        }
-        FilterCountryCard(
-            label = "Country",
-            list = uiState.countries,
-            selectedItem = uiState.selectedCountryItem,
-            selectedIndex = viewModel::onSelectedItemIndex,
-            expandedDropMenu = uiState.expandedCountryOptions,
-            updateExpandedOptions = viewModel::updateExpandedOptions,
-            onSelected = viewModel::onSelectCountryItem
-        )
-        FilterStateCard(
-            label = "State",
-            list = uiState.states,
-            selectedItem = uiState.selectedStateItem,
-            selectedIndex = viewModel::onSelectedItemIndex,
-            expandedDropMenu = uiState.expandedStateOptions,
-            updateExpandedOptions = viewModel::updateExpandedStateOptions,
-            onSelected = viewModel::onSelectStateItem
-        )
-
-        FilterCityCard(
-            label = "City",
-            list = uiState.cities,
-            selectedItem = uiState.selectedCityItem,
-            selectedIndex = viewModel::onSelectedItemIndex,
-            expandedDropMenu = uiState.expandedCityOptions,
-            updateExpandedOptions = viewModel::updateExpandedCityOptions,
-            onSelected = viewModel::onSelectCityItem
-        )
-
-        OutlinedButton(
-            onClick = viewModel::onSearch,
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
-            modifier = Modifier
-                .fillMaxWidth(0.75f)
-                .testTag("searchButton")
-        ) {
-            Text(text = "Search", color = MaterialTheme.colorScheme.secondary)
-        }
+    if (uiState.successSearching){
         ReviewsList(
             reviews = uiState.reviews,
             userId = uiState.userId
         )
+    }else{
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize().padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        )
+        {
+            Row(
+                Modifier.fillMaxWidth().padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(imageVector = Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary)
+                Text("Search some reviews", color = MaterialTheme.colorScheme.primary)
+            }
+            FilterCountryCard(
+                label = "Country",
+                list = uiState.countries,
+                selectedItem = uiState.selectedCountryItem,
+                selectedIndex = viewModel::onSelectedItemIndex,
+                expandedDropMenu = uiState.expandedCountryOptions,
+                updateExpandedOptions = viewModel::updateExpandedOptions,
+                onSelected = viewModel::onSelectCountryItem
+            )
+            FilterStateCard(
+                label = "State",
+                list = uiState.states,
+                selectedItem = uiState.selectedStateItem,
+                selectedIndex = viewModel::onSelectedItemIndex,
+                expandedDropMenu = uiState.expandedStateOptions,
+                updateExpandedOptions = viewModel::updateExpandedStateOptions,
+                onSelected = viewModel::onSelectStateItem
+            )
+
+            FilterCityCard(
+                label = "City",
+                list = uiState.cities,
+                selectedItem = uiState.selectedCityItem,
+                selectedIndex = viewModel::onSelectedItemIndex,
+                expandedDropMenu = uiState.expandedCityOptions,
+                updateExpandedOptions = viewModel::updateExpandedCityOptions,
+                onSelected = viewModel::onSelectCityItem
+            )
+
+            OutlinedButton(
+                onClick = viewModel::onSearch,
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
+                modifier = Modifier
+                    .fillMaxWidth(0.75f)
+                    .testTag("searchButton")
+            ) {
+                Text(text = "Search", color = MaterialTheme.colorScheme.secondary)
+            }
+        }
     }
 }
 

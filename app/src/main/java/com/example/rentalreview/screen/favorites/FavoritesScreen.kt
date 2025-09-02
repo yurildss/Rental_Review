@@ -87,13 +87,18 @@ fun ReviewsList(
     ) {
         if (reviews.isEmpty()) {
             item {
-                Text(
-                    text = "None review find",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                    , fontFamily = FontFamily.Monospace
-                )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "None review find",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                        , fontFamily = FontFamily.Monospace
+                    )
+                }
             }
         } else {
             itemsIndexed(reviews) { index, review ->
