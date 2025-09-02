@@ -1,5 +1,6 @@
 package com.example.rentalreview.screen.review
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
@@ -31,14 +32,22 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,6 +55,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.rentalreview.common.SnackbarManager
+import com.example.rentalreview.common.SnackbarMessage
 import com.example.rentalreview.model.City
 import com.example.rentalreview.model.Country
 import com.example.rentalreview.model.State
@@ -53,9 +64,11 @@ import com.example.rentalreview.screen.search.FilterCityCard
 import com.example.rentalreview.screen.search.FilterCountryCard
 import com.example.rentalreview.screen.search.FilterStateCard
 import com.example.rentalreview.ui.theme.RentalReviewTheme
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReviewEntryScreen(
@@ -63,43 +76,65 @@ fun ReviewEntryScreen(
     viewModel: ReviewScreenViewModel = hiltViewModel(),
 ){
 
+    val snackBarHostState = remember { SnackbarHostState() }
+    val snackBarMessage by SnackbarManager.snackbarMessages.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    LaunchedEffect(snackBarMessage) {
+        snackBarMessage?.let {
+            val message = when (it) {
+                is SnackbarMessage.StringSnackbar -> it.message
+                is SnackbarMessage.ResourceSnackbar -> context.getString(it.message)
+            }
+            coroutineScope.launch {
+                snackBarHostState.showSnackbar(message)
+                SnackbarManager.clearSnackbarMessage()
+            }
+        }
+    }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var star = uiState.rating
 
     val startDate by viewModel.startDate.collectAsStateWithLifecycle()
     val endDate by viewModel.endDate.collectAsStateWithLifecycle()
-    
-    LazyColumn {
-        item {
-            ReviewEntryForm(
-                uiState = uiState,
-                onSaved = { viewModel.onSave(onSaved) },
-                startDate = startDate,
-                endDate = endDate,
-                star = star,
-                updateExpandedOptions = viewModel::updateExpandedOptions,
-                typeRental = viewModel::typeRental,
-                openDialog = viewModel::openDialog,
-                closeDialog = viewModel::closeDialog,
-                onRatingChanged = viewModel::onRatingChanged,
-                updateReview = viewModel::updateReview,
-                onDateRangeSelected = viewModel::onDateRangeSelected,
-                onTitleChanged = viewModel::onTitleChanged,
-                onStreetChanged = viewModel::onStreetChanged,
-                onNumberChanged = viewModel::onNumberChanged,
-                onZipChanged = viewModel::onZipChanged,
-                onCountrySelected = viewModel::onCountryChanged,
-                selectedCountryItem = uiState.selectedCountryItem,
-                expandedCountryOptions = uiState.expandedCountryOptions,
-                onCountryExpandedOptions = viewModel::onCountryExpandedOptions,
-                countryList = uiState.listOfCountries,
-                onStateExpandedOptions = viewModel::onStateExpandedOptions,
-                onCityExpandedOptions = viewModel::onCityExpandedOptions,
-                onStateSelected = viewModel::onStateSelected,
-                onCitySelected = viewModel::onCitySelected,
-                stateList = uiState.listOfStates,
-                cityList = uiState.listOfCities
-            )
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) }
+    ) {
+        LazyColumn {
+            item {
+                ReviewEntryForm(
+                    uiState = uiState,
+                    onSaved = { viewModel.onSave(onSaved) },
+                    startDate = startDate,
+                    endDate = endDate,
+                    star = star,
+                    updateExpandedOptions = viewModel::updateExpandedOptions,
+                    typeRental = viewModel::typeRental,
+                    openDialog = viewModel::openDialog,
+                    closeDialog = viewModel::closeDialog,
+                    onRatingChanged = viewModel::onRatingChanged,
+                    updateReview = viewModel::updateReview,
+                    onDateRangeSelected = viewModel::onDateRangeSelected,
+                    onTitleChanged = viewModel::onTitleChanged,
+                    onStreetChanged = viewModel::onStreetChanged,
+                    onNumberChanged = viewModel::onNumberChanged,
+                    onZipChanged = viewModel::onZipChanged,
+                    onCountrySelected = viewModel::onCountryChanged,
+                    selectedCountryItem = uiState.selectedCountryItem,
+                    expandedCountryOptions = uiState.expandedCountryOptions,
+                    onCountryExpandedOptions = viewModel::onCountryExpandedOptions,
+                    countryList = uiState.listOfCountries,
+                    onStateExpandedOptions = viewModel::onStateExpandedOptions,
+                    onCityExpandedOptions = viewModel::onCityExpandedOptions,
+                    onStateSelected = viewModel::onStateSelected,
+                    onCitySelected = viewModel::onCitySelected,
+                    stateList = uiState.listOfStates,
+                    cityList = uiState.listOfCities
+                )
+            }
         }
     }
 }
@@ -167,7 +202,7 @@ fun ReviewEntryForm(
         FilterCountryCard(
             label = "Country",
             list = countryList,
-            selectedItem = selectedCountryItem,
+            selectedItem = uiState.selectedCountryItem,
             selectedIndex = {},
             expandedDropMenu = expandedCountryOptions,
             updateExpandedOptions = onCountryExpandedOptions,
@@ -175,7 +210,7 @@ fun ReviewEntryForm(
         )
         FilterStateCard(
             label = "State",
-            list = stateList,
+            list = uiState.listOfStates,
             selectedItem = uiState.selectedStateItem,
             selectedIndex = {},
             expandedDropMenu = uiState.expandedStateOptions,
@@ -185,7 +220,7 @@ fun ReviewEntryForm(
 
         FilterCityCard(
             label = "City",
-            list = cityList,
+            list = uiState.listOfCities,
             selectedItem = uiState.selectedCityItem,
             selectedIndex = {},
             expandedDropMenu = uiState.expandedCityOptions,

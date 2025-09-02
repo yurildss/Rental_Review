@@ -2,6 +2,8 @@ package com.example.rentalreview.screen.review
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.rentalreview.common.SnackbarManager
+import com.example.rentalreview.common.SnackbarMessage
 import com.example.rentalreview.model.Address
 import com.example.rentalreview.model.City
 import com.example.rentalreview.model.Country
@@ -118,6 +120,41 @@ class ReviewScreenViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     fun onSave(onSaved: () -> Unit = {}){
         launchCatching {
+
+            if(_uiState.value.title.isEmpty()){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Title cannot be empty"))
+                return@launchCatching
+            }
+
+            if(_uiState.value.type.isEmpty()){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Type cannot be empty"))
+                return@launchCatching
+            }
+
+            if(startDate.value == LocalDate.now()){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Start date cannot be empty"))
+                return@launchCatching
+            }
+
+            if(endDate.value == LocalDate.of(2025, 12, 31)){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("End date cannot be empty"))
+                return@launchCatching
+            }
+
+            if(_uiState.value.selectedCountryItem == Country("", "", "")){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Country cannot be empty"))
+                return@launchCatching
+            }
+
+            if(_uiState.value.selectedStateItem == State("", "", "")){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("State cannot be empty"))
+                return@launchCatching
+            }
+
+            if(_uiState.value.selectedCityItem == City(0, "")){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("City cannot be empty"))
+                return@launchCatching
+            }
 
             reviewRepository.saveReview(Review(
                 title = _uiState.value.title,

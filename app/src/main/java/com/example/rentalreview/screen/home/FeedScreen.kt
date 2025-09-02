@@ -51,7 +51,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.R
 import com.example.rentalreview.model.Address
+import com.example.rentalreview.model.City
 import com.example.rentalreview.model.Comments
+import com.example.rentalreview.model.Country
+import com.example.rentalreview.model.State
 import com.example.rentalreview.screen.perfil.ProfileScreen
 import com.example.rentalreview.screen.review.ReviewEntryScreen
 import com.example.rentalreview.screen.search.SearchScreen
@@ -441,9 +444,9 @@ fun ReviewBlackCardPreview(){
                 review = ReviewUiState(address =
                     Address(street = "Manoel Pedro da Silveira",
                         number = "338",
-                        city = "São Paulo",
-                        state = "Ba",
-                        country = "Brazil"
+                        city = City(0,"Cruz das Almas"),
+                        state = State("","Bahia", ""),
+                        country = Country("Brazil", "BR","BRA")
                     )),
                 onLike = {},
                 userId = "1",

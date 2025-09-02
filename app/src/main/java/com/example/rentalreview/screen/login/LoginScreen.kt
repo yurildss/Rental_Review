@@ -1,5 +1,6 @@
 package com.example.rentalreview.screen.login
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,10 +14,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -30,34 +35,62 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.screen.signUp.SignUpScreenViewModel
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import com.example.rentalreview.common.SnackbarManager
+import com.example.rentalreview.common.SnackbarMessage
+import kotlinx.coroutines.launch
 
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit = {},
     onSignUpClick: () -> Unit = {},
     viewModel: LoginScreenViewModel = hiltViewModel()
 ){
+    val snackBarHostState = remember { SnackbarHostState() }
+    val snackBarMessage by SnackbarManager.snackbarMessages.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    LaunchedEffect(snackBarMessage) {
+        snackBarMessage?.let {
+            val message = when (it) {
+                is SnackbarMessage.StringSnackbar -> it.message
+                is SnackbarMessage.ResourceSnackbar -> context.getString(it.message)
+            }
+            coroutineScope.launch {
+                snackBarHostState.showSnackbar(message)
+                SnackbarManager.clearSnackbarMessage()
+            }
+        }
+    }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-
-    if(uiState.showEmailPasswordReset){
-        ForgotPasswordForm(
-            uiState,
-            viewModel::onEmailPasswordResetChange,
-            viewModel::onForgotPasswordClick
-        )
-    }else{
-        LoginForm(
-            uiState,
-            viewModel::onEmailChange,
-            viewModel::onPasswordChange,
-            { viewModel.onLoginClick(onLoginSuccess) },
-            onSignUpClick,
-            viewModel::onShowEmailPasswordResetChange
-        )
+    Scaffold(snackbarHost = {
+       SnackbarHost(hostState = snackBarHostState)
+    }) {
+        if(uiState.showEmailPasswordReset){
+            ForgotPasswordForm(
+                uiState,
+                viewModel::onEmailPasswordResetChange,
+                viewModel::onForgotPasswordClick
+            )
+        }else{
+            LoginForm(
+                uiState,
+                viewModel::onEmailChange,
+                viewModel::onPasswordChange,
+                { viewModel.onLoginClick(onLoginSuccess) },
+                onSignUpClick,
+                viewModel::onShowEmailPasswordResetChange
+            )
+        }
     }
 }
 

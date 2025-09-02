@@ -1,5 +1,6 @@
 package com.example.rentalreview.screen.signUp
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,9 +12,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -26,25 +32,56 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.ui.theme.RentalReviewTheme
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import com.example.rentalreview.common.SnackbarManager
+import com.example.rentalreview.common.SnackbarMessage
+import kotlinx.coroutines.launch
 
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SignUpScreen(
     onLoginClick:() -> Unit = {},
     onSignUpSuccess: () -> Unit = {},
     viewModel: SignUpScreenViewModel = hiltViewModel()
 ){
+
+    val snackBarHostState = remember { SnackbarHostState() }
+    val snackBarMessage by SnackbarManager.snackbarMessages.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    LaunchedEffect(snackBarMessage) {
+        snackBarMessage?.let {
+            val message = when (it) {
+                is SnackbarMessage.StringSnackbar -> it.message
+                is SnackbarMessage.ResourceSnackbar -> context.getString(it.message)
+            }
+            coroutineScope.launch {
+                snackBarHostState.showSnackbar(message)
+                SnackbarManager.clearSnackbarMessage()
+            }
+        }
+    }
+
     val uiSate by viewModel.uiState.collectAsStateWithLifecycle()
-    SignUpForm(
-        signUpUiState = uiSate,
-        onNameChange = viewModel::onNameChange,
-        onEmailChange = viewModel::onEmailChange,
-        onPasswordChange = viewModel::onPasswordChange,
-        onRepeatPasswordChange = viewModel::onRepeatPasswordChange,
-        onLoginClick = onLoginClick,
-        onSignUpClick = { viewModel.onSignUpClick(onSignUpSuccess) }
-    )
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState)}
+    ) {
+        SignUpForm(
+            signUpUiState = uiSate,
+            onNameChange = viewModel::onNameChange,
+            onEmailChange = viewModel::onEmailChange,
+            onPasswordChange = viewModel::onPasswordChange,
+            onRepeatPasswordChange = viewModel::onRepeatPasswordChange,
+            onLoginClick = onLoginClick,
+            onSignUpClick = { viewModel.onSignUpClick(onSignUpSuccess) }
+        )
+    }
 }
 
 @Composable
