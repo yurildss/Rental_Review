@@ -6,7 +6,7 @@
 
 ## ✨ Funcionalidades
 
-- 📍 Seleção de **país, região e cidade** usando dados da [GeoDB API](https://rapidapi.com/wirefreethought/api/geodb-cities/)
+- 📍 Seleção de **país, região e cidade** usando dados da [Country State City API](https://countrystatecity.in/)
 - 📝 Cadastro de **avaliações de imóveis alugados**, incluindo nota e comentário
 - 💬 Visualização de avaliações no estilo **feed**
 - 💭 Possibilidade de **comentar avaliações** de outros usuários
