@@ -109,7 +109,7 @@ fun FeedScreen(
                     userId = uiState.userId,
                     onLoadNextPage = viewModel::getMoreReviews,
                     onLoadComments = {  },
-                    onSendComment = viewModel::comment,
+                    onSendComment = viewModel::addNewComment,
                     comment = uiState.comment,
                     showComments = uiState.showComment,
                     onCommentChange = viewModel::onCommentChange,

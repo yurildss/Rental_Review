@@ -1,13 +1,11 @@
 package com.example.rentalreview.screen.home
 
-import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.lifecycle.viewModelScope
 import com.example.rentalreview.model.Address
 import com.example.rentalreview.model.Comments
 import com.example.rentalreview.model.Review
@@ -19,11 +17,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 import javax.inject.Inject
-import kotlin.math.log
 
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
@@ -42,22 +38,24 @@ class FeedScreenViewModel @Inject constructor(
     }
 
     fun getInitialReviews(){
-        viewModelScope.launch(Dispatchers.IO){
-            val reviews = storageService.getReviews().toMutableList()
+        launchCatching {
+
+            val reviews = withContext(Dispatchers.IO) { storageService.getReviews().toMutableList() }
             val uiStateList: MutableList<ReviewUiState?> = mutableListOf()
+
             for (review in reviews){
                 uiStateList.add(review?.toReviewUiState())
             }
-            withContext(Dispatchers.Main) {
-                _uiState.value = _uiState.value.copy(
-                    userId = accountService.currentUserId,
-                    reviews = uiStateList
-                )
-            }
+
+            _uiState.value = _uiState.value.copy(
+                userId = accountService.currentUserId,
+                reviews = uiStateList
+            )
         }
     }
 
-    fun comment(reviewId: String, index: Int){
+
+    fun addNewComment(reviewId: String, index: Int){
         launchCatching {
             val currentList = _uiState.value.reviews
 
@@ -78,7 +76,9 @@ class FeedScreenViewModel @Inject constructor(
                 _uiState.update { it.copy(reviews = updatedList) }
 
                 //backend
-                storageService.comment(reviewId, accountService.currentUserId, _uiState.value.comment)
+                withContext(Dispatchers.IO) {
+                    storageService.comment(reviewId, accountService.currentUserId, _uiState.value.comment)
+                }
                 _uiState.update { it.copy(comment = "") }
             }
         }
@@ -126,7 +126,9 @@ class FeedScreenViewModel @Inject constructor(
                 _uiState.update { it.copy(reviews = updatedList) }
 
                 //backend
-                storageService.updateLikes(reviewId, currentUserId)
+                withContext(Dispatchers.IO) {
+                    storageService.updateLikes(reviewId, currentUserId)
+                }
 
             }
         }
@@ -156,7 +158,9 @@ class FeedScreenViewModel @Inject constructor(
                 _uiState.update { it.copy(reviews = updatedList) }
 
                 //backend
-                storageService.addFavorite(reviewId, currentUserId)
+                withContext(Dispatchers.IO) {
+                    storageService.addFavorite(reviewId, currentUserId)
+                }
             }
         }
     }
@@ -180,7 +184,9 @@ class FeedScreenViewModel @Inject constructor(
                 _uiState.update { it.copy(reviews = updatedList) }
 
                 //backend
-                storageService.removeLike(reviewId, currentUserId)
+                withContext(Dispatchers.IO) {
+                    storageService.removeLike(reviewId, currentUserId)
+                }
             }
         }
     }
@@ -195,15 +201,16 @@ class FeedScreenViewModel @Inject constructor(
 
     fun getMoreReviews(){
         launchCatching {
-            val newReviews = storageService.getMoreReviews(
-                _uiState.value.reviews.last()?.toReview()!!
-            )
 
+            val newReviews = withContext(Dispatchers.IO) {
+                storageService.getMoreReviews(
+                    _uiState.value.reviews.last()?.toReview()!!
+                )
+            }
             val uiStateList: MutableList<ReviewUiState?> = mutableListOf()
             for (review in newReviews){
                 uiStateList.add(review?.toReviewUiState())
             }
-            
 
             _uiState.value = _uiState.value.copy(
                 reviews = (_uiState.value.reviews + uiStateList) as MutableList<ReviewUiState?>,

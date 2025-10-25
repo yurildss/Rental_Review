@@ -104,7 +104,7 @@ class FeedScreenViewModelUnitTest {
         viewModel.getInitialReviews()
         viewModel.onCommentChange("test comment")
 
-        viewModel.comment("1", 0)
+        viewModel.addNewComment("1", 0)
         assert(viewModel.uiState.value.reviews[0]?.comments?.size == 1)
     }
 
