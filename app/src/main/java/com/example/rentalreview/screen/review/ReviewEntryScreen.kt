@@ -121,9 +121,7 @@ fun ReviewEntryScreen(
                     onTitleChanged = viewModel::onTitleChanged,
                     onStreetChanged = viewModel::onStreetChanged,
                     onNumberChanged = viewModel::onNumberChanged,
-                    onZipChanged = viewModel::onZipChanged,
                     onCountrySelected = viewModel::onCountryChanged,
-                    selectedCountryItem = uiState.selectedCountryItem,
                     expandedCountryOptions = uiState.expandedCountryOptions,
                     onCountryExpandedOptions = viewModel::onCountryExpandedOptions,
                     countryList = uiState.listOfCountries,
@@ -131,8 +129,6 @@ fun ReviewEntryScreen(
                     onCityExpandedOptions = viewModel::onCityExpandedOptions,
                     onStateSelected = viewModel::onStateSelected,
                     onCitySelected = viewModel::onCitySelected,
-                    stateList = uiState.listOfStates,
-                    cityList = uiState.listOfCities
                 )
             }
         }
@@ -144,8 +140,6 @@ fun ReviewEntryScreen(
 fun ReviewEntryForm(
     onStreetChanged: (String) -> Unit,
     onNumberChanged: (String) -> Unit,
-    selectedCountryItem: Country,
-    onZipChanged: (String) -> Unit,
     expandedCountryOptions: Boolean,
     onCountryExpandedOptions: () -> Unit,
     onStateExpandedOptions: () -> Unit,
@@ -154,8 +148,6 @@ fun ReviewEntryForm(
     onStateSelected: (State) -> Unit,
     onCitySelected: (City) -> Unit,
     countryList: List<Country>,
-    stateList: List<State>,
-    cityList: List<City>,
     updateExpandedOptions: (Boolean) -> Unit = {},
     typeRental: (String) -> Unit = {},
     openDialog: () -> Unit = {},
@@ -507,7 +499,6 @@ fun ReviewEntryScreenPreview(){
                 onSaved = {},
                 onStreetChanged = {},
                 onNumberChanged = { },
-                onZipChanged = {},
                 onCountrySelected = {},
                 updateExpandedOptions = {},
                 typeRental = {},
@@ -517,7 +508,6 @@ fun ReviewEntryScreenPreview(){
                 updateReview = {},
                 onDateRangeSelected = { _, _ -> },
                 onTitleChanged = {},
-                selectedCountryItem = TODO(),
                 expandedCountryOptions = TODO(),
                 onCountryExpandedOptions = TODO(),
                 countryList = TODO(),
@@ -525,8 +515,6 @@ fun ReviewEntryScreenPreview(){
                 onCityExpandedOptions = TODO(),
                 onStateSelected = TODO(),
                 onCitySelected = TODO(),
-                stateList = TODO(),
-                cityList = TODO()
             )
         }
     }
@@ -547,7 +535,6 @@ fun ReviewEntryDarkScreenPreview(){
                 onSaved = {},
                 onStreetChanged = {},
                 onNumberChanged = { },
-                onZipChanged = {},
                 onCountrySelected = {},
                 updateExpandedOptions = {},
                 typeRental = {},
@@ -557,7 +544,6 @@ fun ReviewEntryDarkScreenPreview(){
                 updateReview = {},
                 onDateRangeSelected = { _, _ -> },
                 onTitleChanged = {},
-                selectedCountryItem = Country("", "", ""),
                 expandedCountryOptions = false,
                 onCountryExpandedOptions = { },
                 countryList = listOf(),
@@ -565,8 +551,6 @@ fun ReviewEntryDarkScreenPreview(){
                 onCityExpandedOptions = TODO(),
                 onStateSelected = TODO(),
                 onCitySelected = TODO(),
-                stateList = TODO(),
-                cityList = TODO()
             )
         }
     }

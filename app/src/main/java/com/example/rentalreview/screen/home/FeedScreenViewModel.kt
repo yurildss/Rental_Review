@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.viewModelScope
 import com.example.rentalreview.model.Address
 import com.example.rentalreview.model.Comments
 import com.example.rentalreview.model.Review
@@ -14,9 +15,12 @@ import com.example.rentalreview.screen.RentalReviewAppViewModel
 import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Date
 import javax.inject.Inject
 import kotlin.math.log
@@ -38,19 +42,18 @@ class FeedScreenViewModel @Inject constructor(
     }
 
     fun getInitialReviews(){
-        launchCatching {
-
+        viewModelScope.launch(Dispatchers.IO){
             val reviews = storageService.getReviews().toMutableList()
             val uiStateList: MutableList<ReviewUiState?> = mutableListOf()
-
             for (review in reviews){
                 uiStateList.add(review?.toReviewUiState())
             }
-
-            _uiState.value = _uiState.value.copy(
-                userId = accountService.currentUserId,
-                reviews = uiStateList
-            )
+            withContext(Dispatchers.Main) {
+                _uiState.value = _uiState.value.copy(
+                    userId = accountService.currentUserId,
+                    reviews = uiStateList
+                )
+            }
         }
     }
 
