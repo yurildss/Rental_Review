@@ -14,9 +14,11 @@ import com.example.rentalreview.screen.RentalReviewAppViewModel
 import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -45,7 +47,7 @@ class ReviewScreenViewModel @Inject constructor(
     init {
         launchCatching {
             _uiState.value = _uiState.value.copy(userId = accountService.currentUserId)
-            val listCountry = GeoApi.retrofitService.getCountry()
+            val listCountry = withContext(Dispatchers.IO) {  GeoApi.retrofitService.getCountry() }
             _uiState.value = _uiState.value.copy(listOfCountries = listCountry)
         }
     }
@@ -55,7 +57,7 @@ class ReviewScreenViewModel @Inject constructor(
      */
     fun getStates(){
         launchCatching {
-            val listState = GeoApi.retrofitService.getState(_uiState.value.selectedCountryItem.iso2)
+            val listState = withContext(Dispatchers.IO) {  GeoApi.retrofitService.getState(_uiState.value.selectedCountryItem.iso2) }
             _uiState.value = _uiState.value.copy(listOfStates = listState)
         }
     }
@@ -65,10 +67,10 @@ class ReviewScreenViewModel @Inject constructor(
      */
     fun getCities(){
         launchCatching {
-            val listCity = GeoApi.retrofitService.getCities(
+            val listCity = withContext(Dispatchers.IO) { GeoApi.retrofitService.getCities(
                 _uiState.value.selectedCountryItem.iso2,
                 _uiState.value.selectedStateItem.iso2
-            )
+            ) }
             _uiState.value = _uiState.value.copy(listOfCities = listCity)
         }
     }
