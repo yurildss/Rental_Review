@@ -10,9 +10,11 @@ import com.example.rentalreview.screen.home.ReviewUiState
 import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -41,7 +43,7 @@ class SearchViewModel @Inject constructor(
 
     init {
         launchCatching {
-            val listCountry = GeoApi.retrofitService.getCountry()
+            val listCountry = withContext(Dispatchers.IO) { GeoApi.retrofitService.getCountry() }
             _uiState.value = _uiState.value.copy(countries = listCountry)
         }
     }
@@ -87,7 +89,7 @@ class SearchViewModel @Inject constructor(
      */
     fun getStates(){
         launchCatching {
-            val listState = GeoApi.retrofitService.getState(_uiState.value.selectedCountryItem.iso2)
+            val listState = withContext(Dispatchers.IO) { GeoApi.retrofitService.getState(_uiState.value.selectedCountryItem.iso2) }
             _uiState.value = _uiState.value.copy(states = listState)
         }
     }
@@ -110,10 +112,11 @@ class SearchViewModel @Inject constructor(
      */
     fun getCities(){
         launchCatching {
-            val listCity = GeoApi.retrofitService.getCities(
+            val listCity = withContext(Dispatchers.IO){
+                GeoApi.retrofitService.getCities(
                 _uiState.value.selectedCountryItem.iso2,
-                _uiState.value.selectedStateItem.iso2
-            )
+                _uiState.value.selectedStateItem.iso2)
+            }
             _uiState.value = _uiState.value.copy(cities = listCity)
         }
     }
@@ -122,7 +125,7 @@ class SearchViewModel @Inject constructor(
      */
     fun onSearch(){
         launchCatching {
-            val reviews = reviewRepository.getReviewsByCity(_uiState.value.selectedCityItem.name)
+            val reviews = withContext(Dispatchers.IO) { reviewRepository.getReviewsByCity(_uiState.value.selectedCityItem.name) }
 
             val uiStateList: MutableList<ReviewUiState?> = mutableListOf()
             for (review in reviews){
@@ -160,7 +163,7 @@ class SearchViewModel @Inject constructor(
                 _uiState.update { it.copy(reviews = updatedList) }
 
                 //backend
-                reviewRepository.addFavorite(reviewId, currentUserId)
+                withContext(Dispatchers.IO) { reviewRepository.addFavorite(reviewId, currentUserId) }
             }
         }
     }
