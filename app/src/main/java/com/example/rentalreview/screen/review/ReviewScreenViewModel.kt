@@ -214,7 +214,8 @@ class ReviewScreenViewModel @Inject constructor(
         city = selectedCityItem,
         state = selectedStateItem,
         zip = zip,
-        country = selectedCountryItem
+        country = selectedCountryItem,
+        countryCode = selectedCountryItem.iso2
     )
 
 }

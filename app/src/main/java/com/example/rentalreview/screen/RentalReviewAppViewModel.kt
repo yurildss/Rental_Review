@@ -1,5 +1,6 @@
 package com.example.rentalreview.screen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rentalreview.common.SnackbarManager
@@ -41,6 +42,7 @@ open class RentalReviewAppViewModel() : ViewModel() {
             context = CoroutineExceptionHandler { _, throwable ->
                 if (snackbar) {
                     SnackbarManager.showMessage(throwable.toSnackbarMessage())
+                    Log.e("Error", throwable.message.toString())
                 }
             },
             block = block

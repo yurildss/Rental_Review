@@ -5,18 +5,18 @@ package com.example.rentalreview.model
  * find cities, states and countries
  */
 data class Country(
-    val name: String,
-    val iso2: String,
-    val iso3: String
+    val name: String = "",
+    val iso2: String = "",
+    val iso3: String = ""
 )
 
 data class State(
-    val countryCode: String,
-    val name: String,
-    val iso2: String
+    val countryCode: String = "",
+    val name: String = "",
+    val iso2: String = ""
 )
 
 data class City(
-    val id: Int,
-    val name: String
+    val id: Int = 0,
+    val name: String = ""
 )
