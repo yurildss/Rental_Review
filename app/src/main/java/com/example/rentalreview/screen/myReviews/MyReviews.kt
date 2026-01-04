@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -61,18 +62,20 @@ fun MyReviewsScreen(
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
-        Text("My reviews",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Monospace,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(start = 10.dp, top = 5.dp)
-        )
-        IconButton(onClick = onBackClick, modifier = Modifier.padding(top = 10.dp )) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back"
+    Column(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize().padding(16.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back"
+                )
+            }
+
+            Text("My reviews",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Monospace,
+                color = MaterialTheme.colorScheme.primary
             )
         }
         ReviewsList(
@@ -143,14 +146,14 @@ fun ReviewCardVisualizer(
     ) {
         var expanded by remember { mutableStateOf(false) }
 
-        Box (modifier = Modifier
+        Column (modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp), contentAlignment = Alignment.TopEnd){
+            .padding(5.dp), verticalArrangement = Arrangement.Center
+        ){
             IconButton(onClick = {expanded = !expanded}) {
                 Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More options")
             }
-
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }, offset = DpOffset(x = (-8).dp, y = 4.dp)) {
                 DropdownMenuItem(text = { Text("Edit") }, onClick =  onEditReviewClick )
             }
         }
@@ -171,9 +174,9 @@ fun ReviewCardVisualizer(
         )
         Text("${review.address.street}," +
                 " ${review.address.number}," +
-                " ${review.address.city}," +
-                " ${review.address.state}," +
-                " ${review.address.country}",
+                " ${review.address.city.name}," +
+                " ${review.address.state.name}," +
+                " ${review.address.country.iso3}",
             fontSize = 17.sp,
             textAlign = TextAlign.Left,
             fontStyle = FontStyle.Italic,

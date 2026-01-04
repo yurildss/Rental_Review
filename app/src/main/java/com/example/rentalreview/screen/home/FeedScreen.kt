@@ -332,9 +332,9 @@ fun ReviewCard(
         )
         Text("${review.address.street}," +
                 " ${review.address.number}," +
-                " ${review.address.city}," +
-                " ${review.address.state}," +
-                " ${review.address.country}",
+                " ${review.address.city.name}," +
+                " ${review.address.state.name}," +
+                " ${review.address.country.iso3}",
             fontSize = 17.sp,
             textAlign = TextAlign.Left,
             fontStyle = FontStyle.Italic,
