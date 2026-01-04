@@ -6,5 +6,6 @@ data class Address (
     val city: City = City(0, ""),
     val state: State = State("", "", ""),
     val zip: String = "",
-    val country: Country = Country("", "", "")
+    val country: Country = Country("", "", ""),
+    val countryCode: String = ""
     )

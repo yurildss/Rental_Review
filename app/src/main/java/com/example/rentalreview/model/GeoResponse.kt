@@ -11,7 +11,7 @@ data class Country(
 )
 
 data class State(
-    val country_code: String,
+    val countryCode: String,
     val name: String,
     val iso2: String
 )
