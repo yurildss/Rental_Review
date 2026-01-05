@@ -4,9 +4,11 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.rentalreview.Screens
 import com.example.rentalreview.screen.favorites.FavoritesScreen
 import com.example.rentalreview.screen.home.FeedScreen
@@ -101,7 +103,9 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
             ReviewEntryScreen()
         }
 
-        composable(route = "${Screens.EDIT_REVIEW_SCREEN.name}/{reviewId}") {
+        composable(route = "${Screens.EDIT_REVIEW_SCREEN.name}/{reviewId}",
+            arguments = listOf(navArgument("reviewId"){type = NavType.StringType})
+        ) {
             ReviewEditEntryScreen()
         }
 

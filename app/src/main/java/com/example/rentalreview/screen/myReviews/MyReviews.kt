@@ -57,7 +57,7 @@ import com.example.rentalreview.ui.theme.RentalReviewTheme
 @Composable
 fun MyReviewsScreen(
     viewModel: MyReviewsViewModel = hiltViewModel(),
-    onEditReviewClick: () -> Unit,
+    onEditReviewClick: (String) -> Unit,
     onBackClick: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -80,7 +80,7 @@ fun MyReviewsScreen(
         }
         ReviewsList(
             reviews = uiState.reviews,
-            onEditReviewClick = { onEditReviewClick() }
+            onEditReviewClick =  onEditReviewClick
         )
     }
 }

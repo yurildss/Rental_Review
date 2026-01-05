@@ -1,6 +1,7 @@
 package com.example.rentalreview.screen.myReviews
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.SavedStateHandle
 import com.example.rentalreview.model.Address
@@ -12,9 +13,11 @@ import com.example.rentalreview.screen.review.ReviewScreenState
 import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -137,8 +140,8 @@ class EditReviewViewModel
     fun getReviewById(reviewId: String){
 
         launchCatching {
-
-            val review = storageService.getReviewById(reviewId)
+            Log.d("ReviewViewModel", "getReviewById: $reviewId")
+            val review = withContext(Dispatchers.IO) { storageService.getReviewById(reviewId) }
 
             _uiState.value = _uiState.value.copy(
                 title = review?.title ?: "",
