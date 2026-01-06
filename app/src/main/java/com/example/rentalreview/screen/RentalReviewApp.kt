@@ -108,7 +108,7 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
         ) {
             ReviewEditEntryScreen(
                 onSaved = {
-                    navController.navigate(Screens.MY_REVIEWS_SCREEN.name)
+                    navController.popBackStack()
                 }
             )
         }
@@ -124,7 +124,9 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
                 onEditReviewClick = {
                     navController.navigate("${Screens.EDIT_REVIEW_SCREEN.name}/$it")
                 },
-                onBackClick = { navController.popBackStack() }
+                onBackClick = {
+                    navController.popBackStack()
+                }
             )
         }
     }
