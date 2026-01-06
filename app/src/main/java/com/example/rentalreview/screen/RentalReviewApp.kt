@@ -106,7 +106,11 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
         composable(route = "${Screens.EDIT_REVIEW_SCREEN.name}/{reviewId}",
             arguments = listOf(navArgument("reviewId"){type = NavType.StringType})
         ) {
-            ReviewEditEntryScreen()
+            ReviewEditEntryScreen(
+                onSaved = {
+                    navController.navigate(Screens.MY_REVIEWS_SCREEN.name)
+                }
+            )
         }
 
         composable(route = Screens.FAVORITES_SCREEN.name){

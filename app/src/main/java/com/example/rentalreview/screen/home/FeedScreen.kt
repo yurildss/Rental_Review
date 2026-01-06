@@ -82,7 +82,6 @@ fun FeedScreen(
         }
     }
 
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -96,7 +95,7 @@ fun FeedScreen(
     }) {
         innerPadding ->
         HorizontalPager(
-            pagerState,
+            state = pagerState,
             modifier = Modifier.padding(innerPadding)
         ) { page->
             val item = uiState.navItems[page]

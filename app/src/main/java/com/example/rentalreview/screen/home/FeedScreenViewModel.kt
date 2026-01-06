@@ -193,6 +193,9 @@ class FeedScreenViewModel @Inject constructor(
 
     fun onNavItemClicked(item: NavItem) {
         _uiState.update { it.copy(selectedItem = item) }
+        when(item.description){
+            "Home" -> getInitialReviews()
+        }
     }
 
     fun onCommentChange(comment: String){

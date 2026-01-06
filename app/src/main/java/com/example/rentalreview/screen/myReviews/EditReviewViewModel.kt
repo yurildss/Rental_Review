@@ -4,10 +4,14 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.SavedStateHandle
+import com.example.rentalreview.common.SnackbarManager
+import com.example.rentalreview.common.SnackbarMessage
 import com.example.rentalreview.model.Address
 import com.example.rentalreview.model.City
 import com.example.rentalreview.model.Country
+import com.example.rentalreview.model.Review
 import com.example.rentalreview.model.State
+import com.example.rentalreview.network.GeoApi
 import com.example.rentalreview.screen.RentalReviewAppViewModel
 import com.example.rentalreview.screen.review.ReviewScreenState
 import com.example.rentalreview.service.AccountService
@@ -21,6 +25,7 @@ import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -49,6 +54,16 @@ class EditReviewViewModel
 
     init {
         getReviewById(reviewId)
+    }
+
+    fun getCities(){
+        launchCatching {
+            val listCity = withContext(Dispatchers.IO) { GeoApi.retrofitService.getCities(
+                _uiState.value.selectedCountryItem.iso2,
+                _uiState.value.selectedStateItem.iso2
+            ) }
+            _uiState.value = _uiState.value.copy(listOfCities = listCity)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -119,6 +134,15 @@ class EditReviewViewModel
         _uiState.value = _uiState.value.copy(zip = zip)
     }
 
+    fun onStateSelected(state: State){
+        _uiState.value = _uiState.value.copy(selectedStateItem = state)
+        getCities()
+    }
+
+    fun onCitySelected(city: City){
+        _uiState.value = _uiState.value.copy(selectedCityItem = city)
+    }
+
     fun onCountryChanged(country: Country){
         _uiState.value = _uiState.value.copy(selectedCountryItem = country)
     }
@@ -140,7 +164,7 @@ class EditReviewViewModel
     fun getReviewById(reviewId: String){
 
         launchCatching {
-            Log.d("ReviewViewModel", "getReviewById: $reviewId")
+
             val review = withContext(Dispatchers.IO) { storageService.getReviewById(reviewId) }
 
             _uiState.value = _uiState.value.copy(
@@ -152,13 +176,69 @@ class EditReviewViewModel
                 zip = review?.address?.zip ?: "",
                 selectedCountryItem = review?.address?.country ?: Country("", "", ""),
                 type = review?.type ?: "",
-                review = review?.review ?: ""
+                review = review?.review ?: "",
+                userId = review?.userId ?: ""
             )
             _startDate.value = runCatching{ LocalDate.parse(review?.startDate) }.getOrNull()
             _endDate.value = runCatching{ LocalDate.parse(review?.endDate) }.getOrNull()
 
         }
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun onSave(onSaved: () -> Unit = {}){
+        launchCatching {
+
+            if(_uiState.value.title.isEmpty()){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Title cannot be empty"))
+                return@launchCatching
+            }
+
+            if(_uiState.value.type.isEmpty()){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Type cannot be empty"))
+                return@launchCatching
+            }
+
+            if(startDate.value == LocalDate.now()){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Start date cannot be empty"))
+                return@launchCatching
+            }
+
+            if(endDate.value == LocalDate.of(2025, 12, 31)){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("End date cannot be empty"))
+                return@launchCatching
+            }
+
+            if(_uiState.value.selectedCountryItem == Country("", "", "")){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Country cannot be empty"))
+                return@launchCatching
+            }
+
+            if(_uiState.value.selectedStateItem == State("", "", "")){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("State cannot be empty"))
+                return@launchCatching
+            }
+
+            if(_uiState.value.selectedCityItem == City(0, "")){
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("City cannot be empty"))
+                return@launchCatching
+            }
+
+            storageService.updateReview(reviewId = reviewId,review = Review(
+                title = _uiState.value.title,
+                type = _uiState.value.type,
+                startDate = _startDate.value?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: "",
+                endDate = _endDate.value?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: "",
+                rating = _uiState.value.rating,
+                review = _uiState.value.review,
+                address = _uiState.value.toAddress(),
+                userId = uiState.value.userId
+            ))
+
+            onSaved()
+
+        }
     }
 
 }
