@@ -1,7 +1,10 @@
 package com.example.rentalreview.screen.review
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -16,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -43,8 +47,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -55,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.example.rentalreview.common.SnackbarManager
 import com.example.rentalreview.common.SnackbarMessage
 import com.example.rentalreview.model.City
@@ -188,6 +195,7 @@ fun ReviewEntryForm(
                 .fillMaxWidth(0.85F)
                 .testTag("titleEntry"),
         )
+        PropertyImageSelect()
         Text("Address",
             fontSize = 20.sp,
             color = MaterialTheme.colorScheme.primary,
@@ -485,6 +493,34 @@ fun PropertyTypeDropMenu(
     }
 }
 
+@Composable
+fun PropertyImageSelect(){
+    var imageGallery by remember { mutableStateOf(Uri.EMPTY) }
+
+    var launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+    ){
+        imageGallery = it
+    }
+    Column(
+        horizontalAlignment = CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        if (imageGallery != Uri.EMPTY) {
+            AsyncImage(
+                model = imageGallery,
+                contentDescription = null,
+                modifier = Modifier.size(200.dp)
+            )
+        }
+
+        Button(onClick = { launcher.launch("image/*") }) {
+            Text(text = "Select image")
+        }
+    }
+
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
@@ -508,13 +544,13 @@ fun ReviewEntryScreenPreview(){
                 updateReview = {},
                 onDateRangeSelected = { _, _ -> },
                 onTitleChanged = {},
-                expandedCountryOptions = TODO(),
-                onCountryExpandedOptions = TODO(),
-                countryList = TODO(),
-                onStateExpandedOptions = TODO(),
-                onCityExpandedOptions = TODO(),
-                onStateSelected = TODO(),
-                onCitySelected = TODO(),
+                expandedCountryOptions = false,
+                onCountryExpandedOptions = {  },
+                countryList = emptyList(),
+                onStateExpandedOptions = {},
+                onCityExpandedOptions = {},
+                onStateSelected = {},
+                onCitySelected = {},
             )
         }
     }
@@ -547,10 +583,10 @@ fun ReviewEntryDarkScreenPreview(){
                 expandedCountryOptions = false,
                 onCountryExpandedOptions = { },
                 countryList = listOf(),
-                onStateExpandedOptions = TODO(),
-                onCityExpandedOptions = TODO(),
-                onStateSelected = TODO(),
-                onCitySelected = TODO(),
+                onStateExpandedOptions = {},
+                onCityExpandedOptions = {},
+                onStateSelected = {},
+                onCitySelected = {},
             )
         }
     }
