@@ -137,7 +137,8 @@ fun ReviewEntryScreen(
                     onStateSelected = viewModel::onStateSelected,
                     onCitySelected = viewModel::onCitySelected,
                     onImageSelect = viewModel::onImageSelect,
-                    imageGallery = uiState.imageGallery
+                    imageGallery = uiState.imageGallery,
+                    enableButton = uiState.buttonClick
                 )
             }
         }
@@ -171,7 +172,8 @@ fun ReviewEntryForm(
     endDate: LocalDate?,
     star: Int = 0,
     onImageSelect: (Uri) -> Unit,
-    imageGallery: Uri
+    imageGallery: Uri,
+    enableButton: Boolean
 ){
     Column(
         modifier = Modifier
@@ -328,6 +330,7 @@ fun ReviewEntryForm(
         )
         Button(
             onClick = onSaved,
+            enabled = !enableButton,
             modifier = Modifier
                 .fillMaxWidth()
                 .align(CenterHorizontally)
@@ -559,6 +562,7 @@ fun ReviewEntryScreenPreview(){
                 onCitySelected = {},
                 onImageSelect = {},
                 imageGallery = TODO(),
+                enableButton = false
             )
         }
     }
@@ -597,6 +601,7 @@ fun ReviewEntryDarkScreenPreview(){
                 onCitySelected = {},
                 onImageSelect = {  },
                 imageGallery = TODO(),
+                enableButton = false
             )
         }
     }

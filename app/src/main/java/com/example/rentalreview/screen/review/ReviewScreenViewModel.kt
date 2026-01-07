@@ -161,6 +161,7 @@ class ReviewScreenViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     fun onSave(onSaved: () -> Unit = {}){
         launchCatching {
+            _uiState.value = _uiState.value.copy(buttonClick = true)
 
             if(_uiState.value.title.isEmpty()){
                 SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Title cannot be empty"))
@@ -202,7 +203,6 @@ class ReviewScreenViewModel @Inject constructor(
                     uploadImageService.uploadImage(_uiState.value.imageGallery)
                 }.onSuccess {
                     imageUri = it
-                    SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Image uploaded successfully"))
                 }.onFailure {
                     SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Image upload failed"))
                     return@launchCatching
@@ -220,7 +220,7 @@ class ReviewScreenViewModel @Inject constructor(
                 userId = uiState.value.userId,
                 imageUri = imageUri
             ))
-
+            SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Image uploaded successfully"))
             onSaved()
 
         }
@@ -271,6 +271,7 @@ data class ReviewScreenState(
     val listOfStates: List<State> = listOf(),
     val listOfCities: List<City> = listOf(),
     val imageGallery: Uri = Uri.EMPTY,
+    val buttonClick: Boolean = false
 )
 
 data class ImageUploadState(
