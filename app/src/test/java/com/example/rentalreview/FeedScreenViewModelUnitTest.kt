@@ -11,6 +11,7 @@ import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -121,18 +122,22 @@ class FeedScreenViewModelUnitTest {
         storageService = mock<StorageService>()
         accountService = mock<AccountService>()
 
-        runTest {
+        runBlocking {
             whenever(accountService.currentUserId).thenReturn("user_1")
 
             whenever(storageService.getReviews()).thenReturn(listOfReviews)
 
-            whenever(storageService.comment("1", "1", "test comment")).thenReturn(Unit)
+            whenever(storageService.comment("review_1", "user_4", "Também gostei bastante!")).thenReturn(Unit)
 
-            whenever(storageService.updateLikes("1", "1")).thenReturn(Unit)
+            whenever(storageService.comment("review_2", "", "")).thenReturn(Unit)
+
+            whenever(storageService.comment("review_3", "user_3", "Minha experiência foi diferente.")).thenReturn(Unit)
+
+            whenever(storageService.updateLikes("review_1", "user_1")).thenReturn(Unit)
 
             whenever(storageService.addFavorite("1", "1")).thenReturn(Unit)
 
-            whenever(storageService.removeLike("1", "1")).thenReturn(Unit)
+            whenever(storageService.removeLike("review_1", "user_1")).thenReturn(Unit)
         }
 
         viewModel = FeedScreenViewModel(storageService, accountService)
@@ -153,7 +158,7 @@ class FeedScreenViewModelUnitTest {
         assert(viewModel.uiState.value.reviews[0]?.title == "Ótimo apartamento")
         assert(viewModel.uiState.value.reviews[1]?.title == "Experiência mediana")
         assert(viewModel.uiState.value.reviews[1]?.title == "Não recomendo")
-        assert(viewModel.uiState.value.userId == "1")
+        assert(viewModel.uiState.value.userId == "user_1")
     }
 
     @Test
