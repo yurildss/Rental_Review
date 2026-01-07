@@ -1,7 +1,11 @@
 package com.example.rentalreview
 
 import com.example.rentalreview.model.Address
+import com.example.rentalreview.model.City
+import com.example.rentalreview.model.Comments
+import com.example.rentalreview.model.Country
 import com.example.rentalreview.model.Review
+import com.example.rentalreview.model.State
 import com.example.rentalreview.screen.home.FeedScreenViewModel
 import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
@@ -9,9 +13,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
@@ -24,49 +30,99 @@ class FeedScreenViewModelUnitTest {
     private lateinit var accountService: AccountService
     private lateinit var testDispatcher: TestDispatcher
     private lateinit var listOfReviews: List<Review>
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setup(){
 
         listOfReviews = listOf(
             Review(
-                id = "1",
-                title = "test",
+                id = "review_1",
+                title = "Ótimo apartamento",
                 rating = 5,
-                review = "test",
-                type = "Apartment",
-                startDate = "2025-07-22",
-                endDate = "2025-08-25",
-                userId = "1",
+                review = "Lugar limpo, bem localizado e confortável.",
+                type = "Apartamento",
+                startDate = "2025-01-10",
+                endDate = "2025-01-15",
                 address = Address(
-                    country = "test country",
-                    city = "test city",
-                    street = "test street",
-                    number = "10",
-                    zip = "12345")
+                    street = "Av. Paulista",
+                    number = "1000",
+                    city = City(1, "São Paulo"),
+                    state = State("SP", "São Paulo", "Brasil"),
+                    zip = "01310-100",
+                    country = Country("BR", "Brasil", "Brazil"),
+                    countryCode = "BR"
+                ),
+                likesIds = mutableListOf("user_2", "user_3"),
+                comments = mutableListOf(
+                    Comments(
+                        userId = "user_4",
+                        comment = "Também gostei bastante!"
+                    )
+                ),
+                favoriteIdsUsers = mutableListOf("user_5"),
+                userId = "user_1"
             ),
+
             Review(
-                id = "2",
-                title = "test2",
-                rating = 4,
-                review = "test2",
-                type = "Apartment",
-                startDate = "2025-08-22",
-                endDate = "2025-09-25",
-                userId = "1",
+                id = "review_2",
+                title = "Experiência mediana",
+                rating = 3,
+                review = "Atendeu o básico, mas poderia melhorar.",
+                type = "Casa",
+                startDate = "2024-12-01",
+                endDate = "2024-12-05",
                 address = Address(
-                    country = "test country2",
-                    city = "test city2",
-                    street = "test street2",
-                    number = "9",
-                    zip = "12375")
+                    street = "Rua das Flores",
+                    number = "45",
+                    city = City(2, "Curitiba"),
+                    state = State("PR", "Paraná", "Brasil"),
+                    zip = "80000-000",
+                    country = Country("BR", "Brasil", "Brazil"),
+                    countryCode = "BR"
+                ),
+                likesIds = mutableListOf(),
+                comments = mutableListOf(),
+                favoriteIdsUsers = mutableListOf(),
+                userId = "user_2"
+            ),
+
+            Review(
+                id = "review_3",
+                title = "Não recomendo",
+                rating = 1,
+                review = "Problemas sérios de limpeza e barulho.",
+                type = "Quarto",
+                startDate = "2024-11-20",
+                endDate = "2024-11-22",
+                address = Address(
+                    street = "Calle Florida",
+                    number = "200",
+                    city = City(3, "Buenos Aires"),
+                    state = State("BA", "Buenos Aires", "Argentina"),
+                    zip = "C1005",
+                    country = Country("AR", "Argentina", "Argentina"),
+                    countryCode = "AR"
+                ),
+                likesIds = mutableListOf("user_1"),
+                comments = mutableListOf(
+                    Comments(
+                        userId = "user_3",
+                        comment = "Minha experiência foi diferente."
+                    )
+                ),
+                favoriteIdsUsers = mutableListOf(),
+                userId = "user_6"
             )
         )
 
-        testDispatcher = StandardTestDispatcher()
+
+
+        testDispatcher = UnconfinedTestDispatcher()
         storageService = mock<StorageService>()
         accountService = mock<AccountService>()
+
         runTest {
-            whenever(accountService.currentUserId).thenReturn("1")
+            whenever(accountService.currentUserId).thenReturn("user_1")
 
             whenever(storageService.getReviews()).thenReturn(listOfReviews)
 
@@ -93,9 +149,10 @@ class FeedScreenViewModelUnitTest {
     fun `Get initial reviews`() = runTest {
         viewModel.getInitialReviews()
 
-        assert(viewModel.uiState.value.reviews.size == 2)
-        assert(viewModel.uiState.value.reviews[0]?.title == "test")
-        assert(viewModel.uiState.value.reviews[1]?.title == "test2")
+        assert(viewModel.uiState.value.reviews.size == 3)
+        assert(viewModel.uiState.value.reviews[0]?.title == "Ótimo apartamento")
+        assert(viewModel.uiState.value.reviews[1]?.title == "Experiência mediana")
+        assert(viewModel.uiState.value.reviews[1]?.title == "Não recomendo")
         assert(viewModel.uiState.value.userId == "1")
     }
 
@@ -105,7 +162,7 @@ class FeedScreenViewModelUnitTest {
         viewModel.onCommentChange("test comment")
 
         viewModel.addNewComment("1", 0)
-        assert(viewModel.uiState.value.reviews[0]?.comments?.size == 1)
+        assertEquals(viewModel.uiState.value.reviews[0]?.comments?.size, 1)
     }
 
     @Test

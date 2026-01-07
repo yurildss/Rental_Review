@@ -23,5 +23,4 @@ data class Review(
     val comments: MutableList<Comments> = mutableListOf(),
     val favoriteIdsUsers: MutableList<String> = mutableListOf(),
     val userId: String = "",
-
 )
