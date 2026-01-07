@@ -136,6 +136,8 @@ fun ReviewEntryScreen(
                     onCityExpandedOptions = viewModel::onCityExpandedOptions,
                     onStateSelected = viewModel::onStateSelected,
                     onCitySelected = viewModel::onCitySelected,
+                    onImageSelect = viewModel::onImageSelect,
+                    imageGallery = uiState.imageGallery
                 )
             }
         }
@@ -167,7 +169,9 @@ fun ReviewEntryForm(
     onTitleChanged: (String) -> Unit = {},
     startDate: LocalDate?,
     endDate: LocalDate?,
-    star: Int = 0
+    star: Int = 0,
+    onImageSelect: (Uri) -> Unit,
+    imageGallery: Uri
 ){
     Column(
         modifier = Modifier
@@ -195,7 +199,7 @@ fun ReviewEntryForm(
                 .fillMaxWidth(0.85F)
                 .testTag("titleEntry"),
         )
-        PropertyImageSelect()
+        PropertyImageSelect(imageGallery,onImageSelect)
         Text("Address",
             fontSize = 20.sp,
             color = MaterialTheme.colorScheme.primary,
@@ -494,13 +498,15 @@ fun PropertyTypeDropMenu(
 }
 
 @Composable
-fun PropertyImageSelect(){
-    var imageGallery by remember { mutableStateOf(Uri.EMPTY) }
+fun PropertyImageSelect(
+    imageGallery: Uri,
+    onImageSelected: (Uri) -> Unit
+){
 
     var launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
     ){
-        imageGallery = it
+        it?.let { p1 -> onImageSelected(p1) }
     }
     Column(
         horizontalAlignment = CenterHorizontally,
@@ -545,12 +551,14 @@ fun ReviewEntryScreenPreview(){
                 onDateRangeSelected = { _, _ -> },
                 onTitleChanged = {},
                 expandedCountryOptions = false,
-                onCountryExpandedOptions = {  },
+                onCountryExpandedOptions = { },
                 countryList = emptyList(),
                 onStateExpandedOptions = {},
                 onCityExpandedOptions = {},
                 onStateSelected = {},
                 onCitySelected = {},
+                onImageSelect = {},
+                imageGallery = TODO(),
             )
         }
     }
@@ -587,6 +595,8 @@ fun ReviewEntryDarkScreenPreview(){
                 onCityExpandedOptions = {},
                 onStateSelected = {},
                 onCitySelected = {},
+                onImageSelect = {  },
+                imageGallery = TODO(),
             )
         }
     }

@@ -1,5 +1,6 @@
 package com.example.rentalreview.screen.review
 
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.rentalreview.common.SnackbarManager
@@ -13,6 +14,7 @@ import com.example.rentalreview.network.GeoApi
 import com.example.rentalreview.screen.RentalReviewAppViewModel
 import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
+import com.example.rentalreview.service.UploadImageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +30,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ReviewScreenViewModel @Inject constructor(
     private val reviewRepository: StorageService,
-    private val accountService: AccountService
+    private val accountService: AccountService,
+    private val uploadImageService: UploadImageService
 ) : RentalReviewAppViewModel() {
 
     private val _uiState = MutableStateFlow(ReviewScreenState())
@@ -44,6 +47,9 @@ class ReviewScreenViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     val endDate: StateFlow<LocalDate?> = _endDate.asStateFlow()
 
+    private val _uploadState = MutableStateFlow(ImageUploadState())
+
+    private lateinit var imageUri: String
     init {
         launchCatching {
             _uiState.value = _uiState.value.copy(userId = accountService.currentUserId)
@@ -148,6 +154,9 @@ class ReviewScreenViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(selectedCityItem = city)
     }
 
+    fun onImageSelect(imageGallery: Uri){
+        _uiState.value = _uiState.value.copy(imageGallery = imageGallery)
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun onSave(onSaved: () -> Unit = {}){
@@ -188,6 +197,18 @@ class ReviewScreenViewModel @Inject constructor(
                 return@launchCatching
             }
 
+            if(_uiState.value.imageGallery != Uri.EMPTY){
+                val uploadResult = runCatching {
+                    uploadImageService.uploadImage(_uiState.value.imageGallery)
+                }.onSuccess {
+                    imageUri = it
+                    SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Image uploaded successfully"))
+                }.onFailure {
+                    SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Image upload failed"))
+                    return@launchCatching
+                }
+            }
+
             reviewRepository.saveReview(Review(
                 title = _uiState.value.title,
                 type = _uiState.value.type,
@@ -196,7 +217,8 @@ class ReviewScreenViewModel @Inject constructor(
                 rating = _uiState.value.rating,
                 review = _uiState.value.review,
                 address = _uiState.value.toAddress(),
-                userId = uiState.value.userId
+                userId = uiState.value.userId,
+                imageUri = imageUri
             ))
 
             onSaved()
@@ -247,6 +269,12 @@ data class ReviewScreenState(
     val userId: String = "",
     val listOfCountries: List<Country> = listOf(),
     val listOfStates: List<State> = listOf(),
-    val listOfCities: List<City> = listOf()
+    val listOfCities: List<City> = listOf(),
+    val imageGallery: Uri = Uri.EMPTY,
+)
 
+data class ImageUploadState(
+    val imageUrl: String = "",
+    val error: Boolean = false,
+    val success: Boolean = false
 )

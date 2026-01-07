@@ -82,6 +82,8 @@ fun ReviewEditEntryScreen(
                     onCityExpandedOptions = viewModel::onCityExpandedOptions,
                     onStateSelected = viewModel::onStateSelected,
                     onCitySelected = viewModel::onCitySelected,
+                    onImageSelect = {},
+                    imageGallery = uiState.imageGallery
                 )
             }
         }

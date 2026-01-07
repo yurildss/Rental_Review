@@ -5,8 +5,5 @@ import android.net.Uri
 
 interface UploadImageService {
 
-    fun uploadImage(context: Context,
-                    imageUri: Uri,
-                    onSuccess: (String) -> Unit,
-                    onError: (Throwable) -> Unit)
+    suspend fun uploadImage(imageUri: Uri): String
 }
