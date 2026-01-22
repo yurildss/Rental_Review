@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.example.rentalreview.R
 import com.example.rentalreview.model.Address
 import com.example.rentalreview.model.City
@@ -315,11 +316,15 @@ fun ReviewCard(
             .padding(10.dp).testTag("reviewCard"),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.chatgpt_image_12_de_mai__de_2025__21_11_19),
-            contentDescription = "House",
-            modifier = Modifier.size(300.dp),
-        )
+        if(review.imageUrl.isNotEmpty()){
+            AsyncImage(model = review.imageUrl, contentDescription = "House Image")
+        }else{
+            Image(
+                painter = painterResource(id = R.drawable.chatgpt_image_12_de_mai__de_2025__21_11_19),
+                contentDescription = "House",
+                modifier = Modifier.size(300.dp),
+            )
+        }
         Text(review.title,
             fontSize = 23.sp,
             textAlign = TextAlign.Left,
@@ -434,7 +439,8 @@ fun ReviewCardPreview(){
                             "Test Comment"
                         )
                     ),
-                    address = Address()
+                    address = Address(),
+                    imageUrl = ""
                 ),
                 onLike = {},
                 userId = "1",
@@ -458,13 +464,29 @@ fun ReviewBlackCardPreview(){
     Surface {
         RentalReviewTheme(darkTheme = true, dynamicColor = false) {
             ReviewCard(
-                review = ReviewUiState(address =
-                    Address(street = "Manoel Pedro da Silveira",
-                        number = "338",
-                        city = City(0,"Cruz das Almas"),
-                        state = State("","Bahia", ""),
-                        country = Country("Brazil", "BR","BRA")
-                    )),
+                review = ReviewUiState(
+                    address =
+                        Address(
+                            street = "Manoel Pedro da Silveira",
+                            number = "338",
+                            city = City(0, "Cruz das Almas"),
+                            state = State("", "Bahia", ""),
+                            country = Country("Brazil", "BR", "BRA")
+                        ),
+                    id = TODO(),
+                    title = TODO(),
+                    rating = TODO(),
+                    review = TODO(),
+                    type = TODO(),
+                    startDate = TODO(),
+                    endDate = TODO(),
+                    likesIds = TODO(),
+                    comments = TODO(),
+                    favoriteIds = TODO(),
+                    timestamp = TODO(),
+                    showComment = TODO(),
+                    imageUrl = TODO()
+                ),
                 onLike = {},
                 userId = "1",
                 desLike = {},

@@ -234,6 +234,7 @@ class FeedScreenViewModel @Inject constructor(
             likesIds = likesIds,
             comments = comments,
             timestamp = timestamp,
+            imageUrl = imageUri
         )
     }
 
@@ -305,6 +306,7 @@ data class ReviewUiState(
     val favoriteIds: MutableList<String> = mutableListOf(),
     val timestamp: Date? = null,
     val showComment: Boolean = false,
+    val imageUrl: String
 )
 
 data class UserUiState(

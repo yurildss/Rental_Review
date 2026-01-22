@@ -61,7 +61,10 @@ class FavoritesViewModel @Inject constructor(
             address = address,
             likesIds = likesIds,
             comments = comments,
-            timestamp = timestamp
+            timestamp = timestamp,
+            favoriteIds = favoriteIdsUsers,
+            showComment = TODO(),
+            imageUrl = imageUri
         )
     }
 

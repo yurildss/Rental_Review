@@ -77,7 +77,9 @@ class MyReviewsViewModel @Inject constructor(
             address = address,
             likesIds = likesIds,
             comments = comments,
-            timestamp = timestamp
+            timestamp = timestamp,
+            favoriteIds = favoriteIdsUsers,
+            imageUrl = imageUri
         )
     }
 

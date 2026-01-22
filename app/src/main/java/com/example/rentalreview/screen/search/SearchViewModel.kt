@@ -183,7 +183,8 @@ class SearchViewModel @Inject constructor(
             address = address,
             likesIds = likesIds,
             comments = comments,
-            timestamp = timestamp
+            timestamp = timestamp,
+            imageUrl = imageUri
         )
     }
 }
