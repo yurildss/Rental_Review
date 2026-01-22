@@ -4,6 +4,7 @@ import com.example.rentalreview.screen.signUp.SignUpScreenViewModel
 import com.example.rentalreview.service.AccountService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -28,7 +29,7 @@ class SignUpScreenViewModelUnitTest {
         Dispatchers.setMain(testDispatcher)
         accountService = mock<AccountService>()
 
-        runTest {
+        runBlocking {
             whenever(accountService.register(any(), any(), any())).thenReturn(Unit)
         }
 

@@ -118,7 +118,7 @@ class FeedScreenViewModelUnitTest {
 
 
 
-        testDispatcher = UnconfinedTestDispatcher()
+        testDispatcher = StandardTestDispatcher()
         storageService = mock<StorageService>()
         accountService = mock<AccountService>()
 
