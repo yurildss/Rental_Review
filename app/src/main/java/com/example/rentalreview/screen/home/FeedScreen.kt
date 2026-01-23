@@ -317,7 +317,10 @@ fun ReviewCard(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if(review.imageUrl.isNotEmpty()){
-            AsyncImage(model = review.imageUrl, contentDescription = "House Image")
+            AsyncImage(model = review.imageUrl,
+                contentDescription = "House Image",
+                modifier = Modifier.size(300.dp)
+            )
         }else{
             Image(
                 painter = painterResource(id = R.drawable.chatgpt_image_12_de_mai__de_2025__21_11_19),

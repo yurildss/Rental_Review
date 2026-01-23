@@ -49,7 +49,7 @@ class ReviewScreenViewModel @Inject constructor(
 
     private val _uploadState = MutableStateFlow(ImageUploadState())
 
-    private lateinit var imageUri: String
+    private lateinit var imageUri: MutableList<String>
     init {
         launchCatching {
             _uiState.value = _uiState.value.copy(userId = accountService.currentUserId)
@@ -154,7 +154,7 @@ class ReviewScreenViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(selectedCityItem = city)
     }
 
-    fun onImageSelect(imageGallery: Uri){
+    fun onImageSelect(imageGallery: List<Uri>){
         _uiState.value = _uiState.value.copy(imageGallery = imageGallery)
     }
 
@@ -270,7 +270,7 @@ data class ReviewScreenState(
     val listOfCountries: List<Country> = listOf(),
     val listOfStates: List<State> = listOf(),
     val listOfCities: List<City> = listOf(),
-    val imageGallery: Uri = Uri.EMPTY,
+    val imageGallery: List<Uri> = mutableListOf(Uri.EMPTY),
     val buttonClick: Boolean = false
 )
 

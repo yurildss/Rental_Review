@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
@@ -21,6 +22,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -171,8 +174,8 @@ fun ReviewEntryForm(
     startDate: LocalDate?,
     endDate: LocalDate?,
     star: Int = 0,
-    onImageSelect: (Uri) -> Unit,
-    imageGallery: Uri,
+    onImageSelect: (List<Uri>) -> Unit,
+    imageGallery: List<Uri>,
     enableButton: Boolean
 ){
     Column(
@@ -502,20 +505,31 @@ fun PropertyTypeDropMenu(
 
 @Composable
 fun PropertyImageSelect(
-    imageGallery: Uri,
-    onImageSelected: (Uri) -> Unit
+    imageGallery: List<Uri>,
+    onImageSelected: (List<Uri>) -> Unit
 ){
 
     var launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
+        contract = ActivityResultContracts.PickMultipleVisualMedia(
+            maxItems = 10
+        ),
     ){
-        it?.let { p1 -> onImageSelected(p1) }
+        it?.let { uris -> onImageSelected(uris) }
     }
     Column(
         horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         if (imageGallery != Uri.EMPTY) {
+            LazyRow {
+                items(imageGallery) {
+                    AsyncImage(
+                        model = it,
+                        contentDescription = null,
+                        modifier = Modifier.size(200.dp).padding(4.dp)
+                    )
+                }
+            }
             AsyncImage(
                 model = imageGallery,
                 contentDescription = null,
@@ -523,7 +537,7 @@ fun PropertyImageSelect(
             )
         }
 
-        Button(onClick = { launcher.launch("image/*") }) {
+        Button(onClick = { launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }) {
             Text(text = "Select image")
         }
     }
