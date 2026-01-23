@@ -1,5 +1,6 @@
 package com.example.rentalreview.service.impl
 
+import com.example.rentalreview.helper.toReview
 import com.example.rentalreview.model.Comments
 import com.example.rentalreview.model.Review
 import com.example.rentalreview.service.StorageService
@@ -20,7 +21,9 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun getReviews(): List<Review?> {
         val first = firestore.collection(REVIEWS).orderBy(CREATE_AT).limit(6).get().await()
-        return first.toObjects(Review::class.java)
+        return first.documents.map {
+            it.toReview()
+        }
     }
 
     override suspend fun getMoreReviews(lastReview: Review): List<Review?> {
