@@ -198,11 +198,13 @@ class ReviewScreenViewModel @Inject constructor(
                 return@launchCatching
             }
 
-            if(_uiState.value.imageGallery != Uri.EMPTY){
-                val uploadResult = runCatching {
-                    uploadImageService.uploadImage(_uiState.value.imageGallery)
-                }.onSuccess {
-                    imageUri = it
+            if(_uiState.value.imageGallery.isNotEmpty()){
+                runCatching {
+                    _uiState.value.imageGallery.map {
+                       uploadImageService.uploadImage(it)
+                    }
+                }.onSuccess { uploadUrls ->
+                   imageUri = uploadUrls.toMutableList()
                 }.onFailure {
                     SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Image upload failed"))
                     return@launchCatching

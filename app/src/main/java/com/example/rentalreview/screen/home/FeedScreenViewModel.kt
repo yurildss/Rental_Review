@@ -1,5 +1,6 @@
 package com.example.rentalreview.screen.home
 
+import android.net.Uri
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
@@ -299,14 +300,14 @@ data class ReviewUiState(
     val review: String = "",
     val type: String = "",
     val startDate: String = "",
-    val endDate: String = "" ,
+    val endDate: String = "",
     val address: Address,
     val likesIds: MutableList<String> = mutableListOf(),
     val comments: MutableList<Comments> = mutableListOf(),
     val favoriteIds: MutableList<String> = mutableListOf(),
     val timestamp: Date? = null,
     val showComment: Boolean = false,
-    val imageUrl: String
+    val imageUrl: List<String> = mutableListOf(),
 )
 
 data class UserUiState(

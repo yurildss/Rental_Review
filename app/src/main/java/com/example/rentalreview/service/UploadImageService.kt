@@ -5,5 +5,5 @@ import android.net.Uri
 
 interface UploadImageService {
 
-    suspend fun uploadImage(imageUri: List<Uri>): MutableList<String>
+    suspend fun uploadImage(imageUri: Uri): String
 }

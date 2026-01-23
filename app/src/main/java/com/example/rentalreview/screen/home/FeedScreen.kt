@@ -443,7 +443,7 @@ fun ReviewCardPreview(){
                         )
                     ),
                     address = Address(),
-                    imageUrl = ""
+                    imageUrl = emptyList()
                 ),
                 onLike = {},
                 userId = "1",
