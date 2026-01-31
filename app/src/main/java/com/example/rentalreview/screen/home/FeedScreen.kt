@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -111,7 +113,6 @@ fun FeedScreen(
                     onLoadComments = {  },
                     onSendComment = viewModel::addNewComment,
                     comment = uiState.comment,
-                    showComments = uiState.showComment,
                     onCommentChange = viewModel::onCommentChange,
                     onShowCommentChange = viewModel::onShowCommentClick,
                     showOtherUsersComments = uiState.showOtherUsersComments,
@@ -140,7 +141,6 @@ fun ReviewsList(
     onLoadComments: () -> Unit,
     onSendComment: (reviewId: String, index: Int) -> Unit,
     comment: String,
-    showComments: Boolean,
     onCommentChange: (String) -> Unit,
     onShowCommentChange: (index: Int) -> Unit,
     showOtherUsersComments: Boolean,
@@ -175,7 +175,6 @@ fun ReviewsList(
                         onLoadComments = onLoadComments,
                         onSendComment = { onSendComment(it.id, index) },
                         comment = comment,
-                        showComments = showComments,
                         onCommentChange = onCommentChange,
                         onShowCommentChange = { onShowCommentChange(index) },
                         showOtherUsersComments = showOtherUsersComments,
@@ -298,7 +297,6 @@ fun ReviewCard(
     onLoadComments: () -> Unit,
     onSendComment: () -> Unit,
     comment: String,
-    showComments: Boolean = false,
     onShowCommentChange: () -> Unit,
     showOtherUsersComments: Boolean,
     onCommentChange: (String) -> Unit,
@@ -317,10 +315,14 @@ fun ReviewCard(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if(review.imageUrl.isNotEmpty()){
-            AsyncImage(model = review.imageUrl,
-                contentDescription = "House Image",
-                modifier = Modifier.size(300.dp)
-            )
+            LazyRow {
+                items(review.imageUrl) {
+                    AsyncImage(model = it,
+                        contentDescription = "House Image",
+                        modifier = Modifier.size(300.dp)
+                    )
+                }
+            }
         }else{
             Image(
                 painter = painterResource(id = R.drawable.chatgpt_image_12_de_mai__de_2025__21_11_19),
@@ -451,7 +453,6 @@ fun ReviewCardPreview(){
                 onLoadComments = {},
                 onSendComment = {},
                 comment = "",
-                showComments = true,
                 onCommentChange = {},
                 onShowCommentChange = {},
                 showOtherUsersComments = false,
@@ -496,7 +497,6 @@ fun ReviewBlackCardPreview(){
                 onLoadComments = {},
                 onSendComment = {},
                 comment = "",
-                showComments = true,
                 onCommentChange = {},
                 onShowCommentChange = {},
                 showOtherUsersComments = false,
