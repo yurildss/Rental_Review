@@ -1,6 +1,5 @@
 package com.example.rentalreview.screen.home
 
-import android.net.Uri
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
@@ -25,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
     private val storageService: StorageService,
-    private val accountService: AccountService
+    private val accountService: AccountService,
 ) : RentalReviewAppViewModel() {
 
     val _uiState = MutableStateFlow(FeedScreenUiState())
