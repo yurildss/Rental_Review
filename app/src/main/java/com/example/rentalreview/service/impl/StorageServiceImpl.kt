@@ -66,6 +66,14 @@ class StorageServiceImpl @Inject constructor(
             .await()
     }
 
+    override suspend fun removeFavorite(reviewId: String, userId: String) {
+        firestore
+            .collection(REVIEWS)
+            .document(reviewId)
+            .update(FAVORITES, FieldValue.arrayRemove(userId))
+            .await()
+    }
+
     override suspend fun findMyReviews(userId: String): List<Review?> {
         val myReviews = firestore.collection(REVIEWS).orderBy(CREATE_AT).whereEqualTo("userId", userId).get().await()
         return myReviews.toObjects(Review::class.java)

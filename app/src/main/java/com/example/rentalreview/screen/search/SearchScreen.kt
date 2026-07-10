@@ -44,7 +44,16 @@ fun SearchScreen(
     if (uiState.successSearching){
         ReviewsList(
             reviews = uiState.reviews,
-            userId = uiState.userId
+            onLike = viewModel::addFavorite,
+            onUnlike = viewModel::addFavorite,
+            userId = uiState.userId,
+            onLoadComments = {},
+            onSendComment = { _, _ -> },
+            comment = "",
+            onCommentChange = {},
+            onShowCommentChange = {},
+            showOtherUsersComments = false,
+            onRemoveFavorite = { _, _ -> }
         )
     }else{
         Column(

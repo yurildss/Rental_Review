@@ -8,6 +8,7 @@ import kotlinx.coroutines.test.resetMain
 import com.example.rentalreview.screen.review.ReviewScreenViewModel
 import com.example.rentalreview.service.AccountService
 import com.example.rentalreview.service.StorageService
+import com.example.rentalreview.service.UploadImageService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -28,6 +29,7 @@ class ReviewScreenViewModelUnitTest {
     private lateinit var viewModel: ReviewScreenViewModel
     private lateinit var reviewRepository: StorageService
     private lateinit var accountService: AccountService
+    private lateinit var uploadImageService: UploadImageService
     private lateinit var testDispatcher: TestDispatcher
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
@@ -36,13 +38,15 @@ class ReviewScreenViewModelUnitTest {
         testDispatcher = StandardTestDispatcher()
         Dispatchers.setMain(testDispatcher)
 
+        reviewRepository = mock<StorageService>()
+        accountService = mock<AccountService>()
+        uploadImageService = mock<UploadImageService>()
+
         runBlocking {
             whenever(reviewRepository.saveReview(any())).thenReturn(Unit)
         }
 
-        reviewRepository = mock<StorageService>()
-        accountService = mock<AccountService>()
-        viewModel = ReviewScreenViewModel(reviewRepository, accountService)
+        viewModel = ReviewScreenViewModel(reviewRepository, accountService, uploadImageService)
 
 
     }
