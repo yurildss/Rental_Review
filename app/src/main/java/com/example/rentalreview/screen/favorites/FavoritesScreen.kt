@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -56,11 +57,12 @@ import com.example.rentalreview.ui.theme.RentalReviewTheme
 @Composable
 fun FavoritesScreen(
     viewModel: FavoritesViewModel = hiltViewModel(),
+    onReviewClick: (String) -> Unit,
     onBackClick: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize().statusBarsPadding()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -93,7 +95,8 @@ fun FavoritesScreen(
             onCommentChange = viewModel::onCommentChange,
             onShowCommentChange = viewModel::onShowCommentClick,
             showOtherUsersComments = uiState.showOtherUsersComments,
-            onRemoveFavorite = viewModel::removeFavorite
+            onRemoveFavorite = viewModel::removeFavorite,
+            onReviewClick = onReviewClick
         )
     }
 }
@@ -110,7 +113,8 @@ fun ReviewsList(
     onCommentChange: (String) -> Unit,
     onShowCommentChange: (index: Int) -> Unit,
     showOtherUsersComments: Boolean,
-    onRemoveFavorite: (reviewId: String, index: Int) -> Unit
+    onRemoveFavorite: (reviewId: String, index: Int) -> Unit,
+    onReviewClick: (String) -> Unit
 ){
     if(reviews.isEmpty()){
         Column(
@@ -147,7 +151,8 @@ fun ReviewsList(
                         onCommentChange = onCommentChange,
                         onShowCommentChange = { onShowCommentChange(index) },
                         showOtherUsersComments = showOtherUsersComments,
-                        onRemoveFavorite = { onRemoveFavorite(it.id, index) }
+                        onRemoveFavorite = { onRemoveFavorite(it.id, index) },
+                        onReviewClick = { onReviewClick(it.id) }
                     )
                 }
             }
@@ -167,7 +172,8 @@ fun ReviewCard(
     onCommentChange: (String) -> Unit,
     onShowCommentChange: () -> Unit,
     showOtherUsersComments: Boolean,
-    onRemoveFavorite: () -> Unit
+    onRemoveFavorite: () -> Unit,
+    onReviewClick: () -> Unit
 ){
     Column(
         Modifier
@@ -179,7 +185,8 @@ fun ReviewCard(
             .wrapContentHeight()
             .background(MaterialTheme.colorScheme.background)
             .padding(10.dp)
-            .testTag("reviewCard"),
+            .testTag("reviewCard")
+            .clickable { onReviewClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // Display images
@@ -415,7 +422,8 @@ fun ReviewCardPreview(){
                 onCommentChange = {},
                 onShowCommentChange = {},
                 showOtherUsersComments = false,
-                onRemoveFavorite = {}
+                onRemoveFavorite = {},
+                onReviewClick = {}
             )
         }
     }
@@ -445,7 +453,8 @@ fun FavoritesScreenPreview(){
                     onCommentChange = {},
                     onShowCommentChange = {},
                     showOtherUsersComments = false,
-                    onRemoveFavorite = { _, _ -> }
+                    onRemoveFavorite = { _, _ -> },
+                    onReviewClick = {}
                 )
             }
         }

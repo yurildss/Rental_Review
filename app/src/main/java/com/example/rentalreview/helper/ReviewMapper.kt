@@ -15,6 +15,17 @@ fun DocumentSnapshot.toReview(): Review {
     }
 
     val addressMap = get("address") as? Map<*, *>
+    val commentsList = get("comments") as? List<*>
+    val comments = commentsList?.mapNotNull { item ->
+        val map = item as? Map<*, *>
+        if (map != null) {
+            Comments(
+                userId = map["userId"] as? String ?: "",
+                comment = map["comment"] as? String ?: "",
+                timestamp = (map["timestamp"] as? com.google.firebase.Timestamp)?.toDate()
+            )
+        } else null
+    }?.toMutableList() ?: mutableListOf<Comments>()
 
     return Review(
         id = id,
@@ -27,7 +38,7 @@ fun DocumentSnapshot.toReview(): Review {
         endDate = getString("endDate") ?: "",
         address = addressMap?.toAddress() ?: Address(),
         likesIds = (get("likesIds") as? List<String>)?.toMutableList() ?: mutableListOf(),
-        comments = (get("comments") as? List<Comments>)?.toMutableList() ?: mutableListOf(),
+        comments = comments,
         favoriteIdsUsers = (get("favoriteIdsUsers") as? List<String>)?.toMutableList() ?: mutableListOf(),
         userId = getString("userId") ?: "",
         imageUri = imageUris

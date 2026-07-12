@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -69,6 +70,7 @@ import com.example.rentalreview.ui.theme.RentalReviewTheme
 fun FeedScreen(
     onSave: () -> Unit,
     onMyReviewsClick: () -> Unit,
+    onReviewClick: (String) -> Unit,
     navAfterLogOut: () -> Unit,
     viewModel: FeedScreenViewModel = hiltViewModel()
 ){
@@ -86,7 +88,7 @@ fun FeedScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().statusBarsPadding(),
         topBar = {
 
     }, bottomBar = {
@@ -116,9 +118,10 @@ fun FeedScreen(
                     onCommentChange = viewModel::onCommentChange,
                     onShowCommentChange = viewModel::onShowCommentClick,
                     showOtherUsersComments = uiState.showOtherUsersComments,
-                    onFavorite = viewModel::addFavorite
+                    onFavorite = viewModel::addFavorite,
+                    onReviewClick = onReviewClick
                 )
-                uiState.navItems[1] -> SearchScreen()
+                uiState.navItems[1] -> SearchScreen(onReviewClick = onReviewClick)
                 uiState.navItems[2] -> ReviewEntryScreen(onSaved = onSave)
                 uiState.navItems[3] -> ProfileScreen(
                     onMyReviewsClick = onMyReviewsClick,
@@ -144,7 +147,8 @@ fun ReviewsList(
     onCommentChange: (String) -> Unit,
     onShowCommentChange: (index: Int) -> Unit,
     showOtherUsersComments: Boolean,
-    onFavorite: (reviewId: String, index: Int) -> Unit
+    onFavorite: (reviewId: String, index: Int) -> Unit,
+    onReviewClick: (String) -> Unit
 ) {
     if(reviews.isEmpty()){
         Column(
@@ -178,7 +182,8 @@ fun ReviewsList(
                         onCommentChange = onCommentChange,
                         onShowCommentChange = { onShowCommentChange(index) },
                         showOtherUsersComments = showOtherUsersComments,
-                        onFavorite = { onFavorite(it.id, index) }
+                        onFavorite = { onFavorite(it.id, index) },
+                        onReviewClick = { onReviewClick(it.id) }
                     )
                 }
                 if (index == reviews.lastIndex - 1) {
@@ -300,7 +305,8 @@ fun ReviewCard(
     onShowCommentChange: () -> Unit,
     showOtherUsersComments: Boolean,
     onCommentChange: (String) -> Unit,
-    onFavorite: () -> Unit
+    onFavorite: () -> Unit,
+    onReviewClick: () -> Unit
 ){
     Column(
         Modifier
@@ -311,7 +317,8 @@ fun ReviewCard(
             )
             .wrapContentHeight()
             .background(MaterialTheme.colorScheme.background)
-            .padding(10.dp).testTag("reviewCard"),
+            .padding(10.dp).testTag("reviewCard")
+            .clickable { onReviewClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if(review.imageUrl.isNotEmpty()){
@@ -456,7 +463,8 @@ fun ReviewCardPreview(){
                 onCommentChange = {},
                 onShowCommentChange = {},
                 showOtherUsersComments = false,
-                onFavorite = {}
+                onFavorite = {},
+                onReviewClick = {}
             )
         }
     }
@@ -500,7 +508,8 @@ fun ReviewBlackCardPreview(){
                 onCommentChange = {},
                 onShowCommentChange = {},
                 showOtherUsersComments = false,
-                onFavorite = {}
+                onFavorite = {},
+                onReviewClick = {}
             )
         }
     }

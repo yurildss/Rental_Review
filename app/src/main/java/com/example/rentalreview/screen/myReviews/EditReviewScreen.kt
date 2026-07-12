@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import java.time.LocalDate
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rentalreview.common.SnackbarManager
@@ -52,6 +53,7 @@ fun ReviewEditEntryScreen(
 
     val startDate by viewModel.startDate.collectAsStateWithLifecycle()
     val endDate by viewModel.endDate.collectAsStateWithLifecycle()
+    val canSave = viewModel.isFormValid(startDate, endDate, uiState)
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) }
@@ -82,9 +84,9 @@ fun ReviewEditEntryScreen(
                     onCityExpandedOptions = viewModel::onCityExpandedOptions,
                     onStateSelected = viewModel::onStateSelected,
                     onCitySelected = viewModel::onCitySelected,
-                    onImageSelect = {},
+                    onImageSelect = viewModel::onImageSelect,
                     imageGallery = uiState.imageGallery,
-                    enableButton = false
+                    enableButton = canSave
                 )
             }
         }

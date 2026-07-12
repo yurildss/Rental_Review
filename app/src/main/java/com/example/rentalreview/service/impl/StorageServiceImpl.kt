@@ -27,8 +27,8 @@ class StorageServiceImpl @Inject constructor(
     }
 
     override suspend fun getMoreReviews(lastReview: Review): List<Review?> {
-        val first = firestore.collection(REVIEWS).orderBy(CREATE_AT).startAfter(lastReview.timestamp).limit(6).get().await()
-        return first.toObjects(Review::class.java)
+        val snapshot = firestore.collection(REVIEWS).orderBy(CREATE_AT).startAfter(lastReview.timestamp).limit(6).get().await()
+        return snapshot.documents.map { it.toReview() }
     }
 
     override suspend fun updateLikes(reviewId: String, userId: String) {
@@ -76,12 +76,12 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun findMyReviews(userId: String): List<Review?> {
         val myReviews = firestore.collection(REVIEWS).orderBy(CREATE_AT).whereEqualTo("userId", userId).get().await()
-        return myReviews.toObjects(Review::class.java)
+        return myReviews.documents.map { it.toReview() }
     }
 
     override suspend fun getReviewById(reviewId: String): Review? {
-        val review = firestore.collection(REVIEWS).document(reviewId).get().await()
-        return review.toObject(Review::class.java)
+        val doc = firestore.collection(REVIEWS).document(reviewId).get().await()
+        return if (doc.exists()) doc.toReview() else null
     }
 
     override suspend fun updateReview(
@@ -92,19 +92,21 @@ class StorageServiceImpl @Inject constructor(
     }
 
     override suspend fun getFavoriteReviews(userId: String): List<Review?> {
-        return firestore
+        val result = firestore
             .collection(REVIEWS)
             .whereArrayContains(FAVORITES, userId)
             .get()
-            .await().toObjects(Review::class.java)
+            .await()
+        return result.documents.map { it.toReview() }
     }
 
     override suspend fun getReviewsByCity(city: String): List<Review?> {
-        return firestore
+        val result = firestore
             .collection(REVIEWS)
             .whereEqualTo(CITY, city)
             .get()
-            .await().toObjects(Review::class.java)
+            .await()
+        return result.documents.map { it.toReview() }
     }
 
     companion object Collections{

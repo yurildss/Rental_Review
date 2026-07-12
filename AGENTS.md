@@ -79,12 +79,12 @@ viewModel = FeedScreenViewModel(storageService, accountService)
 
 ### Error Patterns
 - No explicit error states visible in UI (errors logged via `launchCatching`)
-- SnackBar notifications via `SnackBarManager` for user feedback
+- SnackBar notifications via `SnackbarManager` for user feedback
 
 ## External Integrations
 
 ### Firebase
-- **Firestore collections**: `REVIEWS`, `USERS` (constants in impl files)
+- **Firestore collections**: `reviews` (REVIEWS constant in `StorageServiceImpl`), `users` (literal string in `AccountServiceImpl`)
 - **Document fields**: `title`, `rating`, `review`, `timestamp`, `likesIds`, `comments`, `imageUri`
 - **Batch operations**: Use batch writers for multi-document updates per best practices
 

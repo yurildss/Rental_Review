@@ -1,6 +1,7 @@
 package com.example.rentalreview.screen.myReviews
 
 import android.os.Build
+import android.net.Uri
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.SavedStateHandle
@@ -34,6 +35,7 @@ class EditReviewViewModel
 @Inject constructor (
     private val storageService: StorageService,
     private val accountService: AccountService,
+    private val uploadImageService: com.example.rentalreview.service.UploadImageService,
     savedStateHandle: SavedStateHandle
 ) : RentalReviewAppViewModel() {
 
@@ -54,6 +56,35 @@ class EditReviewViewModel
 
     init {
         getReviewById(reviewId)
+    }
+
+    /**
+     * Receive image selection from UI (list of Uri) and update state
+     */
+    fun onImageSelect(imageGallery: List<Uri>){
+        _uiState.value = _uiState.value.copy(imageGallery = imageGallery)
+    }
+
+    fun removeImage(index: Int){
+        val current = _uiState.value.imageGallery.toMutableList()
+        if(index in 0 until current.size){
+            current.removeAt(index)
+            _uiState.value = _uiState.value.copy(imageGallery = current)
+        }
+    }
+
+    /**
+     * Helper to check if the form is valid for enabling Save button
+     */
+    fun isFormValid(startDate: java.time.LocalDate?, endDate: java.time.LocalDate?, state: ReviewScreenState): Boolean{
+        if(state.title.isEmpty()) return false
+        if(state.type.isEmpty()) return false
+        if(startDate == java.time.LocalDate.now()) return false
+        if(endDate == java.time.LocalDate.of(2025, 12, 31)) return false
+        if(state.selectedCountryItem == com.example.rentalreview.model.Country("", "", "")) return false
+        if(state.selectedStateItem == com.example.rentalreview.model.State("", "", "")) return false
+        if(state.selectedCityItem == com.example.rentalreview.model.City(0, "")) return false
+        return true
     }
 
     fun getCities(){
@@ -182,6 +213,12 @@ class EditReviewViewModel
             _startDate.value = runCatching{ LocalDate.parse(review?.startDate) }.getOrNull()
             _endDate.value = runCatching{ LocalDate.parse(review?.endDate) }.getOrNull()
 
+            // populate image gallery from existing image urls
+            val images = review?.imageUri?.mapNotNull {
+                runCatching { Uri.parse(it) }.getOrNull()
+            } ?: emptyList()
+            _uiState.value = _uiState.value.copy(imageGallery = images)
+
         }
 
     }
@@ -225,19 +262,81 @@ class EditReviewViewModel
                 return@launchCatching
             }
 
-            storageService.updateReview(reviewId = reviewId,review = Review(
-                title = _uiState.value.title,
-                type = _uiState.value.type,
-                startDate = _startDate.value?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: "",
-                endDate = _endDate.value?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: "",
-                rating = _uiState.value.rating,
-                review = _uiState.value.review,
-                address = _uiState.value.toAddress(),
-                userId = uiState.value.userId
-            ))
+            // Handle image uploads: keep existing http(s) URIs, upload local URIs
+            // Track newly uploaded URLs for rollback on failure
+            val newlyUploadedUrls = mutableListOf<String>()
+            var imageUri: MutableList<String> = mutableListOf()
+            if(_uiState.value.imageGallery.isNotEmpty()){
+                runCatching {
+                    _uiState.value.imageGallery.map { uri ->
+                        val scheme = uri.scheme ?: ""
+                        if(scheme.startsWith("http")) {
+                            uri.toString()
+                        } else {
+                            val uploadedUrl = uploadImageService.uploadImage(uri)
+                            newlyUploadedUrls.add(uploadedUrl)
+                            uploadedUrl
+                        }
+                    }
+                }.onSuccess { uploadUrls ->
+                    imageUri = uploadUrls.toMutableList()
+                }.onFailure {
+                    SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Image upload failed"))
+                    return@launchCatching
+                }
+            }
 
-            onSaved()
+            // Try to save review to Firebase
+            runCatching {
+                storageService.updateReview(reviewId = reviewId, review = Review(
+                    title = _uiState.value.title,
+                    type = _uiState.value.type,
+                    startDate = _startDate.value?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: "",
+                    endDate = _endDate.value?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: "",
+                    rating = _uiState.value.rating,
+                    review = _uiState.value.review,
+                    address = _uiState.value.toAddress(),
+                    userId = uiState.value.userId,
+                    imageUri = imageUri
+                ))
+            }.onSuccess {
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Review updated successfully"))
+                onSaved()
+            }.onFailure { error ->
+                // Firebase save failed - rollback all newly uploaded images
+                Log.e("EditReviewViewModel", "Failed to save review: ${error.message}")
+                SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Failed to save review. Please try again."))
 
+                // Delete all newly uploaded images asynchronously
+                launchCatching {
+                    rollbackUploadedImages(newlyUploadedUrls)
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Rollback uploads by deleting all newly uploaded images from storage.
+     * This is called when Firebase save fails to avoid orphaned images.
+     */
+    private suspend fun rollbackUploadedImages(uploadedUrls: List<String>) {
+        val failedDeletions = mutableListOf<String>()
+
+        for(url in uploadedUrls) {
+            val result = withContext(Dispatchers.IO) {
+                uploadImageService.deleteImage(url)
+            }
+            if(!result) {
+                failedDeletions.add(url)
+                Log.w("EditReviewViewModel", "Failed to delete image during rollback: $url")
+            }
+        }
+
+        if(failedDeletions.isNotEmpty()) {
+            Log.e("EditReviewViewModel", "Rollback failed for ${failedDeletions.size} images. Manual cleanup may be needed.")
+        } else if(uploadedUrls.isNotEmpty()) {
+            Log.d("EditReviewViewModel", "Successfully rolled back ${uploadedUrls.size} uploaded images")
         }
     }
 

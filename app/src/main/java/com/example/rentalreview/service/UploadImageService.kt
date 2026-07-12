@@ -6,4 +6,6 @@ import android.net.Uri
 interface UploadImageService {
 
     suspend fun uploadImage(imageUri: Uri): String
+
+    suspend fun deleteImage(imageUrl: String): Boolean
 }

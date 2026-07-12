@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,6 +33,7 @@ fun OpenScree(
     Column(
         Modifier
             .background(color = MaterialTheme.colorScheme.background)
+            .statusBarsPadding()
             .padding(10.dp)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally

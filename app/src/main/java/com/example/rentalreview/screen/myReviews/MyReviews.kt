@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -58,11 +59,12 @@ import com.example.rentalreview.ui.theme.RentalReviewTheme
 fun MyReviewsScreen(
     viewModel: MyReviewsViewModel = hiltViewModel(),
     onEditReviewClick: (String) -> Unit,
+    onReviewClick: (String) -> Unit,
     onBackClick: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize().padding(16.dp)) {
+    Column(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize().statusBarsPadding().padding(16.dp)) {
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
@@ -90,7 +92,8 @@ fun MyReviewsScreen(
 
         ReviewsList(
             reviews = uiState.reviews,
-            onEditReviewClick =  onEditReviewClick
+            onEditReviewClick =  onEditReviewClick,
+            onReviewClick = onReviewClick
         )
     }
 }
@@ -98,7 +101,8 @@ fun MyReviewsScreen(
 @Composable
 fun ReviewsList(
     reviews: List<ReviewUiState?>,
-    onEditReviewClick: (String) -> Unit
+    onEditReviewClick: (String) -> Unit,
+    onReviewClick: (String) -> Unit
 ){
     LazyColumn(
         modifier = Modifier
@@ -124,7 +128,8 @@ fun ReviewsList(
                     onShowCommentChange = {},
                     showOtherUsersComments = false,
                     onFavorite = {},
-                    onEditReviewClick = { onEditReviewClick(review.id) }
+                    onEditReviewClick = { onEditReviewClick(review.id) },
+                    onReviewClick = { onReviewClick(review.id) }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -140,7 +145,8 @@ fun ReviewCardVisualizer(
     onShowCommentChange: () -> Unit,
     showOtherUsersComments: Boolean,
     onFavorite: () -> Unit,
-    onEditReviewClick: () -> Unit
+    onEditReviewClick: () -> Unit,
+    onReviewClick: () -> Unit
 ){
     Column(
         Modifier
@@ -151,7 +157,8 @@ fun ReviewCardVisualizer(
             )
             .wrapContentHeight()
             .background(MaterialTheme.colorScheme.background)
-            .padding(10.dp),
+            .padding(10.dp)
+            .clickable { onReviewClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         var expanded by remember { mutableStateOf(false) }
@@ -392,7 +399,8 @@ fun ReviewCardVisualizerPreview(){
                             imageUrl = TODO()
                         ),
                     ),
-                    onEditReviewClick = {}
+                    onEditReviewClick = {},
+                    onReviewClick = {}
                 )
             }
         }
@@ -488,7 +496,8 @@ fun ReviewCardVisualizerDarkThemePreview(){
                             imageUrl = TODO()
                         ),
                     ),
-                    onEditReviewClick = {}
+                    onEditReviewClick = {},
+                    onReviewClick = {}
                 )
             }
         }
@@ -539,7 +548,8 @@ fun MyReviewsScreenPreview(){
         onShowCommentChange = {},
         showOtherUsersComments = false,
         onFavorite = {},
-        onEditReviewClick = {}
+        onEditReviewClick = {},
+        onReviewClick = {}
     )
 }
 

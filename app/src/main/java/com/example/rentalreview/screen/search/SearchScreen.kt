@@ -37,6 +37,7 @@ import com.example.rentalreview.screen.favorites.ReviewsList
 
 @Composable
 fun SearchScreen(
+    onReviewClick: (String) -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -53,7 +54,8 @@ fun SearchScreen(
             onCommentChange = {},
             onShowCommentChange = {},
             showOtherUsersComments = false,
-            onRemoveFavorite = { _, _ -> }
+            onRemoveFavorite = { _, _ -> },
+            onReviewClick = onReviewClick
         )
     }else{
         Column(

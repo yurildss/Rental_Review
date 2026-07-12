@@ -11,6 +11,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,16 +20,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
@@ -111,6 +116,7 @@ fun ReviewEntryScreen(
     val endDate by viewModel.endDate.collectAsStateWithLifecycle()
 
     Scaffold(
+        modifier = Modifier.statusBarsPadding(),
         snackbarHost = { SnackbarHost(snackBarHostState) }
     ) {
         LazyColumn {
@@ -204,7 +210,7 @@ fun ReviewEntryForm(
                 .fillMaxWidth(0.85F)
                 .testTag("titleEntry"),
         )
-        PropertyImageSelect(imageGallery,onImageSelect)
+        PropertyImageSelect(imageGallery, onImageSelect)
         Text("Address",
             fontSize = 20.sp,
             color = MaterialTheme.colorScheme.primary,
@@ -506,7 +512,8 @@ fun PropertyTypeDropMenu(
 @Composable
 fun PropertyImageSelect(
     imageGallery: List<Uri>,
-    onImageSelected: (List<Uri>) -> Unit
+    onImageSelected: (List<Uri>) -> Unit,
+    onRemoveImage: (index: Int) -> Unit = {}
 ){
 
     var launcher = rememberLauncherForActivityResult(
@@ -520,21 +527,33 @@ fun PropertyImageSelect(
         horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        if (imageGallery != Uri.EMPTY) {
+        if (imageGallery.isNotEmpty() && imageGallery != listOf(Uri.EMPTY)) {
             LazyRow {
-                items(imageGallery) {
-                    AsyncImage(
-                        model = it,
-                        contentDescription = null,
-                        modifier = Modifier.size(200.dp).padding(4.dp)
-                    )
+                itemsIndexed(imageGallery) { index, imageUri ->
+                    Box(
+                        modifier = Modifier
+                            .size(200.dp)
+                            .padding(4.dp)
+                    ) {
+                        AsyncImage(
+                            model = imageUri,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        Icon(
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = "Remove image",
+                            modifier = Modifier
+                                .align(androidx.compose.ui.Alignment.TopEnd)
+                                .background(androidx.compose.ui.graphics.Color.White.copy(alpha = 0.8f), CircleShape)
+                                .clickable { onRemoveImage(index) }
+                                .padding(4.dp)
+                                .size(24.dp),
+                            tint = androidx.compose.ui.graphics.Color.Red
+                        )
+                    }
                 }
             }
-            AsyncImage(
-                model = imageGallery,
-                contentDescription = null,
-                modifier = Modifier.size(200.dp)
-            )
         }
 
         Button(onClick = { launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }) {

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -105,7 +106,9 @@ fun LoginForm(
 ){
     Column(Modifier
         .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background).testTag("loginScreen"),
+        .background(MaterialTheme.colorScheme.background)
+        .statusBarsPadding()
+        .testTag("loginScreen"),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
         Text(text = "Login", fontSize = 40.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
@@ -165,7 +168,9 @@ fun ForgotPasswordForm(
 ){
     Column(Modifier
         .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background).testTag("forgotPasswordScreen"),
+        .background(MaterialTheme.colorScheme.background)
+        .statusBarsPadding()
+        .testTag("forgotPasswordScreen"),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
 

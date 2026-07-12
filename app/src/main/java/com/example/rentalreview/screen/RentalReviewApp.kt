@@ -18,6 +18,7 @@ import com.example.rentalreview.screen.myReviews.MyReviewsScreen
 import com.example.rentalreview.screen.myReviews.ReviewEditEntryScreen
 import com.example.rentalreview.screen.openScreen.OpenScree
 import com.example.rentalreview.screen.perfil.ProfileScreen
+import com.example.rentalreview.screen.review.OpenReviewScreen
 import com.example.rentalreview.screen.review.ReviewEntryScreen
 import com.example.rentalreview.screen.signUp.SignUpScreen
 
@@ -72,6 +73,9 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
                 onMyReviewsClick = {
                     navController.navigate(Screens.MY_REVIEWS_SCREEN.name)
                 },
+                onReviewClick = {
+                    navController.navigate("${Screens.REVIEW_DETAIL_SCREEN.name}/$it")
+                },
                 navAfterLogOut = {
                     navController.navigate(Screens.LOGIN_SCREEN.name){
                         popUpTo(0){
@@ -115,6 +119,9 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
 
         composable(route = Screens.FAVORITES_SCREEN.name){
             FavoritesScreen(
+                onReviewClick = {
+                    navController.navigate("${Screens.REVIEW_DETAIL_SCREEN.name}/$it")
+                },
                 onBackClick = { navController.popBackStack() }
             )
         }
@@ -124,9 +131,20 @@ fun RentalReviewApp(navController: NavHostController = rememberNavController()) 
                 onEditReviewClick = {
                     navController.navigate("${Screens.EDIT_REVIEW_SCREEN.name}/$it")
                 },
+                onReviewClick = {
+                    navController.navigate("${Screens.REVIEW_DETAIL_SCREEN.name}/$it")
+                },
                 onBackClick = {
                     navController.popBackStack()
                 }
+            )
+        }
+
+        composable(route = "${Screens.REVIEW_DETAIL_SCREEN.name}/{idReview}",
+            arguments = listOf(navArgument("idReview"){type = NavType.StringType})
+        ) {
+            OpenReviewScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
     }

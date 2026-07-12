@@ -43,6 +43,15 @@ android {
     buildFeatures {
         compose = true
     }
+    packaging {
+        jniLibs {
+            // Use legacy packaging for JNI libraries to improve compatibility with
+            // some third-party native libraries that may not be page-aligned inside AARs.
+            // This will keep the .so files in the APK in the traditional layout which
+            // can avoid ELF alignment/runtime loading warnings on some devices.
+            useLegacyPackaging = true
+        }
+    }
 }
 
 dependencies {
@@ -52,10 +61,16 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation("androidx.navigation:navigation-compose:2.9.0")
+    implementation(libs.androidx.runner)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    
+    // Explicitly add 16 KB compatible versions for libraries mentioned in warnings
+    implementation("androidx.graphics:graphics-path:1.1.0")
+    implementation("com.facebook.fresco:fresco:3.7.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -63,8 +78,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation("io.coil-kt:coil-compose:2.6.0")
-    implementation("com.cloudinary:cloudinary-android:2.5.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("com.cloudinary:cloudinary-android:3.1.2")
 
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
@@ -78,12 +93,12 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
 
     // Hilt para testes de instrumentação
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.51.1")
-    kaptAndroidTest("com.google.dagger:hilt-compiler:2.51.1")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.55")
+    kaptAndroidTest("com.google.dagger:hilt-compiler:2.55")
     androidTestImplementation("androidx.test:runner:1.5.2")
 
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation("com.google.dagger:hilt-android:2.55")
+    kapt("com.google.dagger:hilt-android-compiler:2.55")
 
     testImplementation ("org.mockito:mockito-core:5.5.0")
     testImplementation ("org.mockito.kotlin:mockito-kotlin:5.1.0")
@@ -92,9 +107,5 @@ dependencies {
     //Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-
-    //
-    implementation("io.coil-kt:coil-compose:2.6.0")
-
 
 }
